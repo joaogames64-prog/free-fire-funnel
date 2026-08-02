@@ -186,10 +186,6 @@
             <div class="ck-row-label">ID do Jogador</div>
             <div class="ck-row-value"><span id="ck-uid">-</span></div>
         </div>
-        <div class="ck-row" id="ck-nick-row" style="display:none;">
-            <div class="ck-row-label">Nickname</div>
-            <div class="ck-row-value" style="color:#22c55e;"><span id="ck-nickname"></span></div>
-        </div>
     </div>
 
     <div class="ck-divider"></div>
@@ -289,7 +285,6 @@ window.addEventListener('DOMContentLoaded', function(){
     var bonus = sessionStorage.getItem('bonus') || '106';
     var preco = sessionStorage.getItem('preco') || '12.90';
     var uid = sessionStorage.getItem('uid') || '-';
-    var nick = sessionStorage.getItem('player_nickname') || '';
     var tipo = sessionStorage.getItem('tipo') || 'diamonds';
 
     var total = parseInt(plano) + parseInt(bonus);
@@ -309,11 +304,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('ck-price').textContent = 'R$ ' + parseFloat(preco).toFixed(2).replace('.',',');
     document.getElementById('ck-uid').textContent = uid;
-
-    if(nick){
-        document.getElementById('ck-nickname').textContent = nick;
-        document.getElementById('ck-nick-row').style.display = 'flex';
-    }
 });
 
 // Phone mask
