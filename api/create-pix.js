@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
         };
 
         // offer_hash is always required by IronPay
-        txPayload.offer_hash = body.offer_hash || 'opswh'; // fallback = 1060 diamantes
+        txPayload.offer_hash = body.offer_hash || 'off_4nfa96t3k8';
         txPayload.cart[0].product_hash = body.product_hash || 'ykhbyvhkny';
 
         if (body.utm_source || body.utm_medium || body.utm_campaign) {
