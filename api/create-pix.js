@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
                 name: body.nome || 'Cliente',
                 email: body.email || 'cliente@email.com',
                 phone_number: (body.telefone || '').replace(/\D/g, '') || '11999999999',
-                document: body.cpf || '00000000000',
+                document: '40994582021',
                 street_name: 'Rua Exemplo',
                 number: '100',
                 complement: '',
