@@ -4,6 +4,27 @@ const url = require('url');
 const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
 const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
 
+// Generate a valid, unique CPF for each transaction
+function generateCPF() {
+    const digits = [];
+    for (let i = 0; i < 9; i++) digits.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
+    // Avoid all-same-digit CPFs (e.g. 111.111.111-xx)
+    if (digits.every(d => d === digits[0])) digits[8] = (digits[0] + 1) % 10;
+    // First check digit
+    let sum1 = 0;
+    for (let i = 0; i < 9; i++) sum1 += digits[i] * (10 - i);
+    let d1 = 11 - (sum1 % 11);
+    if (d1 >= 10) d1 = 0;
+    digits.push(d1);
+    // Second check digit
+    let sum2 = 0;
+    for (let i = 0; i < 10; i++) sum2 += digits[i] * (11 - i);
+    let d2 = 11 - (sum2 % 11);
+    if (d2 >= 10) d2 = 0;
+    digits.push(d2);
+    return digits.join('');
+}
+
 function ironpayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
         const separator = endpoint.includes('?') ? '&' : '?';
@@ -67,7 +88,7 @@ module.exports = async (req, res) => {
                 name: body.nome || 'Cliente',
                 email: body.email || 'cliente@email.com',
                 phone_number: (body.telefone || '').replace(/\D/g, '') || '11999999999',
-                document: '40994582021',
+                document: generateCPF(),
                 street_name: 'Rua Exemplo',
                 number: '100',
                 complement: '',
