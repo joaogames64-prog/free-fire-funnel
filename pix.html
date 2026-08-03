@@ -223,7 +223,7 @@
         <span class="px-status-text">Aguardando pagamento...</span>
         <div class="px-status-sub pulse">Verificando automaticamente</div>
     </div>
-    <div class="px-status paid" id="px-status-paid">
+    <div class="px-status" id="px-status-paid">
         <div class="px-status-icon">✅</div>
         <div class="px-status-text">Pagamento confirmado!</div>
         <div class="px-status-sub">Seus diamantes serão creditados em breve.</div>
@@ -309,7 +309,9 @@ if(txHash){
                 if(data && (data.status === 'paid' || data.payment_status === 'paid' || data.status === 'approved')){
                     clearInterval(checkInterval);
                     document.getElementById('px-status-checking').style.display = 'none';
-                    document.getElementById('px-status-paid').style.display = 'block';
+                    var paidEl = document.getElementById('px-status-paid');
+                    paidEl.classList.add('paid');
+                    paidEl.style.display = 'block';
                 }
             })
             .catch(function(){});
