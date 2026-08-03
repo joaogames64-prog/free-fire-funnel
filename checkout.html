@@ -367,6 +367,24 @@ document.getElementById('ob-overlay').addEventListener('click', function(e){
     if(e.target === this) this.classList.remove('active');
 });
 
+// ── UTM capture ──────────────────────────────────────────────────────────────
+(function(){
+    var params = new URLSearchParams(window.location.search);
+    var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'];
+    utmKeys.forEach(function(k){
+        var v = params.get(k);
+        if(v) sessionStorage.setItem(k, v);
+    });
+})();
+
+function getUTMs(){
+    var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'];
+    var obj = {};
+    keys.forEach(function(k){ obj[k] = sessionStorage.getItem(k) || ''; });
+    return obj;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Finalize order = generate PIX via IronPay API
 async function finalizeOrder(){
     var btn = document.querySelector('.ob-finalize');
@@ -409,6 +427,16 @@ async function finalizeOrder(){
         productTitle += ' + ' + bumps.map(function(b){return b.name;}).join(', ');
     }
 
+    // ── Fire InitiateCheckout (IC) ────────────────────────────────────────────
+    try {
+        if(typeof fbq === 'function'){
+            fbq('track', 'InitiateCheckout', { value: totalPrice, currency: 'BRL' });
+        }
+    } catch(e){}
+    // ─────────────────────────────────────────────────────────────────────────
+
+    var utms = getUTMs();
+
     try {
         var response = await fetch('/api/create-pix', {
             method: 'POST',
@@ -420,7 +448,13 @@ async function finalizeOrder(){
                 telefone: telefone,
                 product_title: productTitle,
                 offer_hash: sessionStorage.getItem('offer_hash') || '',
-                product_hash: sessionStorage.getItem('product_hash') || ''
+                product_hash: sessionStorage.getItem('product_hash') || '',
+                utm_source: utms.utm_source,
+                utm_medium: utms.utm_medium,
+                utm_campaign: utms.utm_campaign,
+                utm_term: utms.utm_term,
+                utm_content: utms.utm_content,
+                src: utms.src
             })
         });
 
