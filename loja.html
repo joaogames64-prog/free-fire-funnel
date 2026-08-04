@@ -157,10 +157,22 @@
 
                 <!-- 4 Diamond options -->
                 <div class="denom-grid" style="grid-template-columns:repeat(4,1fr);">
-                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','12,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="12,90"><img src="images/point.png" alt="💎"><span>1.060</span></div>
-                    <div class="denom-card" onclick="selectDenom(this,'2180','218','17,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="17,90"><img src="images/point.png" alt="💎"><span>2.180</span></div>
-                    <div class="denom-card" onclick="selectDenom(this,'5600','560','19,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="19,90"><img src="images/point.png" alt="💎"><span>5.600</span></div>
-                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','49,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="49,90"><img src="images/point.png" alt="💎"><span>22.400</span></div>
+                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','12,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="12,90">
+                        <img src="images/point.png" alt="💎"><span>1.060</span>
+                        <div class="denom-price">R$ 12,90</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'2180','218','17,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="17,90">
+                        <img src="images/point.png" alt="💎"><span>2.180</span>
+                        <div class="denom-price">R$ 17,90</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'5600','560','19,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="19,90">
+                        <img src="images/point.png" alt="💎"><span>5.600</span>
+                        <div class="denom-price">R$ 19,90</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','49,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="49,90">
+                        <img src="images/point.png" alt="💎"><span>22.400</span>
+                        <div class="denom-price">R$ 49,90</div>
+                    </div>
                 </div>
 
                 <!-- Ofertas especiais -->
@@ -320,6 +332,41 @@ function goToCheckout(){
     sessionStorage.setItem('product_hash','ykhbyvhkny');
     window.location.href='checkout.html';
 }
+
+// ── Social Proof Notifications ──────────────────────────────────────────────
+(function(){
+    var names = [
+        'Fernando','Lucas','Ana','Rafael','Gustavo','Matheus','Juliana','Pedro',
+        'Larissa','Bruno','Camila','Gabriel','Beatriz','Diego','Amanda','Thiago',
+        'Carolina','Vinícius','Mariana','André','Isabela','Rodrigo','Letícia',
+        'Leonardo','Bruna','Carlos','Natalia','Henrique','Daniela','Marcos',
+        'Renata','Felipe','Aline','Caio','Priscila','Leandro','Patricia','João',
+        'Vanessa','Eduardo','Fernanda','Guilherme','Raquel','Tiago','Sandra'
+    ];
+    var products = [
+        '1.060 Diamantes','2.180 Diamantes','5.600 Diamantes','22.400 Diamantes',
+        'Assinatura Semanal','Assinatura Mensal','Passe Booyah Premium'
+    ];
+    var toast = document.getElementById('sp-toast');
+    var textEl = document.getElementById('sp-toast-text');
+
+    function showToast(){
+        var name = names[Math.floor(Math.random()*names.length)];
+        var product = products[Math.floor(Math.random()*products.length)];
+        textEl.innerHTML = '<span class="sp-toast-name">' + name + '</span> acabou de comprar o ' + product;
+        toast.classList.add('show');
+        setTimeout(function(){ toast.classList.remove('show'); }, 4000);
+        setTimeout(showToast, 8000 + Math.random() * 7000);
+    }
+    setTimeout(showToast, 5000 + Math.random() * 5000);
+})();
 </script>
+
+<!-- Social Proof Toast -->
+<div class="sp-toast" id="sp-toast">
+    <div class="sp-toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+    <div class="sp-toast-text" id="sp-toast-text"></div>
+</div>
+
 </body>
 </html>
