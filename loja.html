@@ -240,6 +240,29 @@
     <div class="sp-toast-text" id="sp-toast-text"></div>
 </div>
 
+<!-- Upsell Popup -->
+<div class="up-overlay" id="up-overlay">
+    <div class="up-modal">
+        <div class="up-header">
+            <div class="up-header-icon">🔥</div>
+            <div class="up-header-title">Oferta por tempo limitado!</div>
+            <div class="up-header-sub">Leve mais diamantes com desconto especial</div>
+        </div>
+        <div class="up-body">
+            <div class="up-diamonds">
+                <span id="up-diamonds-text">5.600 + 560 bônus</span>
+                <img src="images/point.png" alt="💎">
+            </div>
+            <div class="up-prices">
+                <span class="up-old-price" id="up-old-price">R$ 19,90</span>
+                <span class="up-new-price" id="up-new-price">R$ 17,90</span>
+            </div>
+            <button class="up-cta" id="up-accept" onclick="acceptUpsell()">Quero aproveitar!</button>
+            <button class="up-skip" id="up-skip" onclick="skipUpsell()">Não, obrigado</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // VSL Modal
 (function(){
@@ -325,18 +348,53 @@ function handleLogout(){
     document.getElementById('player-id-input').value='';
 }
 
+// ── Upsell Config ───────────────────────────────────────────────────────────
+var upsellMap = {
+    '1060': { diamonds: '5600', bonus: '560', price: 17.90, oldPrice: '19,90', newPrice: '17,90', label: '5.600 + 560 bônus' },
+    '2180': { diamonds: '22400', bonus: '2240', price: 23.90, oldPrice: '49,90', newPrice: '23,90', label: '22.400 + 2.240 bônus' },
+    '5600': { diamonds: '22400', bonus: '2240', price: 25.90, oldPrice: '49,90', newPrice: '25,90', label: '22.400 + 2.240 bônus' }
+};
+var pendingUpsell = null;
+
 function goToCheckout(){
-    sessionStorage.setItem('plano',diamondSel.diamonds);
-    sessionStorage.setItem('bonus',diamondSel.bonus);
-    var totalPrice = diamondSel.price;
+    // If an offer (subscription) is selected, or already 22400, go straight to checkout
+    if(offerSel || !upsellMap[diamondSel.diamonds]){
+        proceedToCheckout(diamondSel.diamonds, diamondSel.bonus, diamondSel.price);
+        return;
+    }
+    // Show upsell popup
+    var up = upsellMap[diamondSel.diamonds];
+    pendingUpsell = up;
+    document.getElementById('up-diamonds-text').textContent = up.label;
+    document.getElementById('up-old-price').textContent = 'R$ ' + up.oldPrice;
+    document.getElementById('up-new-price').textContent = 'R$ ' + up.newPrice;
+    document.getElementById('up-overlay').classList.add('active');
+}
+
+function acceptUpsell(){
+    document.getElementById('up-overlay').classList.remove('active');
+    if(pendingUpsell){
+        proceedToCheckout(pendingUpsell.diamonds, pendingUpsell.bonus, pendingUpsell.price);
+    }
+}
+
+function skipUpsell(){
+    document.getElementById('up-overlay').classList.remove('active');
+    proceedToCheckout(diamondSel.diamonds, diamondSel.bonus, diamondSel.price);
+}
+
+function proceedToCheckout(diamonds, bonus, price){
+    sessionStorage.setItem('plano', diamonds);
+    sessionStorage.setItem('bonus', bonus);
+    var totalPrice = price;
     if(offerSel) totalPrice += offerSel.price;
-    sessionStorage.setItem('preco',totalPrice.toFixed(2));
-    sessionStorage.setItem('tipo','diamonds');
-    sessionStorage.setItem('label',offerSel ? offerSel.label : '');
-    sessionStorage.setItem('offer_price',offerSel ? offerSel.price.toFixed(2) : '0');
-    sessionStorage.setItem('offer_hash',diamondSel.offerHash);
-    sessionStorage.setItem('product_hash','ykhbyvhkny');
-    window.location.href='checkout.html';
+    sessionStorage.setItem('preco', totalPrice.toFixed(2));
+    sessionStorage.setItem('tipo', 'diamonds');
+    sessionStorage.setItem('label', offerSel ? offerSel.label : '');
+    sessionStorage.setItem('offer_price', offerSel ? offerSel.price.toFixed(2) : '0');
+    sessionStorage.setItem('offer_hash', diamondSel.offerHash);
+    sessionStorage.setItem('product_hash', 'ykhbyvhkny');
+    window.location.href = 'checkout.html';
 }
 
 // ── Social Proof Notifications ──────────────────────────────────────────────
