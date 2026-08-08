@@ -144,11 +144,9 @@ input { font-size: 16px !important; font-family: inherit; }
 .spinner { animation: spin 1s linear infinite; }
 
 /* Upsell Popup */
-.up-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); }
+.up-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(3px); }
 .up-overlay.active { display: flex; }
-@media(min-width:500px) { .up-overlay { align-items: center; } }
-.up-modal { background: #fff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; overflow: hidden; animation: upSlide .35s ease; }
-@media(min-width:500px) { .up-modal { border-radius: 20px; margin: 16px; } }
+.up-modal { background: #fff; width: 100%; max-width: 420px; border-radius: 20px; overflow: hidden; animation: upSlide .35s ease; }
 @keyframes upSlide { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .up-header { background: linear-gradient(135deg, #D81A0D, #ff4433); padding: 20px 24px; text-align: center; }
 .up-header-icon { font-size: 20px; margin-bottom: 4px; }
