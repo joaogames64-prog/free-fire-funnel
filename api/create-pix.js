@@ -124,8 +124,28 @@ module.exports = async (req, res) => {
         }
 
         const result = await ironpayRequest('POST', '/transactions', txPayload);
-        res.status(result.status).json(result.data);
+        const responseData = result.data || {};
+
+        // Log full response for debugging
+        console.log('[create-pix] IronPay response keys:', JSON.stringify(Object.keys(responseData)));
+        console.log('[create-pix] Full response:', JSON.stringify(responseData).substring(0, 500));
+
+        // Normalize: ensure hash is always at top level
+        // IronPay may return hash under various field names
+        if (!responseData.hash) {
+            responseData.hash = responseData.id
+                || responseData.transaction_hash
+                || responseData.tid
+                || responseData.uuid
+                || responseData.external_id
+                || (responseData.data && (responseData.data.hash || responseData.data.id || responseData.data.transaction_hash))
+                || '';
+        }
+
+        console.log('[create-pix] Normalized hash:', responseData.hash);
+        res.status(result.status).json(responseData);
     } catch (err) {
+        console.error('[create-pix] Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 };

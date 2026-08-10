@@ -287,7 +287,10 @@
 var params = new URLSearchParams(window.location.search);
 var pixCode = params.get('pix') || '';
 var qrCodeUrl = params.get('qrcode') || '';
-var txHash = params.get('txid') || '';
+var txHash = params.get('txid') || params.get('hash') || '';
+
+console.log('[pix.html] txHash:', txHash);
+console.log('[pix.html] Full URL params:', window.location.search);
 
 // Set QR code image
 if(qrCodeUrl){
