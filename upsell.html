@@ -266,10 +266,18 @@ function buyUpsell(){
     .then(function(r){ return r.json(); })
     .then(function(data){
         document.getElementById('us-loading').classList.remove('active');
-        if(data && data.pix && data.pix.pix_qr_code){
-            var pixCode = data.pix.pix_qr_code;
-            var qrUrl = data.pix.pix_url || '';
-            var hash = data.hash || '';
+        console.log('Upsell PIX response:', JSON.stringify(data));
+        // Extract PIX code from various response formats
+        var pixCode = null;
+        if(data && data.pix && data.pix.pix_qr_code) pixCode = data.pix.pix_qr_code;
+        else if(data && data.pix && data.pix.qrcode) pixCode = data.pix.qrcode;
+        else if(data && data.pix_qrcode) pixCode = data.pix_qrcode;
+        else if(data && data.data && data.data.pix && data.data.pix.pix_qr_code) pixCode = data.data.pix.pix_qr_code;
+
+        if(pixCode){
+            var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
+            var hash = data.hash || data.id || data.transaction_hash || '';
+            if(!hash && data.data){ hash = data.data.hash || data.data.id || data.data.transaction_hash || ''; }
             // Save upsell context
             sessionStorage.setItem('plano', 'Conta Rara');
             sessionStorage.setItem('bonus', '0');

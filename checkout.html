@@ -472,7 +472,9 @@ async function finalizeOrder(){
 
         if(pixCode) {
             var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
-            var txid = data.hash || data.id || '';
+            var txid = data.hash || data.id || data.transaction_hash || '';
+            if(!txid && data.data){ txid = data.data.hash || data.data.id || data.data.transaction_hash || ''; }
+            console.log('PIX created, txid:', txid, 'full response:', JSON.stringify(data));
             window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid;
         } else {
             var errorMsg = data.message || data.error || JSON.stringify(data);

@@ -363,13 +363,28 @@ function closeCopiedPopup(){
 // Auto-check payment status
 var checkInterval = null;
 var isUpsellPurchase = sessionStorage.getItem('is_upsell') === 'true';
+
+function isPaid(data){
+    if(!data) return false;
+    // Direct status fields
+    if(data.status === 'paid' || data.status === 'approved') return true;
+    if(data.payment_status === 'paid' || data.payment_status === 'approved') return true;
+    // Nested in data object (IronPay format)
+    if(data.data && (data.data.status === 'paid' || data.data.status === 'approved')) return true;
+    if(data.data && (data.data.payment_status === 'paid' || data.data.payment_status === 'approved')) return true;
+    // Nested in transaction object
+    if(data.transaction && (data.transaction.status === 'paid' || data.transaction.status === 'approved')) return true;
+    return false;
+}
+
 if(txHash){
     document.getElementById('px-status-checking').style.display = 'block';
     checkInterval = setInterval(function(){
         fetch('/api/check-tx?hash=' + txHash)
             .then(function(r){ return r.json(); })
             .then(function(data){
-                if(data && (data.status === 'paid' || data.payment_status === 'paid' || data.status === 'approved')){
+                console.log('PIX status check:', JSON.stringify(data));
+                if(isPaid(data)){
                     clearInterval(checkInterval);
                     document.getElementById('px-status-checking').style.display = 'none';
                     var paidEl = document.getElementById('px-status-paid');
@@ -386,7 +401,7 @@ if(txHash){
                     }, 3000);
                 }
             })
-            .catch(function(){});
+            .catch(function(err){ console.log('Check error:', err); });
     }, 5000);
 }
 </script>
