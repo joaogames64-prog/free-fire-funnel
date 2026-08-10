@@ -84,6 +84,20 @@
     .us-guarantee svg{width:20px;height:20px;flex-shrink:0;color:#22c55e;}
     .us-guarantee-text{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.4;}
 
+    /* Garena Logo */
+    .us-garena-logo{text-align:center;margin-bottom:20px;}
+    .us-garena-logo img{width:120px;margin:0 auto;}
+
+    /* Urgency Warning */
+    .us-warning{background:rgba(255,200,0,0.08);border:1px solid rgba(255,200,0,0.25);border-radius:12px;padding:14px 16px;margin-bottom:24px;display:flex;align-items:flex-start;gap:10px;}
+    .us-warning-icon{font-size:20px;flex-shrink:0;line-height:1;}
+    .us-warning-text{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.5;}
+    .us-warning-text strong{color:#fbbf24;}
+
+    /* SSL Badge */
+    .us-ssl{text-align:center;margin-bottom:16px;}
+    .us-ssl img{width:140px;margin:0 auto;}
+
     /* Loading overlay */
     .us-loading{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
     .us-loading.active{display:flex;}
@@ -120,7 +134,10 @@
 
     <!-- Content -->
     <div class="us-content">
-        <div class="us-badge">🔥 OFERTA PÓS-COMPRA</div>
+        <div class="us-garena-logo">
+            <img src="images/garena-logo-full.png" alt="Garena">
+        </div>
+        <div class="us-badge">🔥 OFERTA PÓS-COMPRA — ÚNICA VEZ</div>
         <h1 class="us-title">Conta <span>RARA</span> do Free Fire com itens exclusivos!</h1>
         <p class="us-subtitle">Como agradecimento pela sua compra, desbloqueamos uma oferta que poucos jogadores têm acesso. Essa conta possui itens que não estão mais disponíveis na loja.</p>
 
@@ -150,12 +167,10 @@
             </div>
         </div>
 
-        <!-- Social Proof -->
-        <div class="us-social">
-            <div class="us-social-avatars">
-                <span>R</span><span>M</span><span>L</span><span>+</span>
-            </div>
-            <div class="us-social-text"><strong>47 jogadores</strong> compraram esta conta nas últimas 24 horas</div>
+        <!-- Urgency Warning -->
+        <div class="us-warning">
+            <div class="us-warning-icon">⚠️</div>
+            <div class="us-warning-text"><strong>ATENÇÃO: Esta oferta é ÚNICA e exclusiva para você.</strong> Se você sair desta página, ela será perdida para sempre e não poderá ser acessada novamente.</div>
         </div>
 
         <!-- Price -->
@@ -169,6 +184,11 @@
         <div class="us-guarantee">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <div class="us-guarantee-text">Pagamento 100% seguro via PIX. Dados da conta enviados imediatamente após confirmação.</div>
+        </div>
+
+        <!-- SSL Badge -->
+        <div class="us-ssl">
+            <img src="images/ssl-badge.png" alt="Site Seguro - SSL Certificado">
         </div>
 
         <!-- CTA -->
