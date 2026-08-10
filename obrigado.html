@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Obrigado - Free Fire</title>
+    <link rel="icon" href="images/iconff.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .ty-wrap{max-width:440px;width:100%;text-align:center;}
+    .ty-icon{width:80px;height:80px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(34,197,94,0.3);}
+    .ty-icon svg{width:40px;height:40px;}
+    .ty-title{font-size:28px;font-weight:800;margin-bottom:8px;}
+    .ty-subtitle{font-size:15px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:32px;}
+    .ty-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:24px;text-align:left;}
+    .ty-card-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .ty-card-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .ty-card-row:last-child{border:none;}
+    .ty-card-label{color:rgba(255,255,255,0.5);}
+    .ty-card-value{font-weight:600;}
+    .ty-info{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:14px 16px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;margin-bottom:24px;text-align:left;}
+    .ty-info strong{color:#22c55e;}
+    .ty-btn{display:inline-block;padding:14px 32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;}
+    .ty-btn:hover{background:rgba(255,255,255,0.15);}
+    .ty-footer{margin-top:40px;font-size:11px;color:rgba(255,255,255,0.25);}
+    </style>
+</head>
+<body>
+
+<div class="ty-wrap">
+    <div class="ty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h1 class="ty-title">Obrigado pela compra! 🎉</h1>
+    <p class="ty-subtitle">Sua transação foi processada com sucesso. Os itens serão creditados na sua conta em breve.</p>
+
+    <div class="ty-card">
+        <div class="ty-card-title">📋 Resumo do Pedido</div>
+        <div class="ty-card-row">
+            <span class="ty-card-label">Produto</span>
+            <span class="ty-card-value" id="ty-product">Diamantes Free Fire</span>
+        </div>
+        <div class="ty-card-row">
+            <span class="ty-card-label">Jogador</span>
+            <span class="ty-card-value" id="ty-player">-</span>
+        </div>
+        <div class="ty-card-row">
+            <span class="ty-card-label">Status</span>
+            <span class="ty-card-value" style="color:#22c55e;">✅ Confirmado</span>
+        </div>
+    </div>
+
+    <div class="ty-info">
+        <strong>📱 Fique atento:</strong> Seus itens serão creditados automaticamente. Se não receber em até 30 minutos, entre em contato com nosso suporte.
+    </div>
+
+    <a href="loja.html" class="ty-btn">← Voltar à Loja</a>
+
+    <div class="ty-footer">© Garena Online. Todos os direitos reservados.</div>
+</div>
+
+<script>
+// Fill in order data
+var plano = sessionStorage.getItem('plano') || 'Diamantes';
+var uid = sessionStorage.getItem('uid') || '-';
+document.getElementById('ty-product').textContent = plano.indexOf('Conta') !== -1 ? plano : plano + ' Diamantes';
+document.getElementById('ty-player').textContent = uid;
+</script>
+
+</body>
+</html>

@@ -362,6 +362,7 @@ function closeCopiedPopup(){
 
 // Auto-check payment status
 var checkInterval = null;
+var isUpsellPurchase = sessionStorage.getItem('is_upsell') === 'true';
 if(txHash){
     document.getElementById('px-status-checking').style.display = 'block';
     checkInterval = setInterval(function(){
@@ -374,6 +375,15 @@ if(txHash){
                     var paidEl = document.getElementById('px-status-paid');
                     paidEl.classList.add('paid');
                     paidEl.style.display = 'block';
+                    // Redirect after 3 seconds
+                    setTimeout(function(){
+                        if(isUpsellPurchase){
+                            sessionStorage.removeItem('is_upsell');
+                            window.location.href = 'obrigado.html';
+                        } else {
+                            window.location.href = 'upsell.html';
+                        }
+                    }, 3000);
                 }
             })
             .catch(function(){});
