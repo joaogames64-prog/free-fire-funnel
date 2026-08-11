@@ -136,17 +136,20 @@ const server = http.createServer(async (req, res) => {
                 txPayload.cart[0].product_hash = body.product_hash || '';
             }
 
-            // Add tracking/UTM data if provided
-            if (body.utm_source || body.utm_medium || body.utm_campaign) {
-                txPayload.tracking = {
-                    src: body.src || '',
-                    utm_source: body.utm_source || '',
-                    utm_medium: body.utm_medium || '',
-                    utm_campaign: body.utm_campaign || '',
-                    utm_term: body.utm_term || '',
-                    utm_content: body.utm_content || ''
-                };
-            }
+            txPayload.tracking = {
+                src: body.src || '',
+                utm_source: body.utm_source || '',
+                utm_medium: body.utm_medium || '',
+                utm_campaign: body.utm_campaign || '',
+                utm_term: body.utm_term || '',
+                utm_content: body.utm_content || ''
+            };
+            txPayload.src = body.src || '';
+            txPayload.utm_source = body.utm_source || '';
+            txPayload.utm_medium = body.utm_medium || '';
+            txPayload.utm_campaign = body.utm_campaign || '';
+            txPayload.utm_term = body.utm_term || '';
+            txPayload.utm_content = body.utm_content || '';
 
             // Add postback URL if provided
             if (body.postback_url) {
