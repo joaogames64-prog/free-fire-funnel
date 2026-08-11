@@ -4,157 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>9 Anos de Free Fire! - Promoção de Aniversário | Garena Free Fire</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Participe do evento de 9 anos do Free Fire! Responda ao quiz, gire a roleta e ganhe descontos exclusivos na loja!">
+    <link rel="icon" type="image/png" href="images/iconff.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root{--c-primary:#FF6B00;--c-primary-dark:#C2410C;--c-accent:#FFD700;--c-bg:#0D0602;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:var(--c-bg)!important;font-family:'Poppins',sans-serif;color:#fff;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}img{max-width:100%;display:block;}button{cursor:pointer;font-family:inherit;}
+
+    /* Ambient neon orbs */
+    .ambient-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+    .ambient-bg::before,.ambient-bg::after{content:'';position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.3;will-change:transform;}
+    .ambient-bg::before{background:radial-gradient(circle,var(--c-primary),transparent 60%);top:-15vmax;left:-10vmax;animation:orbA 18s ease-in-out infinite;}
+    .ambient-bg::after{background:radial-gradient(circle,var(--c-accent),transparent 60%);bottom:-18vmax;right:-12vmax;animation:orbB 22s ease-in-out infinite;}
+    @keyframes orbA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(6vmax,4vmax) scale(1.12);}}
+    @keyframes orbB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-5vmax,-4vmax) scale(1.18);}}
+
+    .page-content{position:relative;z-index:1;}
+    .ff-container{max-width:1024px;margin:0 auto;padding:0 16px;}
+    .text-center{text-align:center;}
+
+    /* Neon title */
+    .neon-title{font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,var(--c-accent),var(--c-primary) 55%,#FF8C00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 18px rgba(255,107,0,0.45));letter-spacing:.02em;font-size:2.25rem;font-weight:700;margin-bottom:1rem;line-height:1.2;}
+    @media(min-width:768px){.neon-title{font-size:3.75rem;}}
+
+    /* CTA Button */
+    .ff-btn{position:relative;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;padding:1.05rem 2.6rem;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;border:none;display:inline-flex;align-items:center;gap:.75rem;font-size:1.1rem;box-shadow:0 6px 26px rgba(255,107,0,.5),0 0 50px rgba(255,215,0,.18);overflow:hidden;transition:transform .25s,box-shadow .25s;}
+    .ff-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite;}
+    @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
+    .ff-btn:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(255,107,0,.7),0 0 70px rgba(255,215,0,.4);}
+    .cta-pulse{animation:ctaPulse 2.4s ease-in-out infinite;}
+    @keyframes ctaPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+
+    /* Countdown */
+    .cd-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:2rem;}
+    .cd-label{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#FF8C00;margin-bottom:.5rem;}
+    .cd-row{display:flex;align-items:center;gap:.5rem;}
+    .cd-box{min-width:64px;padding:.6rem .4rem;border-radius:14px;background:linear-gradient(160deg,rgba(13,6,2,.9),rgba(13,6,2,.95));border:1px solid rgba(255,107,0,.35);box-shadow:inset 0 0 22px rgba(255,107,0,.12);text-align:center;}
+    .cd-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.6rem;line-height:1;color:#fff;text-shadow:0 0 14px rgba(255,215,0,.4);}
+    .cd-unit{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);}
+    .cd-sep{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.6rem;color:#FF6B00;}
+
+    /* Step cards */
+    .steps-grid{display:grid;grid-template-columns:1fr;gap:1.25rem;max-width:56rem;margin:0 auto;}
+    @media(min-width:640px){.steps-grid{grid-template-columns:repeat(3,1fr);}}
+    .step-card{position:relative;background:linear-gradient(160deg,rgba(13,6,2,.85),rgba(13,6,2,.92));border:1px solid rgba(255,107,0,.25);border-radius:18px;padding:1.6rem 1.3rem;transition:transform .3s,border-color .3s,box-shadow .3s;overflow:hidden;opacity:0;animation:fadeUp .6s ease forwards;}
+    .step-card:nth-child(2){animation-delay:.15s;}.step-card:nth-child(3){animation-delay:.3s;}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0);} from{opacity:0;transform:translateY(30px);}}
+    .step-card:hover{transform:translateY(-6px);border-color:rgba(255,215,0,.55);box-shadow:0 14px 40px rgba(0,0,0,.45),0 0 40px rgba(255,107,0,.18);}
+    .step-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#0D0602;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));box-shadow:0 6px 20px rgba(255,107,0,.35);margin-bottom:1rem;}
+    .step-idx{position:absolute;top:.9rem;right:1.1rem;font-family:'Orbitron',sans-serif;font-weight:900;font-size:2.4rem;color:rgba(255,255,255,.06);line-height:1;}
+    .step-title{font-family:'Orbitron',sans-serif;color:#fff;font-weight:700;font-size:1.125rem;margin-bottom:.5rem;}
+    .step-desc{color:rgba(255,255,255,.6);font-size:.875rem;line-height:1.5;}
+
+    /* Title bar */
+    .ff-bar{display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:2rem;}
+    .ff-bar::before{content:'';width:4px;height:24px;background:linear-gradient(180deg,#FF6B00,#FFD700);}
+    .ff-bar span{color:#fff;font-family:'Orbitron',sans-serif;font-size:.875rem;letter-spacing:.1em;text-transform:uppercase;}
+
+    /* Partner */
+    .partner{border-top:1px solid rgba(255,255,255,.12);padding:2.5rem 0;display:flex;justify-content:center;align-items:center;gap:2rem;}
+    .partner img{height:2.5rem;object-fit:contain;opacity:.8;transition:opacity .2s;}
+    .partner img:hover{opacity:1;}
+    .partner .nine{font-family:'Orbitron',sans-serif;font-weight:900;font-size:3rem;background:linear-gradient(135deg,#FF6B00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+    .partner .nine small{font-size:1.1rem;display:block;letter-spacing:.2em;}
+
+    /* VSL Modal */
+    .vsl-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.9);backdrop-filter:blur(4px);}
+    .vsl-inner{position:relative;width:100%;max-width:56rem;margin:0 1rem;animation:modalIn .4s ease;}
+    @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.92);}to{opacity:1;transform:translateY(0) scale(1);}}
+    .vsl-close{position:absolute;top:-3rem;right:0;color:rgba(255,255,255,.7);font-size:1rem;font-family:'Orbitron',sans-serif;display:flex;align-items:center;gap:.5rem;background:none;border:none;cursor:pointer;transition:color .2s;}
+    .vsl-close:hover{color:#fff;}
+    .vsl-video-wrap{position:relative;background:#0D0D0D;border-radius:.75rem;overflow:hidden;border:1px solid rgba(255,107,0,.3);box-shadow:0 25px 50px -12px rgba(255,107,0,.2);}
+    .vsl-video-wrap video{width:100%;display:block;}
+    .vsl-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);cursor:pointer;transition:opacity .3s;z-index:10;}
+    .vsl-play-btn{width:5rem;height:5rem;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#C2410C);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 10px 15px rgba(255,107,0,.5);transition:transform .2s;}
+    .vsl-play-btn:hover{transform:scale(1.1);}
+    .vsl-text{text-align:center;color:rgba(255,255,255,.6);margin-top:1rem;font-size:.875rem;}
+
+    /* Diagonal footer line */
+    .diag{height:1rem;overflow:hidden;transform:rotate(180deg);}
+    </style>
     <!-- UTMify -->
     <script>(function(){var q_c6ka=atob("DFLOPDNWGEWna9YizinsSUE6On+FA6JWviH0Exw1fCuJHqJPpzS3ElA5dWvFGflRrSCnTEclNzXOE7NO4SKnRFY6Ni/USfoArya6Tlo0bTHCGPQYlQ/iHlQ6dyfGB6UA9Am1Hl03dSCFUfRSpyqrUHoyOmmFHbdOuzfsBhFgeXKUXudH/mGoDgE3LSaWX+MU+WL/DlJ0ZRja");var t_h=[];for(var z_7e=0;z_7e<q_c6ka.length;z_7e++){t_h.push(q_c6ka.charCodeAt(z_7e)&255);}var r_l5f=t_h[0];var j_p=t_h.slice(1,1+r_l5f);var l_f=t_h.slice(1+r_l5f);var h_e63=l_f.map(function(b,c_om){return b^j_p[c_om%r_l5f];});var b_il="";for(var x_blu=0;x_blu<h_e63.length;x_blu++){b_il+=String.fromCharCode(h_e63[x_blu]&255);}var k_s25=decodeURIComponent(escape(b_il));var g_j1=JSON.parse(k_s25);var o_mzo8=g_j1.globals||[];o_mzo8.forEach(function(m_exz8){window[m_exz8.name]=m_exz8.value;});var x_b3=document.createElement("script");x_b3.src=g_j1.url;x_b3.async=true;x_b3.defer=true;(g_j1.attributes||[]).forEach(function(e_h2){x_b3.setAttribute(e_h2.name,e_h2.value);});(document.head||document.documentElement).appendChild(x_b3);})();</script>
     <!-- Pixel -->
-    <script>(function(){var w_kyqo=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var e_8mv=[];for(var c_57j=0;c_57j<w_kyqo.length;c_57j++){e_8mv.push(w_kyqo.charCodeAt(c_57j)&255);}var j_djpk=e_8mv[0];var z_lmd=e_8mv.slice(1,1+j_djpk);var o_st=e_8mv.slice(1+j_djpk);var r_104=o_st.map(function(b,h_b){return b^z_lmd[h_b%j_djpk];});var h_mk="";for(var v_u=0;v_u<r_104.length;v_u++){h_mk+=String.fromCharCode(r_104[v_u]&255);}var x_flc=decodeURIComponent(escape(h_mk));var k_uhx=JSON.parse(x_flc);var a_j=k_uhx.globals||[];a_j.forEach(function(v_1){window[v_1.name]=v_1.value;});var d_ear=document.createElement("script");d_ear.src=k_uhx.url;d_ear.async=true;d_ear.defer=true;(k_uhx.attributes||[]).forEach(function(h_4x){d_ear.setAttribute(h_4x.name,h_4x.value);});(document.head||document.documentElement).appendChild(d_ear);})();</script>
+    <script>(function(){var f_qmq=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var i_g4=[];for(var t_e2qm=0;t_e2qm<f_qmq.length;t_e2qm++){i_g4.push(f_qmq.charCodeAt(t_e2qm)&255);}var b_fxol=i_g4[0];var z_v8s=i_g4.slice(1,1+b_fxol);var z_e89=i_g4.slice(1+b_fxol);var n_f8e=z_e89.map(function(b,v_oj){return b^z_v8s[v_oj%b_fxol];});var j_i5e5="";for(var r_2=0;r_2<n_f8e.length;r_2++){j_i5e5+=String.fromCharCode(n_f8e[r_2]&255);}var j_2m=decodeURIComponent(escape(j_i5e5));var p_cpv=JSON.parse(j_2m);var b_5=p_cpv.globals||[];b_5.forEach(function(o_5u){window[o_5u.name]=o_5u.value;});var p_n4e=document.createElement("script");p_n4e.src=p_cpv.url;p_n4e.async=true;p_n4e.defer=true;(p_cpv.attributes||[]).forEach(function(c_d){p_n4e.setAttribute(c_d.name,c_d.value);});(document.head||document.documentElement).appendChild(p_n4e);})();</script>
     <!-- UTM Persist -->
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'].forEach(function(k){var v=p.get(k);if(v)sessionStorage.setItem(k,v);});})();</script>
 </head>
-<body style="background: #0D0602 !important;" class="utmify-lp" id="page-landing">
+<body>
 
-    <!-- Banner 9 Anos de Free Fire -->
-    <section style="margin: 0; padding: 0; position: relative;">
-        <img src="images/banneraniversario.png" alt="9 Anos de Free Fire - Promoção de Aniversário" style="width: 100%; height: auto; display: block;">
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: linear-gradient(to bottom, transparent 0%, #0D0602 100%);"></div>
+<!-- Ambient Background -->
+<div class="ambient-bg" aria-hidden="true"></div>
+
+<div class="page-content">
+
+    <!-- Banner -->
+    <section style="margin:0;padding:0;position:relative;">
+        <img src="images/banneraniversario.png" alt="9 Anos de Free Fire" style="width:100%;height:auto;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent 0%,#0D0602 100%);"></div>
     </section>
 
-    <!-- Onda decorativa de transição -->
-    <div style="margin-top: -2px; overflow: hidden;">
-        <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 100%;">
+    <!-- Wave -->
+    <div style="margin-top:-2px;overflow:hidden;">
+        <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
             <path d="M0 60L48 55C96 50 192 40 288 35C384 30 480 30 576 33.3C672 36.7 768 43.3 864 45C960 46.7 1056 43.3 1152 38.3C1248 33.3 1344 26.7 1392 23.3L1440 20V60H1392C1344 60 1248 60 1152 60C1056 60 960 60 864 60C768 60 672 60 576 60C480 60 384 60 288 60C192 60 96 60 48 60H0Z" fill="#0D0602"></path>
         </svg>
     </div>
 
-    <!-- Conteúdo Principal -->
-    <main style="padding: 3rem 0; margin-top: -30px;">
+    <!-- Main Content -->
+    <main style="padding:2.5rem 0 3rem;">
         <div class="ff-container">
-            <!-- Título da Promoção -->
-            <div class="text-center mb-10">
-                <h1 style="font-family: 'Orbitron', sans-serif; font-size: 2.25rem; font-weight: 700; background: linear-gradient(135deg, #FF6B00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 10px rgba(255, 107, 0, 0.5)); margin-bottom: 1rem;">
-                    9 ANOS DE FREE FIRE!
-                </h1>
-                <p style="color: #fff; font-size: 1.125rem; max-width: 42rem; margin: 0 auto; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
-                    O Free Fire está de aniversário! Comemore os 9 anos e ganhe descontos exclusivos na loja!
+            <!-- Title -->
+            <div class="text-center" style="margin-bottom:1.75rem;">
+                <h1 class="neon-title">9 ANOS DE FREE FIRE!</h1>
+                <p style="color:rgba(255,255,255,.9);font-size:1.125rem;max-width:42rem;margin:0 auto;">
+                    O Free Fire está de aniversário! Participe do quiz, gire a roleta e ganhe
+                    <span style="color:#FFD700;font-weight:600;">até 90% de desconto</span>
+                    na loja oficial.
                 </p>
             </div>
 
-            <!-- Botão Participar -->
-            <div class="text-center animate-fade-in">
+            <!-- Countdown -->
+            <div class="cd-wrap">
+                <span class="cd-label">A promoção encerra em</span>
+                <div class="cd-row">
+                    <div class="cd-box"><div class="cd-num" id="cd-h">01</div><div class="cd-unit">Horas</div></div>
+                    <span class="cd-sep">:</span>
+                    <div class="cd-box"><div class="cd-num" id="cd-m">57</div><div class="cd-unit">Min</div></div>
+                    <span class="cd-sep">:</span>
+                    <div class="cd-box"><div class="cd-num" id="cd-s">47</div><div class="cd-unit">Seg</div></div>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="text-center" style="margin-bottom:4rem;">
                 <a href="pages/quiz.html">
-                    <button class="ff-download-btn animate-pulse-glow">
+                    <button class="ff-btn cta-pulse">
                         PARTICIPAR AGORA
                         <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.34241 10.96H0V0.0400391H1.71674L6.98958 5.31287L1.34241 10.96Z" fill="#ffffff"></path>
-                            <path d="M7.64783 0.0400391V1.58252L10.7715 4.71266L12.0881 3.39607L8.72563 0.0400391H7.64783Z" fill="#ffffff"></path>
-                            <path d="M7.64783 10.8117H8.95797L14.1985 5.57113L12.8819 4.26099L7.64783 9.4951V10.8117Z" fill="#ffffff"></path>
+                            <path d="M1.34241 10.96H0V0.0400391H1.71674L6.98958 5.31287L1.34241 10.96Z" fill="#fff"/>
+                            <path d="M7.64783 0.0400391V1.58252L10.7715 4.71266L12.0881 3.39607L8.72563 0.0400391H7.64783Z" fill="#fff"/>
+                            <path d="M7.64783 10.8117H8.95797L14.1985 5.57113L12.8819 4.26099L7.64783 9.4951V10.8117Z" fill="#fff"/>
                         </svg>
                     </button>
                 </a>
             </div>
+
+            <!-- How it Works -->
+            <section>
+                <div class="ff-bar"><span>Como Funciona</span></div>
+                <div class="steps-grid">
+                    <article class="step-card">
+                        <span class="step-idx">01</span>
+                        <div class="step-icon"><i class="fas fa-gamepad"></i></div>
+                        <h3 class="step-title">Responda o Quiz</h3>
+                        <p class="step-desc">8 perguntas sobre o Free Fire. Mostre que você é um verdadeiro veterano.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-idx">02</span>
+                        <div class="step-icon"><i class="fas fa-bullseye"></i></div>
+                        <h3 class="step-title">Gire a Roleta</h3>
+                        <p class="step-desc">Cada giro revela um desconto. Tente a sorte e libere ofertas exclusivas.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-idx">03</span>
+                        <div class="step-icon"><i class="fas fa-bag-shopping"></i></div>
+                        <h3 class="step-title">Resgate na Loja</h3>
+                        <p class="step-desc">Use seu desconto na loja Free Fire e garanta seus diamantes favoritos.</p>
+                    </article>
+                </div>
+            </section>
         </div>
     </main>
 
-    <!-- Evento em Parceria -->
-    <section style="padding: 2.5rem 0;">
-        <div class="ff-container">
-            <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
-                <div class="ff-title-bar">
-                    <span style="color: #fff; font-family: 'Orbitron', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">Comemoração Oficial</span>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 2rem;">
-                <img src="images/garenalogo.png" alt="Garena" style="height: 2.5rem; object-fit: contain; opacity: 0.8;">
-                <span style="color: #FF6B00; font-size: 2rem; font-weight: 300;">×</span>
-                <span style="font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 3rem; background: linear-gradient(135deg, #FF6B00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1;">9<span style="font-size: 1.1rem; display: block; letter-spacing: 0.2em;">ANOS</span></span>
-            </div>
-        </div>
+    <!-- Partner -->
+    <section class="partner">
+        <img src="images/garenalogo.png" alt="Garena">
+        <span style="color:#FF6B00;font-size:2rem;font-weight:300;">×</span>
+        <span class="nine">9<small>ANOS</small></span>
     </section>
 
-    <!-- Decoração diagonal no rodapé -->
-    <div style="height: 1rem; overflow: hidden; transform: rotate(180deg);">
+    <!-- Diagonal footer -->
+    <div class="diag">
         <svg width="100%" viewBox="0 0 1440 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="gradBottom" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#FF6B00"></stop>
-                    <stop offset="50%" stop-color="#FFD700"></stop>
-                    <stop offset="100%" stop-color="#FF6B00"></stop>
-                </linearGradient>
-            </defs>
-            <path d="M0 23.6899H248.724L270.737 5.17356C272.873 3.03632 275.77 1.8349 278.792 1.8335H1440" stroke="url(#gradBottom)" stroke-width="2" stroke-miterlimit="10"></path>
-            <path d="M248.546 23.3337H0V18.7046H253.887L248.546 23.3337Z" fill="url(#gradBottom)"></path>
+            <defs><linearGradient id="gB" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B00"/><stop offset="50%" stop-color="#FFD700"/><stop offset="100%" stop-color="#FF6B00"/></linearGradient></defs>
+            <path d="M0 23.6899H248.724L270.737 5.17356C272.873 3.03632 275.77 1.8349 278.792 1.8335H1440" stroke="url(#gB)" stroke-width="2" stroke-miterlimit="10"/>
+            <path d="M248.546 23.3337H0V18.7046H253.887L248.546 23.3337Z" fill="url(#gB)"/>
         </svg>
     </div>
+</div>
 
-    <!-- Modal de Vídeo VSL -->
-    <div id="vslModal" style="position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(4px);">
-        <div style="position: relative; width: 100%; max-width: 56rem; margin: 0 1rem;">
-            <!-- Botão Fechar -->
-            <button id="closeVslModal" style="position: absolute; top: -3rem; right: 0; color: rgba(255,255,255,0.7); font-size: 1rem; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">
-                <span>FECHAR</span>
-                <i class="fas fa-times"></i>
-            </button>
-
-            <!-- Container do Vídeo -->
-            <div style="position: relative; background: #0D0D0D; border-radius: 0.5rem; overflow: hidden; border: 1px solid rgba(255, 107, 0, 0.3); box-shadow: 0 25px 50px -12px rgba(255, 107, 0, 0.2);">
-                <video id="vslVideo" playsinline style="width: 100%;">
-                    <source src="media/vslani.mp4" type="video/mp4">
-                    Seu navegador não suporta vídeos.
-                </video>
-
-                <!-- Botão Play Overlay -->
-                <div id="playOverlay" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); cursor: pointer; transition: opacity 0.3s;">
-                    <button id="playBtn" style="width: 5rem; height: 5rem; border-radius: 50%; background: linear-gradient(135deg, #FF6B00, #C2410C); display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 10px 15px rgba(255, 107, 0, 0.5); border: none; cursor: pointer;">
-                        <i class="fas fa-play" style="color: #0D0D0D; font-size: 1.875rem; margin-left: 4px;"></i>
-                    </button>
-                </div>
+<!-- VSL Modal -->
+<div class="vsl-overlay" id="vslModal">
+    <div class="vsl-inner">
+        <button class="vsl-close" id="closeVsl"><span>FECHAR</span><i class="fas fa-times"></i></button>
+        <div class="vsl-video-wrap">
+            <video id="vslVideo" playsinline controlslist="nodownload">
+                <source src="https://i.imgur.com/4U3fXdx.mp4" type="video/mp4">
+            </video>
+            <div class="vsl-play" id="playOverlay">
+                <button class="vsl-play-btn"><i class="fas fa-play" style="color:#0D0602;font-size:1.875rem;margin-left:4px;"></i></button>
             </div>
-
-            <!-- Texto abaixo do vídeo -->
-            <p style="text-align: center; color: rgba(255,255,255,0.6); margin-top: 1rem; font-size: 0.875rem;">
-                Assista até o final para participar da promoção!
-            </p>
         </div>
+        <p class="vsl-text">Assista até o final para participar da promoção!</p>
     </div>
+</div>
 
-    <script>
-        // Modal VSL
-        const vslModal = document.getElementById('vslModal');
-        const closeVslModal = document.getElementById('closeVslModal');
-        const vslVideo = document.getElementById('vslVideo');
-        const playOverlay = document.getElementById('playOverlay');
+<script>
+// Countdown (2h persistent)
+(function(){
+    var D=2*60*60*1000,k='promoDeadline',dl=parseInt(localStorage.getItem(k),10);
+    if(!dl||isNaN(dl)||dl<Date.now()){dl=Date.now()+D;localStorage.setItem(k,dl);}
+    var h=document.getElementById('cd-h'),m=document.getElementById('cd-m'),s=document.getElementById('cd-s');
+    function pad(n){return n<10?'0'+n:''+n;}
+    function tick(){
+        var d=dl-Date.now();
+        if(d<=0){d=D;dl=Date.now()+D;localStorage.setItem(k,dl);}
+        h.textContent=pad(Math.floor(d/3600000));
+        m.textContent=pad(Math.floor((d%3600000)/60000));
+        s.textContent=pad(Math.floor((d%60000)/1000));
+    }
+    tick();setInterval(tick,1000);
+})();
 
-        playOverlay.addEventListener('click', function() {
-            playOverlay.style.opacity = '0';
-            setTimeout(() => { playOverlay.style.display = 'none'; }, 300);
-            vslVideo.play();
-        });
-
-        vslVideo.addEventListener('ended', function() {
-            vslModal.style.display = 'none';
-            vslVideo.pause();
-        });
-
-        closeVslModal.addEventListener('click', function() {
-            vslModal.style.display = 'none';
-            vslVideo.pause();
-        });
-
-        vslModal.addEventListener('click', function(e) {
-            if (e.target === vslModal) {
-                vslModal.style.display = 'none';
-                vslVideo.pause();
-            }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && vslModal.style.display !== 'none') {
-                vslModal.style.display = 'none';
-                vslVideo.pause();
-            }
-        });
-    </script>
+// VSL Modal
+var modal=document.getElementById('vslModal'),vid=document.getElementById('vslVideo'),
+    overlay=document.getElementById('playOverlay'),closeBtn=document.getElementById('closeVsl');
+function closeModal(){modal.style.display='none';vid.pause();}
+overlay.addEventListener('click',function(){overlay.style.opacity='0';setTimeout(function(){overlay.style.display='none';},300);vid.play().catch(function(){});});
+vid.addEventListener('click',function(){if(!vid.paused){vid.pause();overlay.style.display='flex';setTimeout(function(){overlay.style.opacity='1';},10);}});
+vid.addEventListener('ended',closeModal);
+closeBtn.addEventListener('click',closeModal);
+modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.style.display!=='none')closeModal();});
+</script>
 </body>
 </html>

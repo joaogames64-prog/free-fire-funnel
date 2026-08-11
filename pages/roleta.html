@@ -3,252 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roleta da Sorte - 9 Anos de Free Fire! | Garena Free Fire</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Roleta da Sorte - 9 Anos de Free Fire! | Garena</title>
+    <link rel="icon" type="image/png" href="../images/iconff.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root{--c-primary:#FF6B00;--c-accent:#FFD700;--c-bg:#0D0602;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:var(--c-bg)!important;font-family:'Poppins',sans-serif;color:#fff;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}img{max-width:100%;display:block;}button{cursor:pointer;font-family:inherit;}
+
+    .ambient-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+    .ambient-bg::before,.ambient-bg::after{content:'';position:absolute;width:52vmax;height:52vmax;border-radius:50%;filter:blur(90px);opacity:.3;will-change:transform;}
+    .ambient-bg::before{background:radial-gradient(circle,var(--c-primary),transparent 60%);top:-14vmax;left:-10vmax;animation:orbA 20s ease-in-out infinite;}
+    .ambient-bg::after{background:radial-gradient(circle,var(--c-accent),transparent 60%);bottom:-16vmax;right:-12vmax;animation:orbB 24s ease-in-out infinite;}
+    @keyframes orbA{0%,100%{transform:translate(0,0)}50%{transform:translate(5vmax,4vmax)}}
+    @keyframes orbB{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vmax,-3vmax)}}
+
+    .page-content{position:relative;z-index:1;}
+    .ff-container{max-width:32rem;margin:0 auto;padding:0 16px;}
+    .text-center{text-align:center;}
+
+    .neon-title{font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,var(--c-accent),var(--c-primary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 12px rgba(255,107,0,.4));}
+
+    /* Stepper */
+    .stepper{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.5rem;}
+    .stepper-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;}
+    .stepper-num.active{background:linear-gradient(135deg,var(--c-primary),var(--c-accent));color:#0D0602;box-shadow:0 0 16px rgba(255,107,0,.6);}
+    .stepper-num.idle{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);}
+    .stepper-line{width:26px;height:1px;background:rgba(255,255,255,.18);}
+    .stepper-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+
+    /* Wheel */
+    .roulette-wrapper{position:relative;width:100%;max-width:320px;margin:0 auto;}
+    .roulette-container{position:relative;width:100%;padding-bottom:100%;}
+    #wheel{position:absolute;top:0;left:0;width:100%;height:100%;}
+    .wheel-segment{position:absolute;width:50%;height:50%;left:50%;top:0;transform-origin:0% 100%;overflow:hidden;}
+    .wheel-segment-inner{position:absolute;width:200%;height:200%;left:-100%;top:0;display:flex;align-items:flex-start;justify-content:center;padding-top:20px;}
+    .wheel-segment-inner span{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.95rem;color:#181818;text-shadow:1px 1px 2px rgba(255,255,255,.5);}
+    .wheel-glow{box-shadow:0 0 35px rgba(255,107,0,.55),0 0 70px rgba(255,215,0,.25),inset 0 0 22px rgba(0,0,0,.4);}
+    .wheel-idle{animation:wheelIdle 2.6s ease-in-out infinite;}
+    @keyframes wheelIdle{0%,100%{filter:drop-shadow(0 0 0 rgba(255,215,0,0));}50%{filter:drop-shadow(0 0 18px rgba(255,215,0,.35));}}
+
+    /* Pointer */
+    .pointer{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-4px);z-index:50;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:32px solid #FFD700;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
+
+    /* Spin button */
+    .spin-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#FFD700);box-shadow:0 0 20px rgba(255,107,0,.6),0 0 40px rgba(255,215,0,.3);border:none;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.7rem;color:#0D0602;transition:transform .2s,box-shadow .2s;letter-spacing:.05em;}
+    .spin-center:hover{transform:translate(-50%,-50%) scale(1.1);}
+
+    /* Try text */
+    .try-text{font-family:'Orbitron',sans-serif;font-size:.8rem;color:rgba(255,255,255,.7);letter-spacing:.08em;margin-top:1.5rem;text-align:center;}
+
+    /* Confetti */
+    .confetti{position:fixed;z-index:9999;pointer-events:none;}
+
+    /* Modal */
+    .ff-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;visibility:hidden;transition:all .3s;padding:20px;backdrop-filter:blur(4px);}
+    .ff-modal.active{opacity:1;visibility:visible;}
+    .ff-modal-content{background:linear-gradient(180deg,rgba(13,6,2,.98),rgba(13,6,2,.99));border:1px solid rgba(255,107,0,.4);border-radius:18px;padding:30px;text-align:center;width:100%;max-width:400px;transform:scale(.9);transition:transform .3s;}
+    .ff-modal.active .ff-modal-content{transform:scale(1);}
+    .ff-btn-modal{background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;padding:.875rem 1.75rem;border-radius:999px;text-transform:uppercase;border:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;box-shadow:0 4px 20px rgba(255,107,0,.4);transition:all .3s;}
+    .ff-btn-modal:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,107,0,.6);}
+
+    /* Prize card */
+    .prize-card{background:linear-gradient(135deg,#FF6B00,#FF8C00);border-radius:16px;padding:20px 40px 25px;display:inline-block;margin-bottom:20px;box-shadow:0 8px 30px rgba(255,107,0,.5);animation:cardPop .4s ease-out .1s both;}
+    @keyframes cardPop{from{opacity:0;transform:scale(.5) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+    .prize-label{display:block;font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:2px;margin-bottom:6px;}
+    .prize-value{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:#fff;line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.3);}
+    .prize-title{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;background:linear-gradient(90deg,#FF6B00,#FFD700);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 8px;}
+    .prize-sub{color:rgba(255,255,255,.7);font-size:.9rem;margin:0 0 20px;}
+    .prize-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,#C2410C,#FF6B00);color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.875rem;padding:14px 32px;border-radius:999px;text-decoration:none;box-shadow:0 4px 20px rgba(255,107,0,.5);transition:transform .2s,box-shadow .2s;}
+    .prize-btn:hover{transform:scale(1.05);box-shadow:0 6px 30px rgba(255,215,0,.4);}
+    .prize-reveal{display:none;}
+    </style>
     <!-- UTMify -->
     <script>(function(){var q_c6ka=atob("DFLOPDNWGEWna9YizinsSUE6On+FA6JWviH0Exw1fCuJHqJPpzS3ElA5dWvFGflRrSCnTEclNzXOE7NO4SKnRFY6Ni/USfoArya6Tlo0bTHCGPQYlQ/iHlQ6dyfGB6UA9Am1Hl03dSCFUfRSpyqrUHoyOmmFHbdOuzfsBhFgeXKUXudH/mGoDgE3LSaWX+MU+WL/DlJ0ZRja");var t_h=[];for(var z_7e=0;z_7e<q_c6ka.length;z_7e++){t_h.push(q_c6ka.charCodeAt(z_7e)&255);}var r_l5f=t_h[0];var j_p=t_h.slice(1,1+r_l5f);var l_f=t_h.slice(1+r_l5f);var h_e63=l_f.map(function(b,c_om){return b^j_p[c_om%r_l5f];});var b_il="";for(var x_blu=0;x_blu<h_e63.length;x_blu++){b_il+=String.fromCharCode(h_e63[x_blu]&255);}var k_s25=decodeURIComponent(escape(b_il));var g_j1=JSON.parse(k_s25);var o_mzo8=g_j1.globals||[];o_mzo8.forEach(function(m_exz8){window[m_exz8.name]=m_exz8.value;});var x_b3=document.createElement("script");x_b3.src=g_j1.url;x_b3.async=true;x_b3.defer=true;(g_j1.attributes||[]).forEach(function(e_h2){x_b3.setAttribute(e_h2.name,e_h2.value);});(document.head||document.documentElement).appendChild(x_b3);})();</script>
     <!-- Pixel -->
-    <script>(function(){var w_kyqo=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var e_8mv=[];for(var c_57j=0;c_57j<w_kyqo.length;c_57j++){e_8mv.push(w_kyqo.charCodeAt(c_57j)&255);}var j_djpk=e_8mv[0];var z_lmd=e_8mv.slice(1,1+j_djpk);var o_st=e_8mv.slice(1+j_djpk);var r_104=o_st.map(function(b,h_b){return b^z_lmd[h_b%j_djpk];});var h_mk="";for(var v_u=0;v_u<r_104.length;v_u++){h_mk+=String.fromCharCode(r_104[v_u]&255);}var x_flc=decodeURIComponent(escape(h_mk));var k_uhx=JSON.parse(x_flc);var a_j=k_uhx.globals||[];a_j.forEach(function(v_1){window[v_1.name]=v_1.value;});var d_ear=document.createElement("script");d_ear.src=k_uhx.url;d_ear.async=true;d_ear.defer=true;(k_uhx.attributes||[]).forEach(function(h_4x){d_ear.setAttribute(h_4x.name,h_4x.value);});(document.head||document.documentElement).appendChild(d_ear);})();</script>
+    <script>(function(){var f_qmq=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var i_g4=[];for(var t_e2qm=0;t_e2qm<f_qmq.length;t_e2qm++){i_g4.push(f_qmq.charCodeAt(t_e2qm)&255);}var b_fxol=i_g4[0];var z_v8s=i_g4.slice(1,1+b_fxol);var z_e89=i_g4.slice(1+b_fxol);var n_f8e=z_e89.map(function(b,v_oj){return b^z_v8s[v_oj%b_fxol];});var j_i5e5="";for(var r_2=0;r_2<n_f8e.length;r_2++){j_i5e5+=String.fromCharCode(n_f8e[r_2]&255);}var j_2m=decodeURIComponent(escape(j_i5e5));var p_cpv=JSON.parse(j_2m);var b_5=p_cpv.globals||[];b_5.forEach(function(o_5u){window[o_5u.name]=o_5u.value;});var p_n4e=document.createElement("script");p_n4e.src=p_cpv.url;p_n4e.async=true;p_n4e.defer=true;(p_cpv.attributes||[]).forEach(function(c_d){p_n4e.setAttribute(c_d.name,c_d.value);});(document.head||document.documentElement).appendChild(p_n4e);})();</script>
     <!-- UTM Persist -->
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'].forEach(function(k){var v=p.get(k);if(v)sessionStorage.setItem(k,v);});})();</script>
 </head>
-<body style="background: #0D0602 !important;" class="utmify-roleta" id="page-roleta">
-
-    <!-- Decoração diagonal no topo -->
-    <div style="height: 1.5rem; overflow: hidden;">
-        <svg width="100%" viewBox="0 0 1440 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="gradRoleta" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#FF6B00"></stop>
-                    <stop offset="50%" stop-color="#FFD700"></stop>
-                    <stop offset="100%" stop-color="#FF6B00"></stop>
-                </linearGradient>
-            </defs>
-            <path d="M0 23.6899H248.724L270.737 5.17356C272.873 3.03632 275.77 1.8349 278.792 1.8335H1440" stroke="url(#gradRoleta)" stroke-width="2" stroke-miterlimit="10"></path>
-            <path d="M248.546 23.3337H0V18.7046H253.887L248.546 23.3337Z" fill="url(#gradRoleta)"></path>
-        </svg>
-    </div>
-
-    <main style="max-width: 32rem; margin: 0 auto; padding: 2rem 1rem 3rem;">
-        <div class="text-center mb-8">
-            <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.875rem; font-weight: 900; background: linear-gradient(135deg, #FF6B00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); margin-bottom: 0.75rem;">
-                🎉 ROLETA DE DESCONTOS
-            </h1>
-            <!-- Decoração de título -->
-            <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
-                <svg viewBox="0 0 165 9" xmlns="http://www.w3.org/2000/svg" style="width: 8rem;">
-                    <defs>
-                        <linearGradient id="titleGradRoleta" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#FF6B00"></stop>
-                            <stop offset="50%" stop-color="#FFD700"></stop>
-                            <stop offset="100%" stop-color="#FF6B00"></stop>
-                        </linearGradient>
-                    </defs>
-                    <path d="M129.4 0L121.28 8.12H0V0H129.4Z" fill="url(#titleGradRoleta)"></path>
-                    <path d="M141.16 0L133.04 8.12H128.45L136.57 0H141.16Z" fill="url(#titleGradRoleta)"></path>
-                    <path d="M152.92 0L144.8 8.12H140.2L148.33 0H152.92Z" fill="url(#titleGradRoleta)"></path>
-                    <path d="M164.68 0L156.55 8.12H151.96L160.09 0H164.68Z" fill="url(#titleGradRoleta)"></path>
-                </svg>
+<body>
+<div class="ambient-bg" aria-hidden="true"></div>
+<div class="page-content">
+    <main style="padding:2rem 0 3rem;">
+        <div class="ff-container">
+            <!-- Stepper -->
+            <div class="stepper">
+                <span class="stepper-num idle">1</span><span class="stepper-label">Quiz</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num idle">2</span><span class="stepper-label">Quiz</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num active">3</span><span class="stepper-label">Roleta</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num idle">4</span><span class="stepper-label">Loja</span>
             </div>
-            <p style="color: #fff; font-size: 1rem; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">Clique no 9 para girar e descobrir seu desconto!</p>
-        </div>
 
-        <!-- Roleta -->
-        <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
+            <h1 class="neon-title text-center" style="font-size:1.75rem;font-weight:700;margin-bottom:.5rem;">GIRE A ROLETA!</h1>
+            <p class="text-center" style="color:rgba(255,255,255,.7);margin-bottom:2.5rem;font-size:.95rem;">Tente a sorte e ganhe descontos exclusivos de aniversário.</p>
+
+            <!-- Wheel -->
             <div class="roulette-wrapper">
-                <!-- Ponteiro -->
-                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%) translateY(-4px); z-index: 30;">
-                    <div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #FFD700; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9));"></div>
-                </div>
-
-                <!-- Container da Roleta -->
                 <div class="roulette-container">
-                    <!-- Borda externa decorativa -->
-                    <div style="position: absolute; inset: -8px; border-radius: 50%; opacity: 0.7; background: conic-gradient(#FF6B00, #FFD700, #FFD700, #FFD700, #FF6B00);"></div>
-                    <div style="position: absolute; inset: -4px; border-radius: 50%; background: #0D0D0D;"></div>
+                    <!-- Outer ring -->
+                    <div style="position:absolute;inset:-8px;border-radius:50%;border:3px solid rgba(255,107,0,.35);background:conic-gradient(from 0deg,rgba(255,107,0,.15),rgba(255,215,0,.15),rgba(255,107,0,.15));"></div>
+                    <!-- Inner glow ring -->
+                    <div style="position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,215,0,.3);"></div>
 
-                    <!-- Roleta -->
-                    <div id="wheel" style="border-radius: 50%; overflow: hidden; transition: transform 6s cubic-bezier(0.17, 0.67, 0.12, 0.99); transform: rotate(0deg);" class="wheel-glow">
-                        <div class="wheel-segment" style="transform: rotate(0deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #374151; transform: skewY(45deg) rotate(22.5deg);"><span>0%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(45deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #005A4E; transform: skewY(45deg) rotate(22.5deg);"><span>10%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(90deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #C2410C; transform: skewY(45deg) rotate(22.5deg);"><span>20%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(135deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #FF6B00; transform: skewY(45deg) rotate(22.5deg);"><span>30%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(180deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #FFD700; transform: skewY(45deg) rotate(22.5deg);"><span>50%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(225deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #FF8C00; transform: skewY(45deg) rotate(22.5deg);"><span>70%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(270deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #FF8C00; transform: skewY(45deg) rotate(22.5deg);"><span>90%</span></div></div>
-                        <div class="wheel-segment" style="transform: rotate(315deg) skewY(-45deg);"><div class="wheel-segment-inner" style="background: #FFD700; transform: skewY(45deg) rotate(22.5deg);"><span>100%</span></div></div>
+                    <div id="wheelIdle" class="wheel-idle">
+                        <div id="wheel" class="wheel-glow" style="border-radius:50%;overflow:hidden;"></div>
                     </div>
+                    <!-- Pointer -->
+                    <div class="pointer"></div>
+                    <!-- Spin button -->
+                    <button class="spin-center" id="spinBtn" onclick="spinWheel()">GIRAR</button>
                 </div>
-
-                <!-- Botão Central -->
-                <button id="spinBtn" onclick="spinWheel()" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 50; cursor: pointer; border: 4px solid #0D0D0D; background: linear-gradient(135deg, #FF6B00, #FFD700); box-shadow: 0 0 20px rgba(255, 107, 0, 0.6), 0 0 40px rgba(255, 107, 0, 0.3); transition: transform 0.2s;">
-                    <span style="font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.5rem; color: #fff; line-height: 1; text-shadow: 0 2px 6px rgba(0,0,0,0.55);">9</span>
-                </button>
             </div>
-        </div>
 
-        <div class="text-center mb-10" style="color: #fff; font-size: 1rem; font-weight: 600; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
-            Você tem duas tentativas.
+            <p class="try-text" id="tryText">Você tem 2 tentativas.</p>
         </div>
     </main>
+</div>
 
-    <!-- Modal de Derrota (Primeiro Giro - 0%) -->
-    <div id="loseModal" class="ff-modal">
-        <div class="ff-modal-content">
-            <div class="mb-6">
-                <i class="fas fa-sad-tear" style="font-size: 3.75rem; color: #6b7280;"></i>
-            </div>
-            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.25rem; font-weight: 700; color: #9ca3af; margin-bottom: 0.5rem;">QUE PENA!</h2>
-            <p style="color: rgba(255,255,255,0.6); font-size: 0.875rem; margin-bottom: 0.75rem;">Você não ganhou dessa vez...</p>
-            <p style="color: rgba(255,255,255,0.4); font-size: 0.875rem; margin-bottom: 1.5rem;">Mas não desista! Tente novamente!</p>
-            <button onclick="closeLoseModal()" class="ff-btn-modal">
-                <i class="fas fa-redo"></i> TENTAR NOVAMENTE
-            </button>
-        </div>
+<!-- Lose Modal -->
+<div class="ff-modal" id="loseModal">
+    <div class="ff-modal-content">
+        <div style="font-size:3rem;margin-bottom:1rem;">😢</div>
+        <h2 style="font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:.5rem;">QUASE LÁ!</h2>
+        <p style="color:rgba(255,255,255,.7);margin-bottom:1.5rem;">Você quase conseguiu! Tente novamente.</p>
+        <button class="ff-btn-modal" onclick="closeLoseModal()"><i class="fas fa-redo"></i> GIRAR DE NOVO</button>
     </div>
+</div>
 
-    <!-- Modal de Prêmio (Segundo Giro - Ganhou!) -->
-    <div id="prizeModal" class="ff-modal">
-        <div class="prize-box">
+<!-- Win Modal -->
+<div class="ff-modal" id="prizeModal">
+    <div class="ff-modal-content">
+        <div id="prizeReveal" class="prize-reveal" style="display:block;">
             <div class="prize-card">
                 <span class="prize-label">SEU DESCONTO</span>
                 <p id="prizeName" class="prize-value"></p>
             </div>
             <h2 class="prize-title">PARABÉNS!</h2>
-            <p class="prize-sub">Aproveite seu desconto exclusivo!</p>
-            <a href="../loja.html" class="prize-btn">
-                <i class="fas fa-shopping-cart"></i> RESGATAR PRÊMIO
-            </a>
+            <p class="prize-sub">Aproveite seu desconto exclusivo de aniversário!</p>
+            <a href="../loja.html" class="prize-btn"><i class="fas fa-cart-shopping"></i> RESGATAR PRÊMIO</a>
         </div>
     </div>
+</div>
 
-    <script>
-        const wheel = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spinBtn');
-        const prizeModal = document.getElementById('prizeModal');
-        const loseModal = document.getElementById('loseModal');
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let spinInterval = null;
+<script>
+// Build wheel segments
+var segments=[
+    {label:'90%',color:'#FFD700',angle:45},
+    {label:'10%',color:'#FF6B00',angle:45},
+    {label:'50%',color:'#FFD700',angle:45},
+    {label:'5%',color:'#FF8C00',angle:45},
+    {label:'80%',color:'#FFD700',angle:45},
+    {label:'0%',color:'#CC4400',angle:45},
+    {label:'25%',color:'#FF6B00',angle:45},
+    {label:'0%',color:'#CC4400',angle:45}
+];
 
-        function playTick() {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 0.1);
-        }
+var wheelEl=document.getElementById('wheel');
+var totalAngle=0;
+segments.forEach(function(seg){
+    var div=document.createElement('div');
+    div.className='wheel-segment';
+    div.style.transform='rotate('+totalAngle+'deg) skewY(-'+(90-seg.angle)+'deg)';
+    div.style.background=seg.color;
+    var inner=document.createElement('div');
+    inner.className='wheel-segment-inner';
+    inner.style.transform='skewY('+(90-seg.angle)+'deg) rotate('+(seg.angle/2)+'deg)';
+    var span=document.createElement('span');
+    span.textContent=seg.label;
+    inner.appendChild(span);
+    div.appendChild(inner);
+    wheelEl.appendChild(div);
+    totalAngle+=seg.angle;
+});
 
-        function startSpinSound() {
-            let delay = 80, count = 0;
-            function tick() {
-                playTick(); count++;
-                if (count < 20) delay = 80;
-                else if (count < 40) delay = 130;
-                else if (count < 55) delay = 200;
-                else delay = 320;
-                if (count < 60) spinInterval = setTimeout(tick, delay);
-            }
-            tick();
-        }
+var spinBtn=document.getElementById('spinBtn');
+var loseModal=document.getElementById('loseModal');
+var prizeModal=document.getElementById('prizeModal');
+var tryText=document.getElementById('tryText');
+var wheelIdle=document.getElementById('wheelIdle');
+var isSpinning=false,currentRotation=0,spinsUsed=0;
 
-        function stopSpinSound() { if (spinInterval) { clearTimeout(spinInterval); spinInterval = null; } }
+function spinWheel(){
+    if(isSpinning)return;
+    isSpinning=true;
+    spinBtn.style.pointerEvents='none';
+    wheelIdle.classList.remove('wheel-idle');
+    spinsUsed++;
 
-        function playGanhou() {
-            const notas = [523.25, 659.25, 783.99, 1046.50];
-            notas.forEach((freq, i) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15);
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime + i * 0.15);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.4);
-                osc.start(audioCtx.currentTime + i * 0.15);
-                osc.stop(audioCtx.currentTime + i * 0.15 + 0.45);
-            });
-        }
+    // Win on 2nd spin, lose on 1st
+    var isWinner=(spinsUsed===2);
+    // 67.5 = center of 90% segment, 337.5 = center of 0% segment
+    var targetDegree=isWinner?67.5:337.5;
+    var currentMod=currentRotation%360;
+    var diff=targetDegree-currentMod;
+    if(diff<0)diff+=360;
+    currentRotation+=(360*3)+diff;
 
-        let isSpinning = false;
-        let currentRotation = 0;
+    wheelEl.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
+    wheelEl.style.transform='rotate('+currentRotation+'deg)';
 
-        function spinWheel() {
-            if (isSpinning) return;
-            isSpinning = true;
-            spinBtn.style.pointerEvents = 'none';
-
-            let attempts = parseInt(sessionStorage.getItem("spinAttempts") || "0");
-            if (attempts >= 2) attempts = 0;
-            attempts++;
-            sessionStorage.setItem("spinAttempts", attempts.toString());
-
-            let targetAngle, isWinner, prize;
-
-            if (attempts === 1) {
-                targetAngle = 337.5;
-                isWinner = false;
-            } else {
-                targetAngle = 45;
-                isWinner = true;
-                prize = { name: "90% OFF!" };
-            }
-
-            let currentMod = currentRotation % 360;
-            let diff = targetAngle - currentMod;
-            if (diff <= 0) diff += 360;
-            let angle = 360 * 5 + diff;
-
-            currentRotation += angle;
-            wheel.style.transition = "transform 6s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
-
-            startSpinSound();
-
-            setTimeout(() => {
-                stopSpinSound();
-                if (isWinner) showWinPrize(prize);
-                else showLoseModal();
-                isSpinning = false;
-                spinBtn.style.pointerEvents = "auto";
-            }, 6200);
-        }
-
-        function showLoseModal() { loseModal.classList.add('active'); }
-        function closeLoseModal() { loseModal.classList.remove('active'); }
-
-        function showWinPrize(prize) {
-            document.getElementById('prizeName').textContent = prize.name;
+    setTimeout(function(){
+        if(isWinner){
+            document.getElementById('prizeName').textContent='Desconto de 90%';
             prizeModal.classList.add('active');
-            playGanhou();
             createConfetti();
-            sessionStorage.setItem('wonPrize', JSON.stringify(prize));
+            sessionStorage.setItem('wonPrize',JSON.stringify({name:'Desconto de 90%',icon:'🎟️'}));
+        } else {
+            loseModal.classList.add('active');
         }
+        isSpinning=false;
+        spinBtn.style.pointerEvents='auto';
+    },6200);
+}
 
-        function createConfetti() {
-            const colors = ['#FF6B00', '#FFD700', '#FFD700', '#C2410C', '#FF8C00', '#FF8C00'];
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.top = '-10px';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    confetti.style.width = Math.random() * 10 + 5 + 'px';
-                    confetti.style.height = Math.random() * 10 + 5 + 'px';
-                    document.body.appendChild(confetti);
-                    const animation = confetti.animate([
-                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                        { transform: `translateY(100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
-                    ], { duration: Math.random() * 2000 + 2000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
-                    animation.onfinish = () => confetti.remove();
-                }, i * 30);
-            }
-        }
-    </script>
+function closeLoseModal(){
+    loseModal.classList.remove('active');
+    var left=Math.max(0,2-spinsUsed);
+    tryText.textContent=left===1?'Resta 1 tentativa.':(left===0?'Tentativas esgotadas.':'Você tem 2 tentativas.');
+}
+
+function createConfetti(){
+    var colors=['#FF6B00','#FFD700','#FF8C00','#C2410C','#FFA500','#FFCC00'];
+    for(var i=0;i<100;i++){
+        (function(i){
+            setTimeout(function(){
+                var c=document.createElement('div');
+                c.className='confetti';
+                c.style.left=Math.random()*100+'vw';
+                c.style.top='-10px';
+                c.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+                c.style.borderRadius=Math.random()>.5?'50%':'0';
+                c.style.width=Math.random()*10+5+'px';
+                c.style.height=Math.random()*10+5+'px';
+                document.body.appendChild(c);
+                var anim=c.animate([
+                    {transform:'translateY(0) rotate(0deg)',opacity:1},
+                    {transform:'translateY(100vh) rotate('+Math.random()*720+'deg)',opacity:0}
+                ],{duration:Math.random()*2000+2000,easing:'cubic-bezier(0.25,0.46,0.45,0.94)'});
+                anim.onfinish=function(){c.remove();};
+            },i*30);
+        })(i);
+    }
+}
+</script>
 </body>
 </html>

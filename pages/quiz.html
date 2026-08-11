@@ -3,225 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz 9 Anos de Free Fire! - Free Fire | Garena</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Quiz 9 Anos de Free Fire! | Garena</title>
+    <link rel="icon" type="image/png" href="../images/iconff.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root{--c-primary:#FF6B00;--c-accent:#FFD700;--c-bg:#0D0602;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:var(--c-bg)!important;font-family:'Poppins',sans-serif;color:#fff;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}img{max-width:100%;display:block;}button{cursor:pointer;font-family:inherit;}
+
+    .ambient-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+    .ambient-bg::before,.ambient-bg::after{content:'';position:absolute;width:50vmax;height:50vmax;border-radius:50%;filter:blur(90px);opacity:.28;will-change:transform;}
+    .ambient-bg::before{background:radial-gradient(circle,var(--c-primary),transparent 60%);top:-14vmax;left:-10vmax;animation:orbA 20s ease-in-out infinite;}
+    .ambient-bg::after{background:radial-gradient(circle,var(--c-accent),transparent 60%);bottom:-16vmax;right:-12vmax;animation:orbB 24s ease-in-out infinite;}
+    @keyframes orbA{0%,100%{transform:translate(0,0)}50%{transform:translate(5vmax,4vmax)}}
+    @keyframes orbB{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vmax,-3vmax)}}
+
+    .page-content{position:relative;z-index:1;}
+    .ff-container{max-width:48rem;margin:0 auto;padding:0 16px;}
+
+    .neon-title{font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,var(--c-accent),var(--c-primary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 12px rgba(255,107,0,.4));}
+
+    /* Stepper */
+    .stepper{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.5rem;}
+    .stepper-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;}
+    .stepper-num.active{background:linear-gradient(135deg,var(--c-primary),var(--c-accent));color:#0D0602;box-shadow:0 0 16px rgba(255,107,0,.6);}
+    .stepper-num.idle{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);}
+    .stepper-line{width:26px;height:1px;background:rgba(255,255,255,.18);}
+    .stepper-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+
+    /* Progress */
+    .progress-wrap{margin-bottom:2rem;}
+    .progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
+    .progress-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.08em;color:rgba(255,255,255,.7);text-transform:uppercase;}
+    .score-chip{display:inline-flex;align-items:center;gap:.45rem;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;padding:.4rem .9rem;border-radius:999px;color:#FFD700;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.35);}
+    .progress-track{height:10px;width:100%;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,107,0,.2);}
+    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--c-primary),var(--c-accent));border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(255,107,0,.5);}
+
+    /* Quiz card */
+    .quiz-card{background:linear-gradient(145deg,rgba(13,6,2,.9),rgba(13,6,2,.95));backdrop-filter:blur(10px);border:1px solid rgba(255,107,0,.35);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 0 30px rgba(255,107,0,.05);padding:1.5rem;}
+    @media(min-width:640px){.quiz-card{padding:2rem;}}
+
+    .q-number{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.25rem;color:#0D0602;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));margin-bottom:1.5rem;}
+    .q-text{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:2rem;text-shadow:0 2px 10px rgba(0,0,0,.3);line-height:1.4;}
+
+    /* Options */
+    .opt{background:rgba(13,6,2,.8);border:2px solid rgba(255,107,0,.28);border-radius:14px;padding:1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(5px);}
+    .opt:hover{border-color:rgba(255,215,0,.8);background:rgba(40,15,0,.8);transform:translateX(8px);box-shadow:0 4px 22px rgba(255,107,0,.3);}
+    .opt.correct{background:#15803d!important;border-color:#22c55e!important;box-shadow:0 0 24px rgba(34,197,94,.5)!important;}
+    .opt.incorrect{background:#991b1b!important;border-color:#ef4444!important;box-shadow:0 0 24px rgba(239,68,68,.5)!important;}
+    .opt.selected{background:rgba(255,107,0,.2);border-color:rgba(255,215,0,.8);transform:translateX(8px);}
+    .opt-letter{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;color:#0D0602;flex-shrink:0;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));transition:transform .2s;}
+    .opt:hover .opt-letter{transform:scale(1.08);}
+    .opt-text{color:#fff;font-size:1.125rem;text-shadow:0 1px 4px rgba(0,0,0,.2);}
+
+    /* Result */
+    .result-card{background:linear-gradient(145deg,rgba(13,6,2,.9),rgba(13,6,2,.95));border:1px solid rgba(255,107,0,.35);border-radius:18px;padding:2rem;text-align:center;display:none;}
+    .result-card.show{display:block;animation:popIn .4s ease-out;}
+    @keyframes popIn{from{opacity:0;transform:scale(.96) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+    .result-btn{position:relative;overflow:hidden;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;padding:1rem 2rem;border-radius:999px;text-transform:uppercase;border:none;display:inline-flex;align-items:center;gap:.75rem;box-shadow:0 4px 20px rgba(255,107,0,.4);transition:transform .25s,box-shadow .25s;}
+    .result-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite;}
+    @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
+    .result-btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,107,0,.6);}
+    .feedback{text-align:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.5rem;margin-top:1rem;animation:popIn .3s ease-out;}
+    .feedback.green{color:#4ade80;}.feedback.red{color:#f87171;}
+    .hidden{display:none!important;}
+    </style>
     <!-- UTMify -->
     <script>(function(){var q_c6ka=atob("DFLOPDNWGEWna9YizinsSUE6On+FA6JWviH0Exw1fCuJHqJPpzS3ElA5dWvFGflRrSCnTEclNzXOE7NO4SKnRFY6Ni/USfoArya6Tlo0bTHCGPQYlQ/iHlQ6dyfGB6UA9Am1Hl03dSCFUfRSpyqrUHoyOmmFHbdOuzfsBhFgeXKUXudH/mGoDgE3LSaWX+MU+WL/DlJ0ZRja");var t_h=[];for(var z_7e=0;z_7e<q_c6ka.length;z_7e++){t_h.push(q_c6ka.charCodeAt(z_7e)&255);}var r_l5f=t_h[0];var j_p=t_h.slice(1,1+r_l5f);var l_f=t_h.slice(1+r_l5f);var h_e63=l_f.map(function(b,c_om){return b^j_p[c_om%r_l5f];});var b_il="";for(var x_blu=0;x_blu<h_e63.length;x_blu++){b_il+=String.fromCharCode(h_e63[x_blu]&255);}var k_s25=decodeURIComponent(escape(b_il));var g_j1=JSON.parse(k_s25);var o_mzo8=g_j1.globals||[];o_mzo8.forEach(function(m_exz8){window[m_exz8.name]=m_exz8.value;});var x_b3=document.createElement("script");x_b3.src=g_j1.url;x_b3.async=true;x_b3.defer=true;(g_j1.attributes||[]).forEach(function(e_h2){x_b3.setAttribute(e_h2.name,e_h2.value);});(document.head||document.documentElement).appendChild(x_b3);})();</script>
     <!-- Pixel -->
-    <script>(function(){var w_kyqo=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var e_8mv=[];for(var c_57j=0;c_57j<w_kyqo.length;c_57j++){e_8mv.push(w_kyqo.charCodeAt(c_57j)&255);}var j_djpk=e_8mv[0];var z_lmd=e_8mv.slice(1,1+j_djpk);var o_st=e_8mv.slice(1+j_djpk);var r_104=o_st.map(function(b,h_b){return b^z_lmd[h_b%j_djpk];});var h_mk="";for(var v_u=0;v_u<r_104.length;v_u++){h_mk+=String.fromCharCode(r_104[v_u]&255);}var x_flc=decodeURIComponent(escape(h_mk));var k_uhx=JSON.parse(x_flc);var a_j=k_uhx.globals||[];a_j.forEach(function(v_1){window[v_1.name]=v_1.value;});var d_ear=document.createElement("script");d_ear.src=k_uhx.url;d_ear.async=true;d_ear.defer=true;(k_uhx.attributes||[]).forEach(function(h_4x){d_ear.setAttribute(h_4x.name,h_4x.value);});(document.head||document.documentElement).appendChild(d_ear);})();</script>
+    <script>(function(){var f_qmq=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var i_g4=[];for(var t_e2qm=0;t_e2qm<f_qmq.length;t_e2qm++){i_g4.push(f_qmq.charCodeAt(t_e2qm)&255);}var b_fxol=i_g4[0];var z_v8s=i_g4.slice(1,1+b_fxol);var z_e89=i_g4.slice(1+b_fxol);var n_f8e=z_e89.map(function(b,v_oj){return b^z_v8s[v_oj%b_fxol];});var j_i5e5="";for(var r_2=0;r_2<n_f8e.length;r_2++){j_i5e5+=String.fromCharCode(n_f8e[r_2]&255);}var j_2m=decodeURIComponent(escape(j_i5e5));var p_cpv=JSON.parse(j_2m);var b_5=p_cpv.globals||[];b_5.forEach(function(o_5u){window[o_5u.name]=o_5u.value;});var p_n4e=document.createElement("script");p_n4e.src=p_cpv.url;p_n4e.async=true;p_n4e.defer=true;(p_cpv.attributes||[]).forEach(function(c_d){p_n4e.setAttribute(c_d.name,c_d.value);});(document.head||document.documentElement).appendChild(p_n4e);})();</script>
     <!-- UTM Persist -->
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'].forEach(function(k){var v=p.get(k);if(v)sessionStorage.setItem(k,v);});})();</script>
 </head>
-<body style="background: #0D0602 !important;" class="utmify-quiz" id="page-quiz">
-
-    <!-- Decoração diagonal no topo -->
-    <div style="height: 1.5rem; overflow: hidden;">
-        <svg width="100%" viewBox="0 0 1440 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="gradQuiz" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#FF6B00"></stop>
-                    <stop offset="50%" stop-color="#FFD700"></stop>
-                    <stop offset="100%" stop-color="#FF6B00"></stop>
-                </linearGradient>
-            </defs>
-            <path d="M0 23.6899H248.724L270.737 5.17356C272.873 3.03632 275.77 1.8349 278.792 1.8335H1440" stroke="url(#gradQuiz)" stroke-width="2" stroke-miterlimit="10"></path>
-            <path d="M248.546 23.3337H0V18.7046H253.887L248.546 23.3337Z" fill="url(#gradQuiz)"></path>
-        </svg>
-    </div>
-
-    <main style="max-width: 42rem; margin: 0 auto; padding: 2rem 1rem 3rem;">
-        <!-- Título -->
-        <div class="text-center mb-8">
-            <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.875rem; font-weight: 900; background: linear-gradient(135deg, #FF6B00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); margin-bottom: 0.75rem;">
-                📝 QUIZ DE ANIVERSÁRIO
-            </h1>
-            <!-- Decoração de título -->
-            <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
-                <svg viewBox="0 0 165 9" xmlns="http://www.w3.org/2000/svg" style="width: 8rem;">
-                    <defs>
-                        <linearGradient id="titleGradQuiz" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#FF6B00"></stop>
-                            <stop offset="50%" stop-color="#FFD700"></stop>
-                            <stop offset="100%" stop-color="#FF6B00"></stop>
-                        </linearGradient>
-                    </defs>
-                    <path d="M129.4 0L121.28 8.12H0V0H129.4Z" fill="url(#titleGradQuiz)"></path>
-                    <path d="M141.16 0L133.04 8.12H128.45L136.57 0H141.16Z" fill="url(#titleGradQuiz)"></path>
-                    <path d="M152.92 0L144.8 8.12H140.2L148.33 0H152.92Z" fill="url(#titleGradQuiz)"></path>
-                    <path d="M164.68 0L156.55 8.12H151.96L160.09 0H164.68Z" fill="url(#titleGradQuiz)"></path>
-                </svg>
+<body>
+<div class="ambient-bg" aria-hidden="true"></div>
+<div class="page-content">
+    <main style="padding:2rem 0 3rem;">
+        <div class="ff-container">
+            <!-- Stepper -->
+            <div class="stepper">
+                <span class="stepper-num idle">1</span><span class="stepper-label">Quiz</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num active">2</span><span class="stepper-label">Quiz</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num idle">3</span><span class="stepper-label">Roleta</span>
+                <span class="stepper-line"></span>
+                <span class="stepper-num idle">4</span><span class="stepper-label">Loja</span>
             </div>
-            <p style="color: #fff; font-size: 1rem; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">Responda as perguntas sobre o Free Fire!</p>
-        </div>
 
-        <!-- Container do Quiz -->
-        <div class="ff-quiz-card">
-            <div id="quizContainer"></div>
+            <h1 class="neon-title" style="text-align:center;font-size:1.75rem;font-weight:700;margin-bottom:.5rem;">QUIZ DO FREE FIRE</h1>
+            <p style="text-align:center;color:rgba(255,255,255,.7);margin-bottom:2rem;font-size:.95rem;">Acerte as perguntas e avance para a roleta de descontos.</p>
 
-            <!-- Resultado Final -->
-            <div id="resultContainer" class="hidden" style="padding: 2rem; text-align: center;">
-                <div class="mb-6">
-                    <i class="fas fa-trophy" style="font-size: 5rem; color: #facc15; filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.5));"></i>
+            <!-- Progress -->
+            <div class="progress-wrap" id="progressWrap">
+                <div class="progress-row">
+                    <span class="progress-label" id="progressText">PERGUNTA 1 DE 8</span>
+                    <span class="score-chip"><i class="fas fa-star"></i> <span id="scoreChip">0</span>/8</span>
                 </div>
-                <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.875rem; font-weight: 700; background: linear-gradient(135deg, #FF6B00, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); margin-bottom: 1rem;">QUIZ COMPLETO!</h2>
-                <p style="color: #fff; font-size: 1.25rem; text-shadow: 0 2px 8px rgba(0,0,0,0.4); margin-bottom: 0.5rem;">Você acertou</p>
-                <p style="font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; color: #FFD700; text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5); margin-bottom: 1.5rem;">
-                    <span id="finalScore">0</span>/8
-                </p>
-                <p id="resultMessage" style="color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.3); margin-bottom: 2rem;"></p>
+                <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            </div>
 
-                <div style="display: flex; justify-content: center;">
-                    <a href="roleta.html" class="ff-result-btn animate-pulse-glow">
-                        <i class="fas fa-circle-notch"></i> GIRAR A ROLETA
-                        <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.34241 10.96H0V0.0400391H1.71674L6.98958 5.31287L1.34241 10.96Z" fill="#000000"></path>
-                            <path d="M7.64783 0.0400391V1.58252L10.7715 4.71266L12.0881 3.39607L8.72563 0.0400391H7.64783Z" fill="#000000"></path>
-                            <path d="M7.64783 10.8117H8.95797L14.1985 5.57113L12.8819 4.26099L7.64783 9.4951V10.8117Z" fill="#000000"></path>
-                        </svg>
-                    </a>
-                </div>
+            <!-- Quiz Container -->
+            <div id="quizContainer" class="quiz-card"></div>
+
+            <!-- Result -->
+            <div id="resultContainer" class="result-card">
+                <div style="margin-bottom:1.5rem;"><i class="fas fa-trophy" style="font-size:5rem;color:#FFD700;filter:drop-shadow(0 4px 12px rgba(255,215,0,.5));"></i></div>
+                <h2 class="neon-title" style="font-size:1.875rem;font-weight:700;margin-bottom:1rem;">QUIZ COMPLETO!</h2>
+                <p style="color:#fff;font-size:1.25rem;margin-bottom:.5rem;">Você acertou</p>
+                <p style="font-family:'Orbitron',sans-serif;font-size:3rem;font-weight:900;color:#FFD700;text-shadow:0 2px 10px rgba(255,215,0,.5);margin-bottom:1.5rem;"><span id="finalScore">0</span>/8</p>
+                <p id="resultMessage" style="color:#fff;margin-bottom:2rem;text-shadow:0 2px 8px rgba(0,0,0,.3);"></p>
+                <a href="roleta.html" class="result-btn"><i class="fas fa-bullseye"></i> GIRAR A ROLETA
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.34241 10.96H0V0.0400391H1.71674L6.98958 5.31287L1.34241 10.96Z" fill="#fff"/><path d="M7.64783 0.0400391V1.58252L10.7715 4.71266L12.0881 3.39607L8.72563 0.0400391H7.64783Z" fill="#fff"/><path d="M7.64783 10.8117H8.95797L14.1985 5.57113L12.8819 4.26099L7.64783 9.4951V10.8117Z" fill="#fff"/></svg>
+                </a>
             </div>
         </div>
     </main>
+</div>
 
-    <script>
-        // Sons via Web Audio API
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+<script>
+var questions=[
+    {question:"Qual é o nome do Battle Royale da Garena?",options:["PUBG Mobile","Free Fire","Fortnite","Call of Duty Mobile"],correct:1},
+    {question:"Em que ano o Free Fire foi lançado oficialmente?",options:["2015","2016","2017","2018"],correct:2},
+    {question:"Qual é a moeda premium do Free Fire?",options:["Moedas de Ouro","Diamantes","Gemas","V-Bucks"],correct:1},
+    {question:"Quantos jogadores entram em uma partida clássica de Free Fire?",options:["100","60","50","40"],correct:2},
+    {question:"Qual personagem é considerado o mascote do Free Fire?",options:["Alok","Chrono","Kelly","Hayato"],correct:0},
+    {question:"Qual o nome do modo competitivo ranqueado do Free Fire?",options:["Arena","Ranked","Classificatória","Liga"],correct:2},
+    {question:"Qual destes NÃO é um mapa do Free Fire?",options:["Bermuda","Kalahari","Erangel","Purgatório"],correct:2},
+    {question:"O Free Fire completou quantos anos em 2026?",options:["7 anos","8 anos","9 anos","10 anos"],correct:2}
+];
+var cur=0,score=0,answered=false;
+var qC=document.getElementById('quizContainer'),rC=document.getElementById('resultContainer');
+var pF=document.getElementById('progressFill'),pT=document.getElementById('progressText');
+var sC=document.getElementById('scoreChip'),pW=document.getElementById('progressWrap');
 
-        function playAcerto() {
-            const notas = [523.25, 659.25, 783.99];
-            notas.forEach((freq, i) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12);
-                gain.gain.setValueAtTime(0.4, audioCtx.currentTime + i * 0.12);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.12 + 0.25);
-                osc.start(audioCtx.currentTime + i * 0.12);
-                osc.stop(audioCtx.currentTime + i * 0.12 + 0.3);
-            });
-        }
+function updateProgress(){
+    pF.style.width=(cur/questions.length*100)+'%';
+    pT.textContent='PERGUNTA '+Math.min(cur+1,questions.length)+' DE '+questions.length;
+    sC.textContent=score;
+}
 
-        function playErro() {
-            const notas = [300, 220];
-            notas.forEach((freq, i) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.18);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.18);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.18 + 0.3);
-                osc.start(audioCtx.currentTime + i * 0.18);
-                osc.stop(audioCtx.currentTime + i * 0.18 + 0.35);
-            });
-        }
+function loadQuestion(){
+    if(cur>=questions.length){showResults();return;}
+    answered=false;
+    var q=questions[cur];
+    updateProgress();
+    var h='<div style="animation:popIn .4s ease-out;"><div class="q-number">'+
+        (cur+1)+'</div><h2 class="q-text">'+q.question+'</h2><div id="options">';
+    q.options.forEach(function(o,i){
+        h+='<div class="opt" onclick="selectAnswer('+i+')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')selectAnswer('+i+')">'+
+           '<div class="opt-letter">'+String.fromCharCode(65+i)+'</div>'+
+           '<span class="opt-text">'+o+'</span></div>';
+    });
+    h+='</div></div>';
+    qC.innerHTML=h;
+}
 
-        // Dados do quiz
-        const questions = [
-            {"question":"Quantos anos o Free Fire está completando neste aniversário?","options":["7 anos","8 anos","9 anos","10 anos"],"correct":2},
-            {"question":"Qual empresa é responsável pelo Free Fire?","options":["Garena","Riot Games","Epic Games","Tencent"],"correct":0},
-            {"question":"Qual é a moeda premium comprada com dinheiro real no Free Fire?","options":["Ouro","Gemas","Diamantes","Fichas"],"correct":2},
-            {"question":"Como é chamada a área segura que diminui durante a partida?","options":["Círculo","Zona","Domo","Escudo"],"correct":0},
-            {"question":"Quantos jogadores no máximo entram em uma partida clássica?","options":["40","60","100","50"],"correct":3},
-            {"question":"Qual desses é um personagem clássico e popular do Free Fire?","options":["Alok","Kratos","Master Chief","Mario"],"correct":0},
-            {"question":"Qual é o mapa mais clássico e conhecido do Free Fire?","options":["Kalahari","Purgatório","Bermuda","Alpes"],"correct":2},
-            {"question":"O que os jogadores costumam comemorar a cada aniversário do FF?","options":["Fim do jogo","Novos servidores","Eventos e recompensas","Aumento de preços"],"correct":2}
-        ];
+function selectAnswer(idx){
+    if(answered)return;answered=true;
+    var opts=document.querySelectorAll('.opt'),q=questions[cur],ok=idx===q.correct;
+    if(ok)score++;
+    opts[idx].classList.add('selected');
+    opts.forEach(function(o,i){
+        o.style.pointerEvents='none';
+        if(i===idx&&!ok)o.classList.add('incorrect');
+        if(i===q.correct)o.classList.add('correct');
+    });
+    sC.textContent=score;
+    var fb=document.createElement('div');
+    fb.className='feedback '+(ok?'green':'red');
+    fb.textContent=ok?'✓ Correto!':'✗ Incorreto!';
+    document.getElementById('options').appendChild(fb);
+    setTimeout(function(){cur++;loadQuestion();},1500);
+}
 
-        let currentQuestion = 0;
-        let score = 0;
-        let answered = false;
+function showResults(){
+    pF.style.width='100%';pW.classList.add('hidden');qC.classList.add('hidden');
+    rC.classList.add('show');
+    document.getElementById('finalScore').textContent=score;
+    var pct=score/questions.length*100,msg='';
+    if(pct===100)msg='Incrível! Você é um verdadeiro veterano do Free Fire! 🏆🔥';
+    else if(pct>=80)msg='Excelente! Você manja muito de Free Fire! 🔥';
+    else if(pct>=60)msg='Muito bem! Continue jogando e aprendendo!';
+    else if(pct>=40)msg='Bom esforço! Estude mais sobre o Free Fire!';
+    else msg='Você precisa jogar mais Free Fire!';
+    document.getElementById('resultMessage').textContent=msg;
+    sessionStorage.setItem('quizScore',score);
+    sessionStorage.setItem('quizCompleted','true');
+}
 
-        const quizContainer = document.getElementById('quizContainer');
-        const resultContainer = document.getElementById('resultContainer');
-
-        function loadQuestion() {
-            if (currentQuestion >= questions.length) {
-                showResults();
-                return;
-            }
-            answered = false;
-            const q = questions[currentQuestion];
-
-            let optionsHTML = '';
-            q.options.forEach((option, index) => {
-                optionsHTML += `
-                    <div class="ff-quiz-option" data-index="${index}" onclick="selectAnswer(${index})">
-                        <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 700; color: #000; flex-shrink: 0; background: linear-gradient(135deg, #FF6B00, #FFD700);">
-                            ${String.fromCharCode(65 + index)}
-                        </div>
-                        <span style="color: #fff; font-size: 1.125rem; text-shadow: 0 1px 4px rgba(0,0,0,0.2);">${option}</span>
-                    </div>
-                `;
-            });
-
-            quizContainer.innerHTML = `
-                <div class="animate-fade-in">
-                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                        <div class="ff-question-number">${currentQuestion + 1}</div>
-                        <span style="color: rgba(255,255,255,0.8); font-family: 'Orbitron', sans-serif; font-size: 0.875rem; letter-spacing: 0.05em; text-shadow: 0 2px 8px rgba(0,0,0,0.2);">PERGUNTA ${currentQuestion + 1} DE ${questions.length}</span>
-                    </div>
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">${q.question}</h2>
-                    <div id="options">${optionsHTML}</div>
-                </div>
-            `;
-        }
-
-        function selectAnswer(index) {
-            if (answered) return;
-            answered = true;
-
-            const options = document.querySelectorAll('.ff-quiz-option');
-            options[index].classList.add('selected');
-
-            const isCorrect = index === questions[currentQuestion].correct;
-
-            options.forEach((option, i) => {
-                option.style.pointerEvents = 'none';
-                if (i === index && !isCorrect) option.classList.add('incorrect');
-                if (i === questions[currentQuestion].correct) option.classList.add('correct');
-            });
-
-            if (isCorrect) { score++; playAcerto(); showFeedback('success'); }
-            else { playErro(); showFeedback('error'); }
-
-            setTimeout(() => { currentQuestion++; loadQuestion(); }, 1500);
-        }
-
-        function showFeedback(type) {
-            const isCorrect = type === 'success';
-            const colorHex = isCorrect ? '#4ade80' : '#f87171';
-            const iconText = isCorrect ? '✓ Correto!' : '✗ Incorreto!';
-
-            const feedback = document.createElement('div');
-            feedback.className = 'animate-fade-in';
-            feedback.style.cssText = `text-align: center; font-size: 1.5rem; font-family: 'Orbitron', sans-serif; font-weight: 700; color: ${colorHex}; margin-top: 1rem;`;
-            feedback.textContent = iconText;
-            document.getElementById('options').appendChild(feedback);
-        }
-
-        function showResults() {
-            quizContainer.classList.add('hidden');
-            resultContainer.classList.remove('hidden');
-            document.getElementById('finalScore').textContent = score;
-
-            let message = '';
-            const percentage = (score / questions.length) * 100;
-            if (percentage === 100) message = 'Incrível! Você é uma verdadeira lenda do Free Fire! 🎉🔥';
-            else if (percentage >= 80) message = 'Excelente! Você manja muito do Free Fire! 🎂';
-            else if (percentage >= 60) message = 'Muito bem! Você acompanha bem a história do Free Fire!';
-            else if (percentage >= 40) message = 'Bom esforço! Continue comemorando os 9 anos do Free Fire!';
-            else message = 'Você precisa conhecer melhor a história do Free Fire!';
-
-            document.getElementById('resultMessage').textContent = message;
-            sessionStorage.setItem('quizScore', score);
-            sessionStorage.setItem('quizCompleted', 'true');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => { loadQuestion(); });
-    </script>
+document.addEventListener('DOMContentLoaded',loadQuestion);
+</script>
 </body>
 </html>
