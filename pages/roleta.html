@@ -147,13 +147,14 @@ a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;
 var segs=[{l:'100%',c:'#FFD700'},{l:'0%',c:'#4a9e8e'},{l:'10%',c:'#00B89C'},{l:'20%',c:'#FF6B00'},{l:'30%',c:'#00B89C'},{l:'50%',c:'#FF8C00'},{l:'70%',c:'#4a9e8e'},{l:'90%',c:'#FF6B00'}];
 var wE=document.getElementById('wheel'),ta=0;
 segs.forEach(function(s){var d=document.createElement('div');d.className='ws';d.style.transform='rotate('+ta+'deg) skewY(-45deg)';d.style.background=s.c;var i=document.createElement('div');i.className='wsi';i.style.transform='skewY(45deg) rotate(22.5deg)';var sp=document.createElement('span');sp.textContent=s.l;i.appendChild(sp);d.appendChild(i);wE.appendChild(d);ta+=45;});
+wE.style.transform='rotate(0deg)';
 
 var spinBtn=document.getElementById('spinBtn'),lM=document.getElementById('loseModal'),pM=document.getElementById('prizeModal'),tT=document.getElementById('tryText'),wI=document.getElementById('wheelIdle');
 var spinning=false,cR=0,spins=0;
 
 function spinWheel(){
     if(spinning)return;spinning=true;spinBtn.style.pointerEvents='none';wI.classList.remove('wi');spins++;
-    var win=(spins===2),target=win?67.5:337.5;
+    var win=(spins===2),target=win?22.5:292.5;
     var mod=cR%360,diff=target-mod;if(diff<0)diff+=360;
     cR+=(360*3)+diff;
     wE.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
