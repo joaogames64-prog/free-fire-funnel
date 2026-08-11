@@ -61,7 +61,29 @@
 </header>
 
 <!-- Carousel Banner -->
-<div class="carousel"><img class="carousel-img" src="images/banner_site.jpeg" alt="Promoção"></div>
+<div class="carousel" style="position:relative;overflow:hidden;">
+    <div id="carouselTrack" style="display:flex;transition:transform .5s ease-in-out;">
+        <img src="images/carousel1.jpg" alt="Promoção" style="width:100%;flex-shrink:0;">
+        <img src="images/carousel2.jpg" alt="Promoção" style="width:100%;flex-shrink:0;">
+        <img src="images/carousel3.jpg" alt="Promoção" style="width:100%;flex-shrink:0;">
+        <img src="images/carousel4.jpg" alt="Promoção" style="width:100%;flex-shrink:0;">
+    </div>
+    <div id="carouselDots" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2;">
+        <span class="cdot active" onclick="goSlide(0)"></span>
+        <span class="cdot" onclick="goSlide(1)"></span>
+        <span class="cdot" onclick="goSlide(2)"></span>
+        <span class="cdot" onclick="goSlide(3)"></span>
+    </div>
+</div>
+<style>
+.cdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s;}
+.cdot.active{background:#FFD700;width:20px;border-radius:4px;}
+</style>
+<script>
+var cSlide=0,cTotal=4,cTrack=document.getElementById('carouselTrack'),cDots=document.querySelectorAll('.cdot');
+function goSlide(n){cSlide=n;cTrack.style.transform='translateX(-'+cSlide*100+'%)';cDots.forEach(function(d,i){d.classList.toggle('active',i===cSlide);});}
+setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
+</script>
 <div class="gold-bar"></div>
 
 <!-- Game Selection -->
