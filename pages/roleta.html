@@ -31,13 +31,7 @@ a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;
 /* Wheel */
 .rw{position:relative;width:100%;max-width:320px;margin:0 auto;}
 .rc{position:relative;width:100%;padding-bottom:100%;}
-#wheel{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;overflow:hidden;}
-.ws{position:absolute;width:50%;height:50%;left:50%;top:0;transform-origin:0% 100%;overflow:hidden;}
-.wsi{position:absolute;width:200%;height:200%;left:-100%;top:0;display:flex;align-items:flex-start;justify-content:center;padding-top:20px;}
-.wsi span{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.95rem;color:#181818;text-shadow:1px 1px 2px rgba(255,255,255,.5);}
-.wg{box-shadow:0 0 35px rgba(0,184,156,.55),0 0 70px rgba(255,107,0,.25),inset 0 0 22px rgba(0,0,0,.4);}
-.wi{animation:wI 2.6s ease-in-out infinite;}
-@keyframes wI{0%,100%{filter:drop-shadow(0 0 0 rgba(255,215,0,0));}50%{filter:drop-shadow(0 0 18px rgba(255,215,0,.35));}}
+#wheelCanvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;box-shadow:0 0 35px rgba(0,184,156,.55),0 0 70px rgba(255,107,0,.25),inset 0 0 22px rgba(0,0,0,.4);}
 .ptr{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-4px);z-index:50;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:32px solid var(--cg);filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
 .spin-c{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--ca),var(--cg));box-shadow:0 0 20px rgba(255,107,0,.6),0 0 40px rgba(0,184,156,.3);border:3px solid #222;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;}
 .spin-c:hover{transform:translate(-50%,-50%) scale(1.1);}
@@ -97,9 +91,7 @@ a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;
     <p class="tc" style="color:rgba(255,255,255,.7);margin-bottom:2.5rem;font-size:.95rem;">Clique na bola para girar e descobrir seu desconto!</p>
     <div class="rw">
         <div class="rc">
-            <div style="position:absolute;inset:-8px;border-radius:50%;border:3px solid rgba(0,184,156,.35);background:conic-gradient(from 0deg,rgba(0,184,156,.15),rgba(255,107,0,.15),rgba(0,184,156,.15));"></div>
-            <div style="position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,215,0,.3);"></div>
-            <div id="wheelIdle" class="wi"><div id="wheel" class="wg"></div></div>
+            <canvas id="wheelCanvas" width="640" height="640"></canvas>
             <div class="ptr"></div>
             <button class="spin-c" id="spinBtn" onclick="spinWheel()"><i class="fas fa-futbol"></i></button>
         </div>
@@ -143,22 +135,40 @@ a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;
 </div></div>
 
 <script>
-// Build wheel
-var segs=[{l:'100%',c:'#FFD700'},{l:'0%',c:'#4a9e8e'},{l:'10%',c:'#00B89C'},{l:'20%',c:'#FF6B00'},{l:'30%',c:'#00B89C'},{l:'50%',c:'#FF8C00'},{l:'70%',c:'#4a9e8e'},{l:'90%',c:'#FF6B00'}];
-var wE=document.getElementById('wheel'),ta=0;
-segs.forEach(function(s){var d=document.createElement('div');d.className='ws';d.style.transform='rotate('+ta+'deg) skewY(-45deg)';d.style.background=s.c;var i=document.createElement('div');i.className='wsi';i.style.transform='skewY(45deg) rotate(22.5deg)';var sp=document.createElement('span');sp.textContent=s.l;i.appendChild(sp);d.appendChild(i);wE.appendChild(d);ta+=45;});
-wE.style.transform='rotate(0deg)';
+// Draw wheel on canvas
+var segs=[{l:'100%',c:'#FFD700'},{l:'0%',c:'#3d8a7a'},{l:'10%',c:'#00B89C'},{l:'20%',c:'#FF6B00'},{l:'30%',c:'#00B89C'},{l:'50%',c:'#FF8C00'},{l:'70%',c:'#3d8a7a'},{l:'90%',c:'#FF6B00'}];
+var canvas=document.getElementById('wheelCanvas'),ctx=canvas.getContext('2d');
+var cx=320,cy=320,r=310,sliceAngle=Math.PI*2/segs.length;
+function drawWheel(){
+    ctx.clearRect(0,0,640,640);
+    // outer ring
+    ctx.beginPath();ctx.arc(cx,cy,r+8,0,Math.PI*2);ctx.lineWidth=4;ctx.strokeStyle='rgba(0,184,156,0.5)';ctx.stroke();
+    segs.forEach(function(s,i){
+        var start=i*sliceAngle-Math.PI/2,end=start+sliceAngle;
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=s.c;ctx.fill();
+        ctx.strokeStyle='rgba(0,0,0,0.3)';ctx.lineWidth=2;ctx.stroke();
+        // text
+        ctx.save();ctx.translate(cx,cy);ctx.rotate(start+sliceAngle/2);
+        ctx.fillStyle='#111';ctx.font='900 22px Orbitron,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.shadowColor='rgba(255,255,255,0.4)';ctx.shadowBlur=2;
+        ctx.fillText(s.l,r*0.65,0);
+        ctx.restore();
+    });
+    // center circle
+    ctx.beginPath();ctx.arc(cx,cy,50,0,Math.PI*2);ctx.fillStyle='#111';ctx.fill();
+}
+drawWheel();
 
-var spinBtn=document.getElementById('spinBtn'),lM=document.getElementById('loseModal'),pM=document.getElementById('prizeModal'),tT=document.getElementById('tryText'),wI=document.getElementById('wheelIdle');
+var spinBtn=document.getElementById('spinBtn'),lM=document.getElementById('loseModal'),pM=document.getElementById('prizeModal'),tT=document.getElementById('tryText');
 var spinning=false,cR=0,spins=0;
 
 function spinWheel(){
-    if(spinning)return;spinning=true;spinBtn.style.pointerEvents='none';wI.classList.remove('wi');spins++;
+    if(spinning)return;spinning=true;spinBtn.style.pointerEvents='none';spins++;
     var win=(spins===2),target=win?22.5:292.5;
     var mod=cR%360,diff=target-mod;if(diff<0)diff+=360;
     cR+=(360*3)+diff;
-    wE.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
-    wE.style.transform='rotate('+cR+'deg)';
+    canvas.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
+    canvas.style.transform='rotate('+cR+'deg)';
     setTimeout(function(){
         if(win){showWin();}else{lM.classList.add('active');}
         spinning=false;spinBtn.style.pointerEvents='auto';
