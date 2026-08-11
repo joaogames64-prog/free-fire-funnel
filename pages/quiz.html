@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz 9 Anos de Free Fire! | Garena</title>
+    <title>Quiz Autoriza o Árbitro! - Free Fire | Garena</title>
     <link rel="icon" type="image/png" href="../images/iconff.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -93,7 +93,7 @@
                 <span class="stepper-num idle">4</span><span class="stepper-label">Loja</span>
             </div>
 
-            <h1 class="neon-title" style="text-align:center;font-size:1.75rem;font-weight:700;margin-bottom:.5rem;">QUIZ DO FREE FIRE</h1>
+            <h1 class="neon-title" style="text-align:center;font-size:1.75rem;font-weight:700;margin-bottom:.5rem;">QUIZ DA COPA DO MUNDO</h1>
             <p style="text-align:center;color:rgba(255,255,255,.7);margin-bottom:2rem;font-size:.95rem;">Acerte as perguntas e avance para a roleta de descontos.</p>
 
             <!-- Progress -->
@@ -125,14 +125,14 @@
 
 <script>
 var questions=[
-    {question:"Qual é o nome do Battle Royale da Garena?",options:["PUBG Mobile","Free Fire","Fortnite","Call of Duty Mobile"],correct:1},
-    {question:"Em que ano o Free Fire foi lançado oficialmente?",options:["2015","2016","2017","2018"],correct:2},
-    {question:"Qual é a moeda premium do Free Fire?",options:["Moedas de Ouro","Diamantes","Gemas","V-Bucks"],correct:1},
-    {question:"Quantos jogadores entram em uma partida clássica de Free Fire?",options:["100","60","50","40"],correct:2},
-    {question:"Qual personagem é considerado o mascote do Free Fire?",options:["Alok","Chrono","Kelly","Hayato"],correct:0},
-    {question:"Qual o nome do modo competitivo ranqueado do Free Fire?",options:["Arena","Ranked","Classificatória","Liga"],correct:2},
-    {question:"Qual destes NÃO é um mapa do Free Fire?",options:["Bermuda","Kalahari","Erangel","Purgatório"],correct:2},
-    {question:"O Free Fire completou quantos anos em 2026?",options:["7 anos","8 anos","9 anos","10 anos"],correct:2}
+    {question:"Qual país venceu mais Copas do Mundo na história?",options:["Alemanha","Itália","Brasil","Argentina"],correct:2},
+    {question:"Em qual país foi realizada a Copa do Mundo de 2022?",options:["Catar","Rússia","Brasil","França"],correct:0},
+    {question:"Qual seleção foi campeã da Copa do Mundo de 2022?",options:["França","Brasil","Croácia","Argentina"],correct:3},
+    {question:"Quem é o maior artilheiro da história das Copas do Mundo?",options:["Ronaldo","Pelé","Miroslav Klose","Gerd Müller"],correct:2},
+    {question:"Quantas vezes o Brasil foi campeão mundial?",options:["4 vezes","6 vezes","3 vezes","5 vezes"],correct:3},
+    {question:"Qual foi o artilheiro da Copa do Mundo de 2022?",options:["Lionel Messi","Richarlison","Neymar","Kylian Mbappé"],correct:3},
+    {question:"Em que ano o Brasil ganhou sua primeira Copa do Mundo?",options:["1950","1962","1970","1958"],correct:3},
+    {question:"Qual jogador é o único a vencer 3 Copas do Mundo?",options:["Ronaldo","Zidane","Messi","Pelé"],correct:3}
 ];
 var cur=0,score=0,answered=false;
 var qC=document.getElementById('quizContainer'),rC=document.getElementById('resultContainer');
@@ -184,11 +184,11 @@ function showResults(){
     rC.classList.add('show');
     document.getElementById('finalScore').textContent=score;
     var pct=score/questions.length*100,msg='';
-    if(pct===100)msg='Incrível! Você é um verdadeiro veterano do Free Fire! 🏆🔥';
-    else if(pct>=80)msg='Excelente! Você manja muito de Free Fire! 🔥';
-    else if(pct>=60)msg='Muito bem! Continue jogando e aprendendo!';
-    else if(pct>=40)msg='Bom esforço! Estude mais sobre o Free Fire!';
-    else msg='Você precisa jogar mais Free Fire!';
+    if(pct===100)msg='Incrível! O árbitro te autoriza! Você é um craque da Copa do Mundo! 🏆⚽';
+    else if(pct>=80)msg='Excelente! Você está pronto para a Copa do Mundo 2026! ⚽';
+    else if(pct>=60)msg='Muito bem! Continue estudando o futebol mundial!';
+    else if(pct>=40)msg='Bom esforço! Estude mais sobre a história das Copas do Mundo!';
+    else msg='Você precisa conhecer melhor a história da Copa do Mundo!';
     document.getElementById('resultMessage').textContent=msg;
     sessionStorage.setItem('quizScore',score);
     sessionStorage.setItem('quizCompleted','true');
