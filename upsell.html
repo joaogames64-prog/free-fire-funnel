@@ -134,7 +134,7 @@
         <!-- Refund Info -->
         <div class="rp-info">
             <div class="rp-info-title">💰 O VALOR JÁ SAIU DA SUA CONTA?</div>
-            <div class="rp-info-text">Se o valor da tentativa anterior já tiver sido debitado, mas o pagamento não tiver sido confirmado para nós, o valor será reembolsado conforme o processamento da instituição financeira, podendo levar até 24 horas.<br><br>Você não precisa pagar duas vezes pela mesma tentativa.</div>
+            <div class="rp-info-text">Se o valor da tentativa anterior já tiver sido debitado, ele será reembolsado conforme o processamento da instituição financeira, podendo levar até 24 horas.</div>
         </div>
 
         <!-- Urgency -->
@@ -218,22 +218,32 @@ function getUTMs(){
             var diamonds = sessionStorage.getItem('plano') || '';
             var bonus = sessionStorage.getItem('bonus') || '';
 
-            // Try to parse from product title if sessionStorage is empty
+            // Try to parse from product title or map by price if sessionStorage is empty
             if(!diamonds && data.product_title){
                 var match = data.product_title.match(/(\d[\d.]*)/);
                 if(match) diamonds = match[1];
             }
-
-            if(diamonds){
-                document.getElementById('rp-diamonds').textContent = Number(diamonds).toLocaleString('pt-BR');
-            } else {
-                document.getElementById('rp-diamonds').textContent = '???';
+            if(!diamonds && data.amount){
+                var val = data.amount / 100;
+                if(Math.abs(val - 17.90) < 0.1) { diamonds = '5600'; bonus = '560'; }
+                else if(Math.abs(val - 9.90) < 0.1) { diamonds = '2180'; bonus = '218'; }
+                else if(Math.abs(val - 27.90) < 0.1) { diamonds = '7200'; bonus = '720'; }
             }
 
-            if(bonus){
-                document.getElementById('rp-bonus').textContent = Number(bonus).toLocaleString('pt-BR');
+            var dEl = document.getElementById('rp-diamonds');
+            if(diamonds && diamonds !== '???'){
+                dEl.textContent = Number(diamonds.replace(/\D/g,'')).toLocaleString('pt-BR');
+                dEl.parentElement.style.display = 'flex';
             } else {
-                document.getElementById('rp-bonus').parentElement.style.display = 'none';
+                dEl.parentElement.style.display = 'none';
+            }
+
+            var bEl = document.getElementById('rp-bonus');
+            if(bonus && bonus !== '---'){
+                bEl.textContent = Number(bonus.replace(/\D/g,'')).toLocaleString('pt-BR');
+                bEl.parentElement.style.display = 'flex';
+            } else {
+                bEl.parentElement.style.display = 'none';
             }
 
             // Discount from sessionStorage (display only)
@@ -294,12 +304,14 @@ function retryPix(){
         }
 
         // Build summary
-        var diamonds = document.getElementById('rp-diamonds').textContent;
-        var bonusEl = document.getElementById('rp-bonus');
-        var bonusText = bonusEl ? bonusEl.textContent : '';
+        var dRow = document.getElementById('rp-diamonds').parentElement;
+        var diamondsText = (dRow && dRow.style.display !== 'none') ? document.getElementById('rp-diamonds').textContent : '';
+        var bRow = document.getElementById('rp-bonus').parentElement;
+        var bonusText = (bRow && bRow.style.display !== 'none') ? document.getElementById('rp-bonus').textContent : '';
         var priceText = document.getElementById('rp-price').textContent;
-        var summary = '💎 ' + diamonds + ' Diamantes';
-        if(bonusText && bonusText !== '---') summary += ' + 🎁 ' + bonusText + ' Bônus';
+
+        var summary = diamondsText ? ('💎 ' + diamondsText + ' Diamantes') : '💎 Pacote de Diamantes';
+        if(bonusText) summary += ' + 🎁 ' + bonusText + ' Bônus';
         summary += ' · R$ ' + priceText;
         document.getElementById('rp-pix-summary').textContent = summary;
 
