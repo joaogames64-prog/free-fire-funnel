@@ -406,7 +406,7 @@ if(txHash){
                             sessionStorage.removeItem('is_upsell');
                             window.location.href = 'obrigado.html';
                         } else {
-                            window.location.href = 'upsell.html';
+                            window.location.href = 'upsell.html?txid=' + encodeURIComponent(txHash);
                         }
                     }, 3000);
                 }
