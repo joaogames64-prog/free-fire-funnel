@@ -181,21 +181,21 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
 
                 <!-- 4 Diamond options -->
                 <div class="denom-grid" style="grid-template-columns:repeat(4,1fr);">
-                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','12,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="12,90">
+                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','14,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="14,90">
                         <img src="images/point.png" alt="💎"><span>1.060</span>
-                        <div class="denom-price">R$ 12,90</div>
+                        <div class="denom-price">R$ 14,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'2180','218','17,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="17,90">
+                    <div class="denom-card" onclick="selectDenom(this,'2180','218','19,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="19,90">
                         <img src="images/point.png" alt="💎"><span>2.180</span>
-                        <div class="denom-price">R$ 17,90</div>
-                    </div>
-                    <div class="denom-card" onclick="selectDenom(this,'5600','560','19,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="19,90">
-                        <img src="images/point.png" alt="💎"><span>5.600</span>
                         <div class="denom-price">R$ 19,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','49,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="49,90">
+                    <div class="denom-card" onclick="selectDenom(this,'5600','560','24,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="24,90">
+                        <img src="images/point.png" alt="💎"><span>5.600</span>
+                        <div class="denom-price">R$ 24,90</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','39,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="39,90">
                         <img src="images/point.png" alt="💎"><span>22.400</span>
-                        <div class="denom-price">R$ 49,90</div>
+                        <div class="denom-price">R$ 39,90</div>
                     </div>
                 </div>
 
@@ -242,7 +242,7 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
     <div class="buy-bar-inner">
         <div class="buy-bar-info">
             <div class="buy-bar-diamonds"><img src="images/point.png" alt="💎"> <span id="bar-diamonds">1060</span> + <span id="bar-bonus">106</span> <span style="font-size:10px;cursor:pointer;">▲</span></div>
-            <div class="buy-bar-total">Total: <strong id="bar-price">R$ 12,90</strong></div>
+            <div class="buy-bar-total">Total: <strong id="bar-price">R$ 14,90</strong></div>
         </div>
         <button class="buy-bar-btn utmify-ic" id="utmify-ic" onclick="goToCheckout()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
@@ -278,8 +278,8 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
                 <img src="images/point.png" alt="💎">
             </div>
             <div class="up-prices">
-                <span class="up-old-price" id="up-old-price">R$ 19,90</span>
-                <span class="up-new-price" id="up-new-price">R$ 17,90</span>
+                <span class="up-old-price" id="up-old-price">R$ 29,90</span>
+                <span class="up-new-price" id="up-new-price">R$ 24,90</span>
             </div>
             <button class="up-cta" id="up-accept" onclick="acceptUpsell()">Quero aproveitar!</button>
             <button class="up-skip" id="up-skip" onclick="skipUpsell()">Não, obrigado</button>
@@ -308,7 +308,7 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
 })();
 
 // State
-var diamondSel = {diamonds:'1060',bonus:'106',price:12.90,offerHash:'off_4nfa96t3k8'};
+var diamondSel = {diamonds:'1060',bonus:'106',price:14.90,offerHash:'off_4nfa96t3k8'};
 var offerSel = null; // {label, price, offerHash}
 
 function updateBar(){
@@ -374,9 +374,9 @@ function handleLogout(){
 
 // ── Upsell Config ───────────────────────────────────────────────────────────
 var upsellMap = {
-    '1060': { diamonds: '5600', bonus: '560', price: 17.90, oldPrice: '19,90', newPrice: '17,90', label: '5.600 + 560 bônus' },
-    '2180': { diamonds: '22400', bonus: '2240', price: 23.90, oldPrice: '49,90', newPrice: '23,90', label: '22.400 + 2.240 bônus' },
-    '5600': { diamonds: '22400', bonus: '2240', price: 25.90, oldPrice: '49,90', newPrice: '25,90', label: '22.400 + 2.240 bônus' }
+    '1060': { diamonds: '5600', bonus: '560', price: 24.90, oldPrice: '29,90', newPrice: '24,90', label: '5.600 + 560 bônus' },
+    '2180': { diamonds: '22400', bonus: '2240', price: 39.90, oldPrice: '49,90', newPrice: '39,90', label: '22.400 + 2.240 bônus' },
+    '5600': { diamonds: '22400', bonus: '2240', price: 39.90, oldPrice: '49,90', newPrice: '39,90', label: '22.400 + 2.240 bônus' }
 };
 var pendingUpsell = null;
 

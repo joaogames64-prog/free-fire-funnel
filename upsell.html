@@ -225,9 +225,10 @@ function getUTMs(){
             }
             if(!diamonds && data.amount){
                 var val = data.amount / 100;
-                if(Math.abs(val - 17.90) < 0.1) { diamonds = '5600'; bonus = '560'; }
-                else if(Math.abs(val - 9.90) < 0.1) { diamonds = '2180'; bonus = '218'; }
-                else if(Math.abs(val - 27.90) < 0.1) { diamonds = '7200'; bonus = '720'; }
+                if(Math.abs(val - 14.90) < 0.1) { diamonds = '1060'; bonus = '106'; }
+                else if(Math.abs(val - 19.90) < 0.1) { diamonds = '2180'; bonus = '218'; }
+                else if(Math.abs(val - 24.90) < 0.1) { diamonds = '5600'; bonus = '560'; }
+                else if(Math.abs(val - 39.90) < 0.1) { diamonds = '22400'; bonus = '2240'; }
             }
 
             var dEl = document.getElementById('rp-diamonds');
