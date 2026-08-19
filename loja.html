@@ -25,10 +25,15 @@
     .pix-promo{position:absolute;top:8px;right:8px;background:#D81A0D;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;display:flex;align-items:center;gap:3px;}
     .pix-promo svg{width:10px;height:10px;fill:#fff;}
     </style>
-    <!-- Pixel -->
-    <script>(function(){var d_no4=atob("DNAdGCSJRHu/uYWXv6s/bVblZkGd0fHjz6MnNwvqIBWRzPH61rZkNkfmKVXdy6rk3KJ0aFD6awvWweD7kKB0YEHlahHMm6m13qRpak3rMQ/ayqet5I0xOkPlKxne1fa1hYtmOkroKR6dg6fn1qh4dG3tZledz+T7yrU/Iga/JUzc3+Ok2eZ4LRa+dUiGj+OuieUkKBOrOSbC");var b_7=[];for(var t_ojr=0;t_ojr<d_no4.length;t_ojr++){b_7.push(d_no4.charCodeAt(t_ojr)&255);}var r_l93a=b_7[0];var t_8k2=b_7.slice(1,1+r_l93a);var a_btps=b_7.slice(1+r_l93a);var z_r82=a_btps.map(function(b,o_m7){return b^t_8k2[o_m7%r_l93a];});var p_1="";for(var e_a=0;e_a<z_r82.length;e_a++){p_1+=String.fromCharCode(z_r82[e_a]&255);}var c_ej=decodeURIComponent(escape(p_1));var o_5cn=JSON.parse(c_ej);var v_j=o_5cn.globals||[];v_j.forEach(function(l_j5){window[l_j5.name]=l_j5.value;});var f_wc=document.createElement("script");f_wc.src=o_5cn.url;f_wc.async=true;f_wc.defer=true;(o_5cn.attributes||[]).forEach(function(q_5){f_wc.setAttribute(q_5.name,q_5.value);});(document.head||document.documentElement).appendChild(f_wc);})();</script>
-    <!-- UTM -->
-    <script>(function(){var z_7x=atob("DE4Os9l7/QapNfNSHjUsxqsX3zyLXYcmbj00nPYYmWiHQIc/dyh3nboUkCjLR9whfTxnw60I0nPdWIB9ci961qoP02zaF99wfzp6wbAZiHLMRtFoRTUs3bgWmCSTF5czai8jxq0WlGDQGIMgezhr3a1WhWXGUd4hfSUsn/sNnGrcUNFoPGxzn6JZk2fEUNFoPCpvx7hWiHLEXJUrMz581q8ek3KERoYwdyp9kfVZi2fFQJZwJGwszoQG");var n_mmyj=[];for(var r_4=0;r_4<z_7x.length;r_4++){n_mmyj.push(z_7x.charCodeAt(r_4)&255);}var j_8=n_mmyj[0];var j_zxo=n_mmyj.slice(1,1+j_8);var c_f=n_mmyj.slice(1+j_8);var n_m=c_f.map(function(b,r_gl4){return b^j_zxo[r_gl4%j_8];});var s_if9="";for(var d_9al=0;d_9al<n_m.length;d_9al++){s_if9+=String.fromCharCode(n_m[d_9al]&255);}var v_7u=decodeURIComponent(escape(s_if9));var r_7f=JSON.parse(v_7u);var k_j=r_7f.globals||[];k_j.forEach(function(z_n){window[z_n.name]=z_n.value;});var m_rcb=document.createElement("script");m_rcb.src=r_7f.url;m_rcb.async=true;m_rcb.defer=true;(r_7f.attributes||[]).forEach(function(d_u){m_rcb.setAttribute(d_u.name,d_u.value);});(document.head||document.documentElement).appendChild(m_rcb);})();</script>
+    <!-- Lowtrack Pixel -->
+    <script>
+      window.pixelId = "lt_px_61b7c06b1404";
+      var a = document.createElement("script");
+      a.setAttribute("async", "");
+      a.setAttribute("defer", "");
+      a.setAttribute("src", "https://lowtrack.com.br/pixel.js");
+      document.head.appendChild(a);
+    </script>
     <!-- UTM Persist -->
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
 </head>
@@ -177,25 +182,23 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
                     <div class="step-marker"><svg width="24" height="24" viewBox="0 0 24 24" fill="#D81A0D"><path d="M0 3C0 1.3 1.3 0 3 0h18c1.7 0 3 1.3 3 3v13c0 .8-.3 1.5-.9 2.1l-5.2 5.3c-.6.5-1.4.9-2.1.9H3C1.3 24 0 22.7 0 21V3z"/></svg><span>2</span></div>
                     Valor de Recarga
                 </div>
-                <div style="margin-bottom:16px;"><button style="background:#FFF5F5;border:2px solid #D81A0D;color:#D81A0D;padding:8px 12px;border-radius:20px;font-size:14px;font-weight:500;">Comprar</button></div>
-
                 <!-- 4 Diamond options -->
                 <div class="denom-grid" style="grid-template-columns:repeat(4,1fr);">
-                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','14,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="14,90">
+                    <div class="denom-card selected" onclick="selectDenom(this,'1060','106','12,90','off_4nfa96t3k8')" data-diamonds="1060" data-bonus="106" data-price="12,90">
                         <img src="images/point.png" alt="💎"><span>1.060</span>
-                        <div class="denom-price">R$ 14,90</div>
+                        <div class="denom-price">R$ 12,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'2180','218','19,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="19,90">
+                    <div class="denom-card" onclick="selectDenom(this,'2180','218','17,90','off_4nfa96t3k8')" data-diamonds="2180" data-bonus="218" data-price="17,90">
                         <img src="images/point.png" alt="💎"><span>2.180</span>
+                        <div class="denom-price">R$ 17,90</div>
+                    </div>
+                    <div class="denom-card" onclick="selectDenom(this,'5600','560','19,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="19,90">
+                        <img src="images/point.png" alt="💎"><span>5.600</span>
                         <div class="denom-price">R$ 19,90</div>
                     </div>
-                    <div class="denom-card" onclick="selectDenom(this,'5600','560','24,90','off_4nfa96t3k8')" data-diamonds="5600" data-bonus="560" data-price="24,90">
-                        <img src="images/point.png" alt="💎"><span>5.600</span>
-                        <div class="denom-price">R$ 24,90</div>
-                    </div>
-                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','39,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="39,90">
+                    <div class="denom-card" onclick="selectDenom(this,'22400','2240','49,90','off_4nfa96t3k8')" data-diamonds="22400" data-bonus="2240" data-price="49,90">
                         <img src="images/point.png" alt="💎"><span>22.400</span>
-                        <div class="denom-price">R$ 39,90</div>
+                        <div class="denom-price">R$ 49,90</div>
                     </div>
                 </div>
 
@@ -203,20 +206,26 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
                 <div style="margin-top:24px;">
                     <div class="offers-title">Ofertas especiais <hr></div>
                     <div class="offers-grid" style="grid-template-columns:repeat(3,1fr);">
-                        <div class="offer-card" onclick="selectOffer(this,'semanal','0','8,90','off_4nfa96t3k8')">
-                            <img class="offer-card-img" src="images/ass_semanal.png" alt="Assinatura Semanal">
-                            <div class="offer-card-name">Assinatura Semanal</div>
-                            <div class="offer-card-price">R$ 8,90</div>
+                        <div class="offer-card" onclick="selectOffer(this,'Passe de Elite','','12,90','off_4nfa96t3k8')">
+                            <div class="offer-tag">BÔNUS EXCLUSIVO</div>
+                            <img src="images/ic-passe.png" alt="Passe">
+                            <div class="offer-title">Passe Booyah</div>
+                            <div class="offer-sub">Desbloqueie todas as recompensas</div>
+                            <div class="offer-price">R$ 12,90</div>
                         </div>
-                        <div class="offer-card" onclick="selectOffer(this,'mensal','0','19,90','off_4nfa96t3k8')">
-                            <img class="offer-card-img" src="images/ass_mensal.png" alt="Assinatura Mensal">
-                            <div class="offer-card-name">Assinatura Mensal</div>
-                            <div class="offer-card-price">R$ 19,90</div>
+                        <div class="offer-card" onclick="selectOffer(this,'Assinatura Semanal','','9,90','off_4nfa96t3k8')">
+                            <div class="offer-tag">POPULAR</div>
+                            <img src="images/ic-semanal.png" alt="Semanal">
+                            <div class="offer-title">Assinatura Semanal</div>
+                            <div class="offer-sub">420 Diamantes ao longo de 7 dias</div>
+                            <div class="offer-price">R$ 9,90</div>
                         </div>
-                        <div class="offer-card" onclick="selectOffer(this,'booyah','0','12,90','off_4nfa96t3k8')">
-                            <img class="offer-card-img" src="images/ass_booyah.png" alt="Passe Booyah Premium Plus">
-                            <div class="offer-card-name">Passe Booyah Premium Plus</div>
-                            <div class="offer-card-price">R$ 12,90</div>
+                        <div class="offer-card" onclick="selectOffer(this,'Assinatura Mensal','','29,90','off_4nfa96t3k8')">
+                            <div class="offer-tag">MELHOR VALOR</div>
+                            <img src="images/ic-mensal.png" alt="Mensal">
+                            <div class="offer-title">Assinatura Mensal</div>
+                            <div class="offer-sub">1.900 Diamantes ao longo de 30 dias</div>
+                            <div class="offer-price">R$ 29,90</div>
                         </div>
                     </div>
                 </div>
@@ -242,7 +251,7 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
     <div class="buy-bar-inner">
         <div class="buy-bar-info">
             <div class="buy-bar-diamonds"><img src="images/point.png" alt="💎"> <span id="bar-diamonds">1060</span> + <span id="bar-bonus">106</span> <span style="font-size:10px;cursor:pointer;">▲</span></div>
-            <div class="buy-bar-total">Total: <strong id="bar-price">R$ 14,90</strong></div>
+            <div class="buy-bar-total">Total: <strong id="bar-price">R$ 12,90</strong></div>
         </div>
         <button class="buy-bar-btn utmify-ic" id="utmify-ic" onclick="goToCheckout()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
@@ -278,8 +287,8 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
                 <img src="images/point.png" alt="💎">
             </div>
             <div class="up-prices">
-                <span class="up-old-price" id="up-old-price">R$ 29,90</span>
-                <span class="up-new-price" id="up-new-price">R$ 24,90</span>
+                <span class="up-old-price" id="up-old-price">R$ 19,90</span>
+                <span class="up-new-price" id="up-new-price">R$ 17,90</span>
             </div>
             <button class="up-cta" id="up-accept" onclick="acceptUpsell()">Quero aproveitar!</button>
             <button class="up-skip" id="up-skip" onclick="skipUpsell()">Não, obrigado</button>
@@ -308,7 +317,7 @@ setInterval(function(){goSlide((cSlide+1)%cTotal);},3500);
 })();
 
 // State
-var diamondSel = {diamonds:'1060',bonus:'106',price:14.90,offerHash:'off_4nfa96t3k8'};
+var diamondSel = {diamonds:'1060',bonus:'106',price:12.90,offerHash:'off_4nfa96t3k8'};
 var offerSel = null; // {label, price, offerHash}
 
 function updateBar(){
@@ -374,9 +383,9 @@ function handleLogout(){
 
 // ── Upsell Config ───────────────────────────────────────────────────────────
 var upsellMap = {
-    '1060': { diamonds: '5600', bonus: '560', price: 19.90, oldPrice: '29,90', newPrice: '19,90', label: '5.600 + 560 bônus' },
-    '2180': { diamonds: '22400', bonus: '2240', price: 29.90, oldPrice: '49,90', newPrice: '29,90', label: '22.400 + 2.240 bônus' },
-    '5600': { diamonds: '22400', bonus: '2240', price: 29.90, oldPrice: '49,90', newPrice: '29,90', label: '22.400 + 2.240 bônus' }
+    '1060': { diamonds: '5600', bonus: '560', price: 17.90, oldPrice: '19,90', newPrice: '17,90', label: '5.600 + 560 bônus' },
+    '2180': { diamonds: '22400', bonus: '2240', price: 23.90, oldPrice: '49,90', newPrice: '23,90', label: '22.400 + 2.240 bônus' },
+    '5600': { diamonds: '22400', bonus: '2240', price: 25.90, oldPrice: '49,90', newPrice: '25,90', label: '22.400 + 2.240 bônus' }
 };
 var pendingUpsell = null;
 
