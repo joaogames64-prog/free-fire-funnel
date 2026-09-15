@@ -118,6 +118,17 @@
     .ob-total-value{font-size:20px;font-weight:700;color:#FF6B00;}
     .ob-finalize{display:block;width:100%;margin-top:16px;padding:16px;background:#D81A0D;color:#fff;border:none;border-radius:30px;font-size:18px;font-weight:700;text-align:center;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;transition:background .2s;}
     .ob-finalize:hover{background:#b5160b;}
+
+    /* Urgency Bar */
+    .urg-bar{background:linear-gradient(90deg,#b91c1c,#D81A0D);color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.2px;}
+    .urg-bar span{animation:urgPulse 1s ease-in-out infinite;}
+    @keyframes urgPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+    .urg-cd{font-family:monospace;font-size:15px;font-weight:900;background:rgba(0,0,0,.25);border-radius:4px;padding:2px 7px;letter-spacing:2px;}
+
+    /* Live badge */
+    .live-bar{background:#fff8f0;border-bottom:1px solid #ffe0c0;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#92400e;font-weight:600;}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#D81A0D;animation:liveBlink 1s ease-in-out infinite;flex-shrink:0;}
+    @keyframes liveBlink{0%,100%{opacity:1;}50%{opacity:.2;}}
     </style>
     <!-- Lowtrack Pixel -->
     <script>
@@ -142,12 +153,26 @@
     </div>
 </header>
 
+<!-- Urgency Countdown Bar -->
+<div class="urg-bar">
+    <span>🚨</span>
+    <span>Seu desconto expira em:</span>
+    <span class="urg-cd" id="ck-urgency">04:59</span>
+    <span>— Finalize agora!</span>
+</div>
+
+<!-- Live Viewers -->
+<div class="live-bar">
+    <div class="live-dot"></div>
+    <span><strong id="live-count">47</strong> pessoas estão tentando resgatar esse mesmo desconto agora</span>
+</div>
+
 <!-- Main -->
 <div class="ck-wrap">
     <!-- Game Banner -->
-    <div class="ck-banner">
-        <div class="ck-banner-bg" style="background-image:url('images/FF-bg.jpg');"></div>
-        <a class="ck-back" href="loja.html">
+    <div class="ck-banner" style="height:auto;">
+        <img src="https://i.imgur.com/664FayR.jpg" alt="Free Fire x Naruto Shippuden" style="width:100%;display:block;">
+        <a class="ck-back" href="loja.html" style="top:12px;left:12px;">
             <svg viewBox="0 0 80 80" fill="currentColor" style="transform:rotate(90deg);"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2 28.2c1.6-1.6 4.1-1.6 5.7 0L40 45.3l17.2-17.2c1.6-1.6 4.1-1.6 5.7 0 1.6 1.6 1.6 4.1 0 5.7l-20 20c-1.6 1.6-4.1 1.6-5.7 0l-20-20c-1.6-1.6-1.6-4.1 0-5.7z"/></svg>
             Voltar
         </a>
@@ -320,7 +345,39 @@ function validateForm(){
 }
 document.getElementById('email-input').addEventListener('input',validateForm);
 
+// ── Urgency Countdown (5 min) ──────────────────────────────────────────────
+(function(){
+    var D = 5*60, k = 'ckDeadline',
+        dl = parseInt(sessionStorage.getItem(k), 10);
+    if(!dl || isNaN(dl) || dl < Math.floor(Date.now()/1000)){
+        dl = Math.floor(Date.now()/1000) + D;
+        sessionStorage.setItem(k, dl);
+    }
+    var el = document.getElementById('ck-urgency');
+    function tick(){
+        var left = dl - Math.floor(Date.now()/1000);
+        if(left < 0) left = 0;
+        var m = Math.floor(left/60), s = left%60;
+        el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+        if(left > 0) setTimeout(tick, 1000);
+    }
+    tick();
+})();
+
+// ── Live Viewers Counter ───────────────────────────────────────────────────
+(function(){
+    var el = document.getElementById('live-count');
+    var base = 38 + Math.floor(Math.random()*20); // 38-57
+    el.textContent = base;
+    setInterval(function(){
+        var delta = Math.random() < 0.5 ? 1 : -1;
+        base = Math.max(28, Math.min(72, base + delta));
+        el.textContent = base;
+    }, 3500);
+})();
+
 // Base price from sessionStorage
+
 var basePrice = parseFloat(sessionStorage.getItem('preco') || '12.90');
 
 // Toggle order bump item
