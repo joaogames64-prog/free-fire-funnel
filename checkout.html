@@ -225,8 +225,12 @@
     <!-- Form -->
     <form class="ck-form" id="ck-form" onsubmit="return false;">
         <div class="ck-field">
-            <label class="ck-field-label" for="email-input">E-mail</label>
-            <input class="ck-input" id="email-input" name="email" type="email" placeholder="E-mail" maxlength="60">
+            <label class="ck-field-label" for="name-input">Nome</label>
+            <input class="ck-input" id="name-input" name="name" type="text" placeholder="Seu nome completo" maxlength="50" autocomplete="name">
+        </div>
+        <div class="ck-field">
+            <label class="ck-field-label" for="phone-input">Celular (DDD + 9 dígitos)</label>
+            <input class="ck-input" id="phone-input" name="phone" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel">
         </div>
 
         <div class="ck-terms">
@@ -330,20 +334,33 @@ window.addEventListener('DOMContentLoaded', function(){
     document.getElementById('ck-uid').textContent = uid;
 });
 
-// Validation
-function validateForm(){
-    var email=document.getElementById('email-input').value.trim();
-    var btn=document.getElementById('payment-button');
-    var ok = email.length>=5 && email.includes('@') && email.includes('.');
-    if(ok){
-        btn.disabled=false;
-        btn.className='ck-btn enabled';
-    } else {
-        btn.disabled=true;
-        btn.className='ck-btn disabled';
-    }
+// Phone mask (DDD + 9 digits)
+var phoneInput = document.getElementById('phone-input');
+if(phoneInput){
+    phoneInput.addEventListener('input', function(e){
+        var v = e.target.value.replace(/\D/g,'').slice(0,11);
+        if(v.length <= 2)       e.target.value = v;
+        else if(v.length <= 7)  e.target.value = '('+v.slice(0,2)+') '+v.slice(2);
+        else                    e.target.value = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+        validateForm();
+    });
+    // Force numeric keyboard on focus (mobile)
+    phoneInput.addEventListener('focus', function(){
+        this.setAttribute('inputmode','numeric');
+    });
 }
-document.getElementById('email-input').addEventListener('input',validateForm);
+
+// Validation — requires name (3+ chars) and phone (11 digits)
+function validateForm(){
+    var name  = document.getElementById('name-input').value.trim();
+    var phone = document.getElementById('phone-input').value.replace(/\D/g,'');
+    var btn   = document.getElementById('payment-button');
+    var ok    = name.length >= 3 && phone.length === 11;
+    btn.disabled = !ok;
+    btn.className = 'ck-btn ' + (ok ? 'enabled' : 'disabled');
+}
+document.getElementById('name-input').addEventListener('input', validateForm);
+document.getElementById('phone-input').addEventListener('input', validateForm);
 
 // ── Urgency Countdown (5 min) ──────────────────────────────────────────────
 (function(){
@@ -438,9 +455,11 @@ async function finalizeOrder(){
     btn.style.opacity = '0.7';
     btn.style.pointerEvents = 'none';
 
-    var email=document.getElementById('email-input').value.trim();
-    var nome="Jogador Convidado";
-    var telefone="11999999999";
+    var nome     = document.getElementById('name-input').value.trim();
+    var telefone = document.getElementById('phone-input').value.replace(/\D/g,'');
+    // Generate email from name + last 4 digits of phone so IronPay receives a valid email
+    var nomeParts = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+    var email = nomeParts + telefone.slice(-4) + '@gmail.com';
 
     // Collect selected order bumps
     var bumps = [];
