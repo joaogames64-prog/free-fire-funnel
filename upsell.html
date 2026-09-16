@@ -5,80 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <title>Pagamento Pendente - Free Fire</title>
     <link rel="icon" href="images/iconff.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+    :root{--c-primary:#FF6B00;--c-accent:#7C3AED;--c-bg:#08050F;}
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Inter',sans-serif;background:#060d12;color:#fff;min-height:100vh;}
-    .rp-wrap{max-width:480px;margin:0 auto;padding:0 16px 40px;}
+    body{font-family:'Poppins',sans-serif;background:var(--c-bg);color:#fff;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button{cursor:pointer;font-family:inherit;}
+
+    /* Ambient orbs */
+    .ambient-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+    .ambient-bg::before,.ambient-bg::after{content:'';position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.25;}
+    .ambient-bg::before{background:radial-gradient(circle,#FF6B00,transparent 60%);top:-15vmax;left:-10vmax;animation:orbA 18s ease-in-out infinite;}
+    .ambient-bg::after{background:radial-gradient(circle,#7C3AED,transparent 60%);bottom:-18vmax;right:-12vmax;animation:orbB 22s ease-in-out infinite;}
+    @keyframes orbA{0%,100%{transform:translate(0,0)}50%{transform:translate(6vmax,4vmax)}}
+    @keyframes orbB{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vmax,-4vmax)}}
+
+    .rp-wrap{max-width:480px;margin:0 auto;padding:0 16px 60px;position:relative;z-index:1;}
 
     /* Header */
-    .rp-hdr{display:flex;align-items:center;gap:10px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .rp-hdr{display:flex;align-items:center;gap:10px;padding:16px 0;border-bottom:1px solid rgba(255,107,0,0.2);}
     .rp-hdr img{width:36px;height:36px;border-radius:8px;}
     .rp-hdr-txt{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);}
+    .rp-hdr-badge{margin-left:auto;font-size:10px;font-weight:700;background:linear-gradient(135deg,#FF6B00,#7C3AED);padding:3px 10px;border-radius:999px;color:#fff;letter-spacing:.08em;}
 
     /* Alert Banner */
-    .rp-alert{margin-top:20px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:16px;padding:20px;text-align:center;}
+    .rp-alert{margin-top:20px;background:linear-gradient(135deg,rgba(255,107,0,0.12),rgba(124,58,237,0.08));border:1px solid rgba(255,107,0,0.35);border-radius:16px;padding:20px;text-align:center;}
     .rp-alert-icon{font-size:40px;margin-bottom:10px;}
-    .rp-alert-title{font-size:20px;font-weight:900;color:#F59E0B;text-transform:uppercase;letter-spacing:0.5px;}
-    .rp-alert-desc{font-size:14px;color:rgba(255,255,255,0.7);margin-top:10px;line-height:1.6;}
-    .rp-alert-ok{font-size:14px;color:#00B89C;font-weight:600;margin-top:8px;}
+    .rp-alert-title{font-size:18px;font-weight:900;color:#FF6B00;text-transform:uppercase;letter-spacing:0.5px;font-family:'Orbitron',sans-serif;}
+    .rp-alert-desc{font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;line-height:1.6;}
+    .rp-alert-ok{font-size:13px;color:#FFD700;font-weight:700;margin-top:8px;}
 
     /* Offer Card */
-    .rp-offer{margin-top:20px;background:linear-gradient(145deg,rgba(0,184,156,0.08),rgba(0,184,156,0.02));border:2px solid rgba(0,184,156,0.3);border-radius:16px;padding:24px 20px;text-align:center;position:relative;overflow:hidden;}
-    .rp-offer::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(0,184,156,0.05),transparent,rgba(0,184,156,0.05));animation:offerSpin 8s linear infinite;}
+    .rp-offer{margin-top:20px;background:linear-gradient(145deg,rgba(20,10,40,.9),rgba(8,5,15,.95));border:1px solid rgba(255,107,0,0.35);border-radius:16px;padding:24px 20px;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,107,0,0.1);}
+    .rp-offer::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,107,0,0.04),transparent,rgba(124,58,237,0.04));animation:offerSpin 8s linear infinite;}
     @keyframes offerSpin{to{transform:rotate(360deg);}}
     .rp-offer-inner{position:relative;z-index:1;}
     .rp-offer-row{font-size:18px;font-weight:700;margin:6px 0;display:flex;align-items:center;justify-content:center;gap:6px;}
-    .rp-offer-row.diamonds{font-size:24px;font-weight:900;color:#00B89C;}
-    .rp-offer-row.bonus{color:#22c55e;}
-    .rp-offer-row.discount{color:#F59E0B;}
-    .rp-offer-price{font-size:28px;font-weight:900;margin-top:12px;color:#fff;}
-    .rp-offer-price small{font-size:14px;font-weight:500;color:rgba(255,255,255,0.5);display:block;margin-bottom:4px;}
+    .rp-offer-row.diamonds{font-size:24px;font-weight:900;color:#FF6B00;}
+    .rp-offer-row.bonus{color:#FFD700;}
+    .rp-offer-row.discount{color:#A78BFA;}
+    .rp-offer-price{font-size:28px;font-weight:900;margin-top:12px;color:#fff;font-family:'Orbitron',sans-serif;}
+    .rp-offer-price small{font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);display:block;margin-bottom:4px;letter-spacing:.1em;}
 
     /* Info Block */
-    .rp-info{margin-top:20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;}
-    .rp-info-title{font-size:15px;font-weight:700;margin-bottom:8px;}
+    .rp-info{margin-top:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,107,0,0.15);border-radius:14px;padding:16px;}
+    .rp-info-title{font-size:14px;font-weight:700;margin-bottom:8px;color:#FF8C00;}
     .rp-info-text{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.7;}
 
-    /* CTA */
+    /* CTA Button */
     .rp-cta{margin-top:24px;}
-    .rp-cta-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#00B89C,#22c55e);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .2s;box-shadow:0 8px 30px rgba(0,184,156,0.3);}
-    .rp-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,184,156,0.4);}
+    .rp-cta-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .25s;box-shadow:0 8px 30px rgba(255,107,0,0.4);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;}
+    .rp-cta-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite;}
+    @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
+    .rp-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,107,0,0.6);}
     .rp-cta-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
 
-    /* PIX Result Area */
+    /* PIX Result */
     .rp-pix{display:none;margin-top:24px;text-align:center;}
     .rp-pix.active{display:block;}
-    .rp-pix-success{background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(34,197,94,0.04));border:1px solid rgba(34,197,94,0.3);border-radius:14px;padding:16px;margin-bottom:16px;}
-    .rp-pix-success-title{font-size:18px;font-weight:800;color:#22c55e;}
+    .rp-pix-success{background:linear-gradient(135deg,rgba(255,107,0,0.1),rgba(124,58,237,0.1));border:1px solid rgba(255,107,0,0.3);border-radius:14px;padding:16px;margin-bottom:16px;}
+    .rp-pix-success-title{font-size:18px;font-weight:800;color:#FF6B00;font-family:'Orbitron',sans-serif;}
     .rp-pix-success-sub{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;}
     .rp-pix-summary{font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);margin:12px 0;}
-    .rp-pix-label{font-size:14px;font-weight:700;margin:16px 0 8px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;}
-    .rp-qr{background:#fff;border-radius:12px;padding:12px;display:inline-block;margin:8px auto;}
+    .rp-pix-label{font-size:12px;font-weight:700;margin:16px 0 8px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;}
+    .rp-qr{background:#fff;border-radius:12px;padding:12px;display:inline-block;margin:8px auto;box-shadow:0 0 30px rgba(255,107,0,0.2);}
     .rp-qr img{width:220px;height:220px;}
-    .rp-copy-btn{display:block;width:100%;padding:16px;background:rgba(0,184,156,0.15);border:2px solid #00B89C;color:#00B89C;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
-    .rp-copy-btn:hover{background:rgba(0,184,156,0.25);}
+    .rp-copy-btn{display:block;width:100%;padding:16px;background:rgba(255,107,0,0.1);border:2px solid #FF6B00;color:#FF6B00;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
+    .rp-copy-btn:hover{background:rgba(255,107,0,0.2);}
 
     /* Status */
     .rp-status{margin-top:16px;padding:14px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;}
-    .rp-status.pending{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);color:#F59E0B;}
+    .rp-status.pending{background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.2);color:#FF8C00;}
     .rp-status.paid{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e;}
     .rp-status.expired{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;}
 
     /* Loading */
     .rp-loading{display:none;text-align:center;padding:40px 20px;}
     .rp-loading.active{display:block;}
-    .rp-spinner{width:40px;height:40px;border:3px solid rgba(0,184,156,0.2);border-top-color:#00B89C;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+    .rp-spinner{width:40px;height:40px;border:3px solid rgba(255,107,0,0.2);border-top-color:#FF6B00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    .rp-loading-text{font-size:14px;color:rgba(255,255,255,0.6);}
+    .rp-loading-text{font-size:14px;color:rgba(255,255,255,0.5);}
 
     /* Error */
-    .rp-error{display:none;margin-top:20px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:20px;text-align:center;}
+    .rp-error{display:none;margin-top:20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:20px;text-align:center;}
     .rp-error.active{display:block;}
     .rp-error-title{font-size:16px;font-weight:700;color:#ef4444;}
-    .rp-error-text{font-size:13px;color:rgba(255,255,255,0.6);margin-top:8px;}
+    .rp-error-text{font-size:13px;color:rgba(255,255,255,0.5);margin-top:8px;}
 
-    .rp-footer{margin-top:40px;text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding-bottom:20px;}
+    .rp-footer{margin-top:40px;text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding-bottom:20px;}
     </style>
     <!-- Lowtrack Pixel -->
     <script>
@@ -93,11 +111,13 @@
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
 </head>
 <body>
+<div class="ambient-bg" aria-hidden="true"></div>
 <div class="rp-wrap">
     <!-- Header -->
     <div class="rp-hdr">
         <img src="images/iconff.png" alt="FF">
         <span class="rp-hdr-txt">Centro de Recarga · Free Fire</span>
+        <span class="rp-hdr-badge">🍃 FF × NARUTO</span>
     </div>
 
     <!-- Loading State -->
@@ -117,10 +137,10 @@
     <div id="rp-main" style="display:none;">
         <!-- Alert -->
         <div class="rp-alert">
-            <div class="rp-alert-icon">⚠️</div>
-            <div class="rp-alert-title">SEU PIX NÃO FOI CONFIRMADO</div>
-            <div class="rp-alert-desc">Tivemos uma instabilidade momentânea na confirmação do seu pagamento.</div>
-            <div class="rp-alert-ok">Mas fica tranquilo: sua oferta continua preservada. 💎</div>
+            <div class="rp-alert-icon">⚡</div>
+            <div class="rp-alert-title">SEU JUTSU FALHOU — PIX NÃO CONFIRMADO</div>
+            <div class="rp-alert-desc">Sua missão ainda não foi concluída, ninja. Houve uma instabilidade momentânea na confirmação do pagamento.</div>
+            <div class="rp-alert-ok">🍃 Sua oferta continua reservada. Complete agora! 💎</div>
         </div>
 
         <!-- Offer Card -->
@@ -150,7 +170,7 @@
 
         <!-- CTA -->
         <div class="rp-cta" id="rp-cta-area">
-            <button class="rp-cta-btn" id="rp-retry-btn" onclick="retryPix()">🟢 TENTAR NOVAMENTE</button>
+            <button class="rp-cta-btn" id="rp-retry-btn" onclick="retryPix()">🍃 COMPLETAR MISSÃO — GERAR PIX</button>
         </div>
 
         <!-- PIX Result -->
