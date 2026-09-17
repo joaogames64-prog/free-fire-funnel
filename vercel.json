@@ -2,11 +2,6 @@
   "buildCommand": "",
   "outputDirectory": ".",
   "framework": null,
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "rewrites": [
     { "source": "/api/check-tx/:hash", "destination": "/api/check-tx?hash=:hash" },
     { "source": "/api/retry-pix/:hash", "destination": "/api/retry-pix?hash=:hash" }
