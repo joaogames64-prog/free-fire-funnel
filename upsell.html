@@ -105,7 +105,7 @@ button{cursor:pointer;font-family:inherit;}
 @keyframes progAnim{0%{width:15%}50%{width:75%}100%{width:90%}}
 
 /* VSL Modal */
-.vsl-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);backdrop-filter:blur(4px);}
+.vsl-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);backdrop-filter:blur(4px);}
 .vsl-inner{position:relative;width:100%;max-width:56rem;margin:0 1rem;animation:modalIn .4s ease;}
 @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.92);}to{opacity:1;transform:translateY(0) scale(1);}}
 .vsl-close{position:absolute;top:-3rem;right:0;color:rgba(255,255,255,.7);font-size:1rem;font-family:sans-serif;display:flex;align-items:center;gap:.5rem;background:none;border:none;cursor:pointer;transition:color .2s;font-weight:bold;}
@@ -115,12 +115,7 @@ button{cursor:pointer;font-family:inherit;}
 .vsl-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);cursor:pointer;transition:opacity .3s;z-index:10;}
 .vsl-play-btn{width:5rem;height:5rem;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#FFD700);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 10px 15px rgba(255,107,0,.5);transition:transform .2s;color:#fff;font-size:2rem;}
 .vsl-play-btn:hover{transform:scale(1.1);}
-
-.thumb-wrap{position:relative;margin:0 16px 14px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,107,0,.3);box-shadow:0 0 15px rgba(255,107,0,.15);cursor:pointer;}
-.thumb-wrap img{width:100%;display:block;opacity:0.8;}
-.thumb-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);}
-.thumb-play-btn{width:4rem;height:4rem;background:linear-gradient(135deg,#FF6B00,#FFD700);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;box-shadow:0 0 20px rgba(255,107,0,.6);animation:ctaPulse 2s infinite;}
-@keyframes ctaPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.vsl-text{text-align:center;color:rgba(255,255,255,.6);margin-top:1rem;font-size:.875rem;}
 </style>
 <script>
 window.pixelId="lt_px_669f8020a206";
@@ -147,10 +142,6 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 <div class="obadge">Oferta Pos-Evento - Exclusivo</div>
 <div class="otitle">PACK NINJA<br>COMPLETO</div>
 <p class="osub">Voce completou o evento. Como recompensa, desbloqueamos o <strong style="color:#FFD700;">Pack Ninja Exclusivo</strong> com as skins mais raras do crossover FF x Naruto Shippuden.</p>
-</div>
-<div class="thumb-wrap" onclick="openModal()">
-<img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Assistir Vídeo">
-<div class="thumb-play"><div class="thumb-play-btn">▶</div></div>
 </div>
 <div class="pbox">
 <div class="pold">De R$ 189,00</div>
@@ -251,13 +242,13 @@ function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx
                 <button class="vsl-play-btn">▶</button>
             </div>
         </div>
+        <p class="vsl-text">🍃 Assista até o final para liberar sua recompensa!</p>
     </div>
 </div>
 
 <script>
 var modal=document.getElementById('vslModal'),vid=document.getElementById('vslVideo'),
     overlay=document.getElementById('playOverlay'),closeBtn=document.getElementById('closeVsl');
-function openModal(){modal.style.display='flex';}
 function closeModal(){modal.style.display='none';vid.pause();}
 overlay.addEventListener('click',function(){overlay.style.opacity='0';setTimeout(function(){overlay.style.display='none';},300);vid.play().catch(function(){});});
 vid.addEventListener('click',function(){if(!vid.paused){vid.pause();overlay.style.display='flex';setTimeout(function(){overlay.style.opacity='1';},10);}});
