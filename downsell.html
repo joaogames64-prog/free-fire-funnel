@@ -126,17 +126,17 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 </div>
 </div>
 <div class="oh">
-<div class="obadge">Oferta Pos-Evento - Exclusivo</div>
-<div class="otitle">PACK NINJA<br>COMPLETO</div>
-<p class="osub">Voce completou o evento. Como recompensa, desbloqueamos o <strong style="color:#FFD700;">Pack Ninja Exclusivo</strong> com as skins mais raras do crossover FF x Naruto Shippuden.</p>
+<div class="obadge" style="background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.3);">ESPECIAL PARA VOCE</div>
+<div class="otitle" style="color:#ef4444;">ESPERA!<br>ULTIMA CHANCE</div>
+<p class="osub">Vi que voce recusou a oferta, mas como sei que voce realmente quer essas skins, vou fazer uma loucura: desbloquear tudo por um <strong style="color:#FFD700;">preco ainda menor</strong>! Essa e sua ultima chance.</p>
 </div>
 <div style="margin:0 16px 14px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,107,0,.3);box-shadow:0 0 15px rgba(255,107,0,.15);background:#000;">
 <video src="https://i.imgur.com/fVt7L3U.mp4" autoplay loop muted playsinline controls style="width:100%;display:block;"></video>
 </div>
 <div class="pbox">
-<div class="pold">De R$ 189,00</div>
-<div class="pnew"><span>R$ </span>27<span>,00</span></div>
-<div class="ptag">85% OFF - VALIDO SO AGORA</div>
+<div class="pold">De R$ 27,00</div>
+<div class="pnew"><span>R$ </span>17<span>,00</span></div>
+<div class="ptag" style="background:#ef4444;color:#fff;">OFERTA UNICA E FINAL</div>
 <div class="pdesc">Acesso imediato via PIX - Itens creditados em ate 2 min</div>
 </div>
 <div class="ssec">
@@ -194,7 +194,7 @@ var tel=localStorage.getItem('ff_telefone')||sessionStorage.getItem('ff_telefone
 var np=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 var email=np+(tel.slice(-4)||'0000')+'@gmail.com';
 var utms=getUTMs();
-fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'27.00',nome:nome,email:email,telefone:tel,product_title:'Pack Ninja Completo - FF x Naruto',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
+fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'17.00',nome:nome,email:email,telefone:tel,product_title:'Pack Ninja (Downsell) - FF x Naruto',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
 .then(function(r){return r.json();})
 .then(function(data){
 var code=null;
@@ -220,7 +220,7 @@ else{var ta=document.createElement('textarea');ta.value=pixCode;document.body.ap
 }
 function isPaid(d){if(!d)return false;if(d.status==='paid'||d.status==='approved')return true;if(d.payment_status==='paid'||d.payment_status==='approved')return true;if(d.data&&(d.data.status==='paid'||d.data.status==='approved'))return true;return false;}
 function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='PAGAMENTO CONFIRMADO! Seus itens serao creditados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:27.00,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
-function pularOferta(){window.location.href='downsell.html';}
+function pularOferta(){window.location.href='obrigado.html';}
 </script>
 </body>
 </html>
