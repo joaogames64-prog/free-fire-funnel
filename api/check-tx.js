@@ -1,19 +1,21 @@
 const https = require('https');
+const url = require('url');
 
-const HURAPAY_KEY = process.env.HURAPAY_KEY || 'cpk_live_w0pgtthu91vsvym5m43685cn';
-const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
+const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
+const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
 
-function hurapayRequest(method, endpoint) {
+function ironpayRequest(method, endpoint) {
     return new Promise((resolve, reject) => {
-        const urlParsed = new URL(HURAPAY_BASE + endpoint);
+        const separator = endpoint.includes('?') ? '&' : '?';
+        const fullUrl = `${IRONPAY_BASE}${endpoint}${separator}api_token=${IRONPAY_TOKEN}`;
+        const parsed = url.parse(fullUrl);
 
         const options = {
-            hostname: urlParsed.hostname,
+            hostname: parsed.hostname,
             port: 443,
-            path: urlParsed.pathname + urlParsed.search,
+            path: parsed.path,
             method: method,
             headers: {
-                'X-API-KEY': HURAPAY_KEY,
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
@@ -37,34 +39,20 @@ module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
 
-    if (req.method === 'OPTIONS') { res.status(200).end(); return; }
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
 
     try {
         const { hash, txid } = req.query;
-        const chargeId = hash || txid;
-
-        if (!chargeId) {
-            res.status(400).json({ error: 'Charge ID required' });
+        const targetHash = hash || txid;
+        if (!targetHash) {
+            res.status(400).json({ error: 'Hash query parameter required' });
             return;
         }
-
-        const result = await hurapayRequest('GET', `/charge/${chargeId}`);
-        const responseData = result.data || {};
-
-        // HuraPay wraps data inside .data
-        const chargeData = responseData.data || responseData;
-        const paymentStatus = (chargeData.paymentStatus || '').toUpperCase();
-        const isPaid = paymentStatus === 'PAID';
-
-        // Normalize so frontend polling works:
-        // Frontend checks: data.status === 'paid' OR data.payment_status === 'paid'
-        const normalized = {
-            ...chargeData,
-            status:         isPaid ? 'paid' : paymentStatus.toLowerCase(),
-            payment_status: isPaid ? 'paid' : paymentStatus.toLowerCase()
-        };
-
-        res.status(result.status < 400 ? result.status : 200).json(normalized);
+        const result = await ironpayRequest('GET', `/transactions/${targetHash}`);
+        res.status(result.status).json(result.data);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
