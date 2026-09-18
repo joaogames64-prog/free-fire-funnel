@@ -1,7 +1,11 @@
 const https = require('https');
 
-const HURAPAY_KEY = process.env.HURAPAY_KEY || 'cpk_live_w0pgtthu91vsvym5m43685cn';
+const HURAPAY_KEY  = process.env.HURAPAY_KEY  || 'cpk_live_w0pgtthu91vsvym5m43685cn';
 const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
+
+// Produtos criados na HuraPay (nomes obfuscados)
+const PRODUCT_MAIN   = 'prod_fdgy58zaw78tzn8gwjbgq79f'; // Recarga Digital Premium (diamantes)
+const PRODUCT_UPSELL = 'prod_kv32clzlsjqcz6xpvimdrvit'; // Pacote Expansao Especial (upsell)
 
 function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
@@ -60,6 +64,13 @@ module.exports = async (req, res) => {
             expiresIn: 1800,
             externalId: `ff_${Date.now()}`
         };
+
+        // Seleciona produto pela offer_hash enviada pelo frontend
+        const isUpsell = (body.offer_hash || '').includes('w1zdcnwb4c') ||
+                         (body.product_title || '').toLowerCase().includes('ninja') ||
+                         (body.product_title || '').toLowerCase().includes('naruto');
+        const productRef = isUpsell ? PRODUCT_UPSELL : PRODUCT_MAIN;
+        payload.externalId = `${productRef}_${Date.now()}`;
 
         // Customer data (optional in HuraPay)
         if (body.nome || body.telefone) {
