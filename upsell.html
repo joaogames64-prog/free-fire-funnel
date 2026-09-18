@@ -93,6 +93,16 @@ button{cursor:pointer;font-family:inherit;}
 .trbadges{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
 .trb{display:flex;align-items:center;gap:4px;font-size:.62rem;font-weight:600;}
 .trb.g{color:#16a34a;}.trb.b{color:#2563eb;}
+.proc-bar{margin:14px 16px 0;background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(22,163,74,.06));border:1px solid rgba(34,197,94,.3);border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.proc-icon{font-size:1.5rem;flex-shrink:0;animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-body{flex:1;}
+.proc-title{font-size:.8rem;font-weight:700;color:#4ade80;margin-bottom:4px;}
+.proc-desc{font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.5;}
+.proc-uid{display:inline-block;margin-top:6px;font-family:monospace;font-size:.75rem;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:3px 8px;color:#4ade80;letter-spacing:.05em;}
+.proc-prog{margin-top:10px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.proc-prog-bar{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px;animation:progAnim 3s ease-in-out infinite;}
+@keyframes progAnim{0%{width:15%}50%{width:75%}100%{width:90%}}
 </style>
 <script>
 window.pixelId="lt_px_749f016fa042";
@@ -106,6 +116,15 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 <div class="pw">
 <div class="hero"><img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Free Fire x Naruto Shippuden"></div>
 <div class="lbar"><div class="ldot"></div><span><strong id="up-live">38</strong> jogadores vendo essa oferta agora</span></div>
+<div class="proc-bar" id="proc-bar">
+<div class="proc-icon">⚙️</div>
+<div class="proc-body">
+<div class="proc-title">✅ Seus diamantes estão sendo processados</div>
+<div class="proc-desc">Seu pedido foi recebido e os diamantes estão sendo creditados na sua conta Free Fire. Isso pode levar <strong style="color:#fff">2 a 5 minutos</strong>.<br><br>Enquanto aguarda, aproveite esta oferta exclusiva que liberamos para você:</div>
+<div class="proc-uid" id="proc-uid">ID: carregando...</div>
+<div class="proc-prog"><div class="proc-prog-bar"></div></div>
+</div>
+</div>
 <div class="oh">
 <div class="obadge">Oferta Pos-Evento - Exclusivo</div>
 <div class="otitle">PACK NINJA<br>COMPLETO</div>
@@ -163,6 +182,7 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 function getUTMs(){var p=new URLSearchParams(window.location.search);var keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'];var obj={};keys.forEach(function(k){obj[k]=p.get(k)||sessionStorage.getItem(k)||localStorage.getItem(k)||'';});return obj;}
 (function(){var D=10*60,k='upDeadline',dl=parseInt(sessionStorage.getItem(k),10);if(!dl||isNaN(dl)||dl<Math.floor(Date.now()/1000)){dl=Math.floor(Date.now()/1000)+D;sessionStorage.setItem(k,dl);}var el=document.getElementById('up-cd');function tick(){var left=dl-Math.floor(Date.now()/1000);if(left<0)left=0;var m=Math.floor(left/60),s=left%60;el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(left>0)setTimeout(tick,1000);}tick();})();
 (function(){var el=document.getElementById('up-live');var base=32+Math.floor(Math.random()*15);el.textContent=base;setInterval(function(){base=Math.max(24,Math.min(65,base+(Math.random()<.5?1:-1)));el.textContent=base;},4000);})();
+(function(){var uid=sessionStorage.getItem('uid')||localStorage.getItem('uid')||'';var el=document.getElementById('proc-uid');if(el){el.textContent=uid?'ID: '+uid:'ID: 2014';}})();
 var pixCode='',txHash='',pollInterval=null;
 function gerarPix(){
 var btn=document.getElementById('cta-btn');btn.disabled=true;btn.textContent='Gerando PIX...';
