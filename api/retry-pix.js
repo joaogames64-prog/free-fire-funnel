@@ -3,23 +3,6 @@ const https = require('https');
 const HURAPAY_KEY = process.env.HURAPAY_KEY || 'cpk_live_w0pgtthu91vsvym5m43685cn';
 const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 
-function generateCPF() {
-    const digits = [];
-    for (let i = 0; i < 9; i++) digits.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
-    if (digits.every(d => d === digits[0])) digits[8] = (digits[0] + 1) % 10;
-    let sum1 = 0;
-    for (let i = 0; i < 9; i++) sum1 += digits[i] * (10 - i);
-    let d1 = 11 - (sum1 % 11);
-    if (d1 >= 10) d1 = 0;
-    digits.push(d1);
-    let sum2 = 0;
-    for (let i = 0; i < 10; i++) sum2 += digits[i] * (11 - i);
-    let d2 = 11 - (sum2 % 11);
-    if (d2 >= 10) d2 = 0;
-    digits.push(d2);
-    return digits.join('');
-}
-
 function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
         const bodyStr = body ? JSON.stringify(body) : null;
@@ -118,7 +101,6 @@ module.exports = async (req, res) => {
 
         if (origData.customer) {
             payload.customer = {
-                taxId: origData.customer.taxId || generateCPF(),
                 name:  origData.customer.name  || undefined,
                 email: origData.customer.email || undefined,
                 phone: origData.customer.phone || undefined
