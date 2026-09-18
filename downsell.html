@@ -230,6 +230,9 @@ else{var ta=document.createElement('textarea');ta.value=pixCode;document.body.ap
 }
 function isPaid(d){if(!d)return false;if(d.status==='paid'||d.status==='approved')return true;if(d.payment_status==='paid'||d.payment_status==='approved')return true;if(d.data&&(d.data.status==='paid'||d.data.status==='approved'))return true;return false;}
 function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='PAGAMENTO CONFIRMADO! Seus itens serao creditados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:27.00,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
+function pularOferta(){window.location.href='obrigado.html';}
+</script>
+
 <!-- VSL Modal -->
 <div class="vsl-overlay" id="vslModal">
     <div class="vsl-inner">
@@ -255,8 +258,6 @@ vid.addEventListener('click',function(){if(!vid.paused){vid.pause();overlay.styl
 vid.addEventListener('ended',closeModal);
 closeBtn.addEventListener('click',closeModal);
 modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
-
-function pularOferta(){window.location.href='obrigado.html';}
 </script>
 </body>
 </html>
