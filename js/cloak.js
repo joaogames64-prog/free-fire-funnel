@@ -1,26 +1,31 @@
 /**
- * cloak.js — Script de proteção client-side
+ * cloak.js — Sistema de proteção com TOKEN OBRIGATÓRIO
  *
- * Camadas de proteção:
- *  1. Anti-clone: bloqueia se não for o domínio autorizado
- *  2. Chama a API server-side /api/cloak para verificação de UA/IP/Referrer
- *  3. Detecção client-side extra: Ad Library iframe, referrers suspeitos
- *  4. Se qualquer check falhar → redireciona para /safe.html
+ * COMO FUNCIONA:
+ *  - O link do seu anúncio DEVE ter ?tk=SEU_TOKEN_SECRETO
+ *  - Sem o token → qualquer um vê a safe page
+ *  - Com o token → token é salvo em sessionStorage, todas as páginas do funil funcionam
+ *  - Bot/revisor Meta → safe page (por UA, IP, referrer)
+ *  - Clone em outro domínio → página em branco
  *
- * USO: Adicionar no <head> de cada HTML (antes de qualquer outro script):
- *   <script src="/js/cloak.js"></script>
+ * SEU LINK DE ANÚNCIO DEVE SER:
+ *   https://recompensasff.vercel.app/?tk=FF2024NARUTO
+ *
+ * TROQUE O TOKEN ABAIXO PARA ALGO ÚNICO SEU (sem espaços, só letras e números)
  */
 
 (function () {
   'use strict';
 
-  // ── CONFIG ────────────────────────────────────────────────────────────────
+  // ── CONFIG — TROQUE AQUI ──────────────────────────────────────────────────
+  var SECRET_TOKEN  = 'FF2024NARUTO';       // Token secreto — mude para algo único
   var ALLOWED_HOSTS = [
     'recompensasff.vercel.app',
     'localhost',
     '127.0.0.1',
   ];
-  var SAFE_PAGE = '/safe.html';
+  var SAFE_PAGE     = '/safe.html';
+  var TOKEN_KEY     = '_atok';              // Chave no sessionStorage
   // ─────────────────────────────────────────────────────────────────────────
 
   function goSafe() {
@@ -34,17 +39,30 @@
     return host === h || host.endsWith('.' + h);
   });
   if (!allowed) {
-    // Apaga todo o conteúdo e para a execução
     document.documentElement.innerHTML =
-      '<body style="background:#000;color:#000;font-size:1px;"> </body>';
-    // Sobrescreve histórico para dificultar análise
+      '<body style="background:#fff;color:#fff;font-size:1px;"> </body>';
     try { history.replaceState(null, '', '/'); } catch (e) {}
-    // Impede fetch/XHR de funcionar (destrói globais)
     try { window.fetch = function () { return Promise.reject(); }; } catch (e) {}
-    throw new Error(''); // Interrompe execução de scripts subsequentes
+    throw new Error('');
   }
 
-  // ── 2. DETECÇÃO CLIENT-SIDE de referrers / contextos suspeitos ───────────
+  // ── 2. TOKEN DE ACESSO ────────────────────────────────────────────────────
+  // Verifica se o token está na URL ou já foi salvo na sessão
+  var params   = new URLSearchParams(window.location.search);
+  var urlToken = params.get('tk') || '';
+  var sesToken = '';
+  try { sesToken = sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+
+  if (urlToken === SECRET_TOKEN) {
+    // Token correto na URL → salva na sessão para as próximas páginas do funil
+    try { sessionStorage.setItem(TOKEN_KEY, SECRET_TOKEN); } catch (e) {}
+  } else if (sesToken !== SECRET_TOKEN) {
+    // Nem URL nem sessão têm o token → vai para safe page
+    goSafe();
+    return;
+  }
+
+  // ── 3. DETECÇÃO CLIENT-SIDE de referrers / contextos suspeitos ───────────
   var ref = (document.referrer || '').toLowerCase();
   var badRefs = [
     'facebook.com/ads/library',
@@ -59,12 +77,11 @@
     if (ref.indexOf(badRefs[i]) !== -1) { goSafe(); return; }
   }
 
-  // ── 3. DETECÇÃO de iframe da Ad Library ──────────────────────────────────
+  // ── 4. DETECÇÃO de iframe da Ad Library ──────────────────────────────────
   try {
     if (window.self !== window.top) {
       var parentHref = '';
       try { parentHref = window.parent.location.href.toLowerCase(); } catch (e) {
-        // Se não consegue acessar parent (cross-origin), é suspeito
         goSafe(); return;
       }
       if (parentHref.indexOf('facebook.com') !== -1 ||
@@ -72,9 +89,9 @@
         goSafe(); return;
       }
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {}
 
-  // ── 4. DETECÇÃO de User-Agent client-side (segunda camada) ───────────────
+  // ── 5. DETECÇÃO de User-Agent client-side ────────────────────────────────
   var ua = (navigator.userAgent || '').toLowerCase();
   var badUA = [
     'facebookexternalhit', 'facebot', 'meta-externalagent',
@@ -86,38 +103,34 @@
     if (ua.indexOf(badUA[j]) !== -1) { goSafe(); return; }
   }
 
-  // ── 5. VERIFICAÇÃO SERVER-SIDE via /api/cloak ─────────────────────────────
-  // Faz a verificação de IP e UA no servidor
+  // ── 6. VERIFICAÇÃO SERVER-SIDE via /api/cloak ─────────────────────────────
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/api/cloak', true);
-  xhr.timeout = 3000; // 3s timeout — se falhar, deixa passar (não bloqueia usuário real)
+  xhr.timeout = 3000;
   xhr.onload = function () {
     try {
       var data = JSON.parse(xhr.responseText);
       if (data && data.safe === true) { goSafe(); }
-    } catch (e) { /* parse error — deixa passar */ }
+    } catch (e) {}
   };
-  xhr.onerror = function () { /* erro de rede — deixa passar */ };
-  xhr.ontimeout = function () { /* timeout — deixa passar */ };
+  xhr.onerror   = function () {};
+  xhr.ontimeout = function () {};
   xhr.send();
 
-  // ── 6. ANTI-DEVTOOLS (dificulta análise do código) ────────────────────────
-  // Detecta se DevTools está aberto (técnica de timing)
-  var devtoolsCheck = function () {
-    var threshold = 160;
+  // ── 7. ANTI-DEVTOOLS ──────────────────────────────────────────────────────
+  setInterval(function () {
+    var threshold  = 160;
     var widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
     var heightDiff = window.outerHeight - window.innerHeight > threshold;
     if (widthDiff || heightDiff) {
-      // DevTools aberto — não bloqueamos (falso positivo alto), mas limpamos console
       try { console.clear(); } catch (e) {}
     }
-  };
-  setInterval(devtoolsCheck, 2000);
+  }, 2000);
 
-  // Desabilita clique direito para dificultar cópia
+  // Desabilita clique direito
   document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
-  // Desabilita Ctrl+U (ver código fonte) e Ctrl+S (salvar)
+  // Desabilita Ctrl+U e Ctrl+S
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) {
       e.preventDefault();
