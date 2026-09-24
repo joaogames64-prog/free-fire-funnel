@@ -1,31 +1,34 @@
 /**
- * cloak.js — Sistema de proteção com TOKEN OBRIGATÓRIO
+ * cloak.js — Cloacker com fbclid (Facebook Click ID)
  *
  * COMO FUNCIONA:
- *  - O link do seu anúncio DEVE ter ?tk=SEU_TOKEN_SECRETO
- *  - Sem o token → qualquer um vê a safe page
- *  - Com o token → token é salvo em sessionStorage, todas as páginas do funil funcionam
- *  - Bot/revisor Meta → safe page (por UA, IP, referrer)
- *  - Clone em outro domínio → página em branco
+ *  - Quando alguém clica num anúncio do Facebook/Instagram, o próprio FB
+ *    adiciona automaticamente ?fbclid=XXXXX na URL. Sem isso → safe page.
+ *  - A biblioteca de anúncios NÃO adiciona o fbclid, então revisores e
+ *    concorrentes que copiam a URL veem a safe page.
+ *  - Uma vez que o lead entrou com fbclid válido, o sessionStorage guarda
+ *    o acesso e todo o funil funciona normalmente.
  *
- * SEU LINK DE ANÚNCIO DEVE SER:
- *   https://recompensasff.vercel.app/?tk=FF2024NARUTO
+ * LINK DO ANÚNCIO: apenas coloque sua URL normal, sem nada extra.
+ *   https://recompensasff.vercel.app/
+ *   O Facebook adiciona o fbclid automaticamente no clique.
  *
- * TROQUE O TOKEN ABAIXO PARA ALGO ÚNICO SEU (sem espaços, só letras e números)
+ * PARA TESTAR VOCÊ MESMO:
+ *   https://recompensasff.vercel.app/?preview=SUA_SENHA_PREVIEW
  */
 
 (function () {
   'use strict';
 
-  // ── CONFIG — TROQUE AQUI ──────────────────────────────────────────────────
-  var SECRET_TOKEN  = 'FF2024NARUTO';       // Token secreto — mude para algo único
-  var ALLOWED_HOSTS = [
+  // ── CONFIG ────────────────────────────────────────────────────────────────
+  var ALLOWED_HOSTS    = [
     'recompensasff.vercel.app',
     'localhost',
     '127.0.0.1',
   ];
-  var SAFE_PAGE     = '/safe.html';
-  var TOKEN_KEY     = '_atok';              // Chave no sessionStorage
+  var PREVIEW_PASSWORD = 'ffnaruto2024admin'; // Senha pra você testar sem fbclid
+  var SAFE_PAGE        = '/safe.html';
+  var SESSION_KEY      = '_fba';             // Chave do sessionStorage
   // ─────────────────────────────────────────────────────────────────────────
 
   function goSafe() {
@@ -33,8 +36,16 @@
     window.location.replace(SAFE_PAGE);
   }
 
+  function setAccess() {
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+  }
+
+  function hasAccess() {
+    try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return false; }
+  }
+
   // ── 1. ANTI-CLONE: verifica domínio ──────────────────────────────────────
-  var host = window.location.hostname;
+  var host    = window.location.hostname;
   var allowed = ALLOWED_HOSTS.some(function (h) {
     return host === h || host.endsWith('.' + h);
   });
@@ -46,24 +57,44 @@
     throw new Error('');
   }
 
-  // ── 2. TOKEN DE ACESSO ────────────────────────────────────────────────────
-  // Verifica se o token está na URL ou já foi salvo na sessão
-  var params   = new URLSearchParams(window.location.search);
-  var urlToken = params.get('tk') || '';
-  var sesToken = '';
-  try { sesToken = sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+  // ── 2. GATE PRINCIPAL: fbclid / parâmetros de clique ─────────────────────
+  var params  = new URLSearchParams(window.location.search);
 
-  if (urlToken === SECRET_TOKEN) {
-    // Token correto na URL → salva na sessão para as próximas páginas do funil
-    try { sessionStorage.setItem(TOKEN_KEY, SECRET_TOKEN); } catch (e) {}
-  } else if (sesToken !== SECRET_TOKEN) {
-    // Nem URL nem sessão têm o token → vai para safe page
+  // Facebook adiciona fbclid em cliques de anúncio
+  var fbclid  = params.get('fbclid') || '';
+  // Instagram adiciona igshid em alguns casos
+  var igshid  = params.get('igshid') || '';
+  // TikTok adiciona ttclid
+  var ttclid  = params.get('ttclid') || '';
+  // Preview password para você testar sem fbclid
+  var preview = params.get('preview') || '';
+
+  var isRealClick  = fbclid.length > 5 || igshid.length > 3 || ttclid.length > 3;
+  var isPreview    = preview === PREVIEW_PASSWORD;
+  var alreadyIn    = hasAccess();
+
+  // Referrers legítimos de clique em anúncio
+  var ref     = (document.referrer || '').toLowerCase();
+  var goodRefs = [
+    'l.facebook.com',
+    'lm.facebook.com',
+    'm.facebook.com',
+    'l.instagram.com',
+    'www.instagram.com',
+    'fb.com',
+  ];
+  var isGoodRef = goodRefs.some(function (g) { return ref.indexOf(g) !== -1; });
+
+  if (isRealClick || isPreview || isGoodRef || alreadyIn) {
+    // Acesso liberado → salva na sessão para as próximas páginas do funil
+    setAccess();
+  } else {
+    // Sem fbclid nem sessão válida → safe page
     goSafe();
     return;
   }
 
-  // ── 3. DETECÇÃO CLIENT-SIDE de referrers / contextos suspeitos ───────────
-  var ref = (document.referrer || '').toLowerCase();
+  // ── 3. DETECÇÃO de referrers suspeitos (biblioteca de anúncios) ───────────
   var badRefs = [
     'facebook.com/ads/library',
     'adslibrary',
@@ -91,7 +122,7 @@
     }
   } catch (e) {}
 
-  // ── 5. DETECÇÃO de User-Agent client-side ────────────────────────────────
+  // ── 5. DETECÇÃO de User-Agent suspeito ───────────────────────────────────
   var ua = (navigator.userAgent || '').toLowerCase();
   var badUA = [
     'facebookexternalhit', 'facebot', 'meta-externalagent',
@@ -119,18 +150,15 @@
 
   // ── 7. ANTI-DEVTOOLS ──────────────────────────────────────────────────────
   setInterval(function () {
-    var threshold  = 160;
-    var widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
-    var heightDiff = window.outerHeight - window.innerHeight > threshold;
-    if (widthDiff || heightDiff) {
+    var t = 160;
+    if (window.outerWidth - window.innerWidth > t ||
+        window.outerHeight - window.innerHeight > t) {
       try { console.clear(); } catch (e) {}
     }
   }, 2000);
 
-  // Desabilita clique direito
+  // Desabilita clique direito e atalhos de código fonte
   document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-
-  // Desabilita Ctrl+U e Ctrl+S
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) {
       e.preventDefault();
