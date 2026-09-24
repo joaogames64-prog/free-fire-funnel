@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Free Fire - Central de Suporte</title>
+<meta name="description" content="Central de suporte e informações sobre o Free Fire. Tire suas dúvidas sobre o jogo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#f5f5f5;color:#333;}
+.header{background:#D81A0D;padding:14px 20px;display:flex;align-items:center;gap:12px;}
+.header img{height:36px;}
+.header-title{color:#fff;font-size:18px;font-weight:700;}
+.hero{background:linear-gradient(135deg,#D81A0D,#8B0000);color:#fff;padding:40px 20px;text-align:center;}
+.hero h1{font-size:28px;font-weight:800;margin-bottom:10px;}
+.hero p{font-size:15px;opacity:.85;max-width:500px;margin:0 auto;}
+.container{max-width:680px;margin:0 auto;padding:30px 20px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:16px;color:#111;}
+.faq-item{background:#fff;border-radius:10px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.faq-q{padding:16px 20px;font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-q:after{content:'+';font-size:22px;color:#D81A0D;font-weight:300;}
+.faq-a{padding:0 20px 16px;font-size:14px;color:#555;line-height:1.7;display:none;}
+.faq-item.open .faq-q:after{content:'−';}
+.faq-item.open .faq-a{display:block;}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px;}
+@media(max-width:480px){.links{grid-template-columns:1fr;}}
+.link-card{background:#fff;border-radius:10px;padding:18px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.07);text-decoration:none;color:#333;transition:box-shadow .2s;}
+.link-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.1);}
+.link-card-icon{font-size:28px;margin-bottom:8px;}
+.link-card-title{font-weight:700;font-size:15px;margin-bottom:4px;}
+.link-card-sub{font-size:13px;color:#888;}
+.footer{text-align:center;padding:30px 20px;font-size:12px;color:#aaa;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">Free Fire — Central de Informações</div>
+</div>
+<div class="hero">
+  <h1>Como podemos te ajudar?</h1>
+  <p>Encontre respostas para as dúvidas mais comuns sobre o Free Fire e seus eventos.</p>
+</div>
+<div class="container">
+  <div class="section-title">Perguntas Frequentes</div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Como faço para participar dos eventos do Free Fire?</div>
+    <div class="faq-a">Para participar dos eventos, abra o jogo e acesse a aba de Eventos na tela inicial. Lá você encontrará todas as missões e promoções disponíveis para o período.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Como comprar diamantes no Free Fire?</div>
+    <div class="faq-a">Você pode comprar diamantes diretamente pelo aplicativo do Free Fire, acessando o menu de Recarga. São aceitos cartão de crédito, débito, Pix e outras formas de pagamento disponíveis na sua região.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O que é o Luck Royale?</div>
+    <div class="faq-a">O Luck Royale é o sistema de caixas do Free Fire onde você pode obter skins exclusivas, roupas, armas e outros itens raros usando diamantes. Cada rodada custa uma quantidade específica de diamantes.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Como recuperar minha conta do Free Fire?</div>
+    <div class="faq-a">Para recuperar sua conta, acesse o suporte oficial da Garena em support.garena.com e abra um ticket com suas informações. Evite compartilhar sua senha com terceiros.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O que são os eventos de colaboração?</div>
+    <div class="faq-a">Os eventos de colaboração são parcerias entre o Free Fire e marcas, animes ou artistas. Nesses eventos, aparecem skins temáticas exclusivas, emotes especiais e itens colecionáveis por tempo limitado.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Como denunciar jogadores suspeitos?</div>
+    <div class="faq-a">Durante uma partida, clique no nome do jogador suspeito e selecione a opção Denunciar. Descreva o comportamento inadequado e confirme. Nossa equipe irá analisar o caso.</div>
+  </div>
+
+  <div class="links">
+    <a class="link-card" href="https://www.garena.com.br/" target="_blank">
+      <div class="link-card-icon">🎮</div>
+      <div class="link-card-title">Site Oficial Garena</div>
+      <div class="link-card-sub">Acesse a plataforma oficial</div>
+    </a>
+    <a class="link-card" href="https://support.garena.com/" target="_blank">
+      <div class="link-card-icon">🛡️</div>
+      <div class="link-card-title">Suporte Oficial</div>
+      <div class="link-card-sub">Abra um ticket de suporte</div>
+    </a>
+    <a class="link-card" href="https://ff.garena.com/" target="_blank">
+      <div class="link-card-icon">📱</div>
+      <div class="link-card-title">Free Fire Oficial</div>
+      <div class="link-card-sub">Página oficial do jogo</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/@FreeFiraBrasil" target="_blank">
+      <div class="link-card-icon">▶️</div>
+      <div class="link-card-title">Canal YouTube</div>
+      <div class="link-card-sub">Vídeos e novidades</div>
+    </a>
+  </div>
+</div>
+<div class="footer">© Página informativa sobre Free Fire. Não afiliada oficialmente à Garena.</div>
+</body>
+</html>
