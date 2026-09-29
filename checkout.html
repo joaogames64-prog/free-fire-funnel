@@ -20,7 +20,7 @@
 
     /* Header */
     .hdr{background:#fff;border-bottom:1px solid #eee;height:56px;position:sticky;top:0;z-index:10;}
-    .hdr-inner{max-width:600px;margin:0 auto;height:100%;display:flex;align-items:center;padding:0 12px;gap:10px;}
+    .hdr-inner{max-width:600px;margin:0 auto;height:100%;display:flex;align-items:center;padding:0 12px;gap:10px;justify-content:space-between;}
     .hdr-logo-txt{font-size:12px;font-weight:500;color:#333;max-width:96px;}
     .hdr-div{width:1px;height:20px;background:#ddd;margin:0 4px;}
 
@@ -124,16 +124,8 @@
     .ob-finalize{display:block;width:100%;margin-top:16px;padding:16px;background:#D81A0D;color:#fff;border:none;border-radius:30px;font-size:18px;font-weight:700;text-align:center;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;transition:background .2s;}
     .ob-finalize:hover{background:#b5160b;}
 
-    /* Urgency Bar */
-    .urg-bar{background:linear-gradient(90deg,#b91c1c,#D81A0D);color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.2px;}
-    .urg-bar span{animation:urgPulse 1s ease-in-out infinite;}
-    @keyframes urgPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
-    .urg-cd{font-family:monospace;font-size:15px;font-weight:900;background:rgba(0,0,0,.25);border-radius:4px;padding:2px 7px;letter-spacing:2px;}
-
-    /* Live badge */
-    .live-bar{background:#fff8f0;border-bottom:1px solid #ffe0c0;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#92400e;font-weight:600;}
-    .live-dot{width:8px;height:8px;border-radius:50%;background:#D81A0D;animation:liveBlink 1s ease-in-out infinite;flex-shrink:0;}
-    @keyframes liveBlink{0%,100%{opacity:1;}50%{opacity:.2;}}
+    /* Avatar icon in header */
+    .hdr-avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;}
     </style>
     <!-- Lowtrack Pixel -->
     <script>
@@ -155,22 +147,11 @@
         <img src="images/garenalogo.png" alt="Garena" style="height:32px; width:auto; vertical-align:middle;">
         <div class="hdr-div"></div>
         <div class="hdr-logo-txt">Canal Oficial de Recarga</div>
+        <img src="https://i.imgur.com/h4xQxBj.png" alt="Avatar" class="hdr-avatar" style="margin-left:auto;">
     </div>
 </header>
 
-<!-- Urgency Countdown Bar -->
-<div class="urg-bar">
-    <span>🚨</span>
-    <span>Seu desconto expira em:</span>
-    <span class="urg-cd" id="ck-urgency">04:59</span>
-    <span>— Finalize agora!</span>
-</div>
 
-<!-- Live Viewers -->
-<div class="live-bar">
-    <div class="live-dot"></div>
-    <span><strong id="live-count">47</strong> pessoas estão tentando resgatar esse mesmo desconto agora</span>
-</div>
 
 <!-- Main -->
 <div class="ck-wrap">
