@@ -140,7 +140,7 @@
                     <span style="font-weight:500;">Fazendo login...</span>
                 </div>
                 <div id="login-success" class="login-success">
-                    <div class="player-avatar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+                    <div class="player-avatar"><img src="https://i.imgur.com/h4xQxBj.png" alt="Avatar" style="width:100%;height:100%;object-fit:cover;"></div>
                     <div class="player-info"><div class="player-name" id="player-nickname"></div><div class="player-id">ID: <span id="logged-player-id"></span></div></div>
                 </div>
             </div>
@@ -335,14 +335,14 @@ function handleLogin(e){
     setTimeout(function(){
         document.getElementById('login-loading').style.display='none';
         document.getElementById('login-success').style.display='flex';
-        document.getElementById('player-nickname').textContent='Jogador_'+id.slice(0,4);
+        document.getElementById('player-nickname').textContent='Jogador';
         document.getElementById('logged-player-id').textContent=id;
         document.getElementById('logout-btn').style.display='flex';
         document.getElementById('purchase-section').style.display='block';
         document.getElementById('buy-bar').style.display='block';
         document.querySelector('.cta-text').style.display='none';
         sessionStorage.setItem('uid',id);
-        sessionStorage.setItem('player_nickname','Jogador_'+id.slice(0,4));
+        sessionStorage.setItem('player_nickname','Jogador');
         document.getElementById('denom-section').scrollIntoView({behavior:'smooth',block:'start'});
     },2000);
 }

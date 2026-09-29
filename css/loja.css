@@ -73,7 +73,7 @@ input { font-size: 16px !important; font-family: inherit; }
 
 /* Logged in state */
 .login-success { display: none; align-items: center; gap: 12px; padding: 12px 0; }
-.player-avatar { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #22c55e; background: #1a1a2e; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.player-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .player-info { flex: 1; }
 .player-name { font-size: 14px; font-weight: 700; }
 .player-id { font-size: 14px; color: #888; }
