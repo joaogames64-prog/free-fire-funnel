@@ -466,12 +466,8 @@ if(txHash){
                     paidEl.style.display = 'block';
                     // Redirect after 3 seconds
                     setTimeout(function(){
-                        if(isUpsellPurchase){
-                            sessionStorage.removeItem('is_upsell');
-                            window.location.href = 'obrigado.html';
-                        } else {
-                            window.location.href = 'upsell.html?txid=' + encodeURIComponent(txHash);
-                        }
+                        sessionStorage.removeItem('is_upsell');
+                        window.location.href = 'obrigado.html';
                     }, 3000);
                 }
             })
