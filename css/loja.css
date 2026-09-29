@@ -131,7 +131,8 @@ input { font-size: 16px !important; font-family: inherit; }
 /* VSL Modal */
 #vsl-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(4px); }
 .vm-content { position: relative; width: 100%; max-width: 800px; margin: 0 16px; }
-.vm-close { position: absolute; top: -48px; right: 0; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; text-transform: uppercase; }
+.vm-close { position: fixed; top: 16px; right: 16px; color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; text-transform: uppercase; z-index: 9999; backdrop-filter: blur(4px); transition: all 0.2s; }
+.vm-close:hover { background: rgba(228,30,38,0.8); border-color: #E41E26; }
 .vm-video { position: relative; background: #1a1a2e; border-radius: 12px; overflow: hidden; border: 1px solid rgba(228,30,38,0.3); box-shadow: 0 25px 50px -12px rgba(228,30,38,0.25); }
 .vm-video video { width: 100%; display: block; }
 .vm-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); cursor: pointer; transition: opacity 0.3s; }
