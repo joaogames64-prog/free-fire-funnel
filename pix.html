@@ -111,6 +111,18 @@
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
     .pulse{animation:pulse 2s ease-in-out infinite;}
 
+    /* Countdown Timer */
+    .pix-timer{background:#0f1117;border-radius:12px;padding:18px 20px;margin:0 16px 4px;}
+    @media(min-width:768px){.pix-timer{margin:0 40px 4px;}}
+    .pix-timer-header{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
+    .pix-timer-header svg{width:18px;height:18px;color:#E41E26;flex-shrink:0;}
+    .pix-timer-label{font-size:14px;font-weight:600;color:#e5e7eb;}
+    .pix-timer-digits{text-align:center;font-size:32px;font-weight:800;color:#E41E26;font-family:monospace;letter-spacing:2px;margin-bottom:12px;}
+    .pix-timer-bar-bg{background:#2a2a3a;border-radius:99px;height:8px;overflow:hidden;margin-bottom:12px;}
+    .pix-timer-bar{height:100%;background:linear-gradient(90deg,#E41E26,#ff6b6b);border-radius:99px;width:100%;transition:width 1s linear;}
+    .pix-timer-warning{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(228,30,38,0.12);border:1px solid rgba(228,30,38,0.25);border-radius:8px;padding:8px 12px;font-size:12px;color:#fbbf24;font-weight:500;}
+    .pix-timer-warning svg{width:14px;height:14px;flex-shrink:0;}
+
     /* Copied Popup */
     .cp-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:999;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
     .cp-overlay.active{display:flex;}
@@ -208,6 +220,22 @@
         </div>
     </div>
 
+    <!-- Countdown Timer -->
+    <div class="pix-timer" id="pix-timer-block">
+        <div class="pix-timer-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E41E26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="pix-timer-label">Oferta expira em</span>
+        </div>
+        <div class="pix-timer-digits" id="pix-timer-display">03:00</div>
+        <div class="pix-timer-bar-bg">
+            <div class="pix-timer-bar" id="pix-timer-bar"></div>
+        </div>
+        <div class="pix-timer-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Se a oferta expirar, o desconto não estará mais disponível
+        </div>
+    </div>
+
     <div class="px-divider"></div>
 
     <!-- CTA -->
@@ -291,6 +319,36 @@
 </div>
 
 <script>
+// ── 3-Minute Countdown Timer ─────────────────────────────────────────────────
+(function(){
+    var TOTAL = 3 * 60; // 3 minutes in seconds
+    var remaining = TOTAL;
+    var display = document.getElementById('pix-timer-display');
+    var bar = document.getElementById('pix-timer-bar');
+
+    function tick(){
+        if(remaining < 0) return;
+        var m = Math.floor(remaining / 60);
+        var s = remaining % 60;
+        display.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+        bar.style.width = ((remaining / TOTAL) * 100) + '%';
+
+        // Turn bar orange when under 60s
+        if(remaining <= 60){
+            bar.style.background = 'linear-gradient(90deg,#f97316,#fbbf24)';
+        }
+
+        if(remaining === 0){
+            display.textContent = '00:00';
+            bar.style.width = '0%';
+            return;
+        }
+        remaining--;
+        setTimeout(tick, 1000);
+    }
+    tick();
+})();
+
 // Parse URL params
 var params = new URLSearchParams(window.location.search);
 var pixCode = params.get('pix') || '';
