@@ -15,7 +15,12 @@ const CATALOG = {
     assinatura_semanal:    'prod_q20di0s48br8k1ti0257bp3g',
     assinatura_mensal:     'prod_mnsv76o37xi1hlu1qk0tj9tz',
     passe_booyah:          'prod_gifouivikanw2lgjk08v8nqr',
-    verificacao_seguranca: 'prod_ksn0ul1jxyol9o745kz5rdtv'
+    verificacao_seguranca: 'prod_ksn0ul1jxyol9o745kz5rdtv',
+    calca_angelical:       'prod_gw30q4x416qcd4mdjhnu6hts',
+    conjunto_naruto:       'prod_t0u4cxszzajuyve6ywcby8wy',
+    conjunto_sasuke:       'prod_o1osnjdq9jtya62gw3xeso4u',
+    conjunto_kakashi:      'prod_s42oj13aakw3yhannexcqcd7',
+    mascara_velho:         'prod_lrq4fqa6ucqpf9nsk8zdv9q8'
 };
 
 // ─── Mapeamento de diamantes → chave do catálogo ─────────────────────────────
@@ -32,7 +37,14 @@ const BUMP_CATALOG_KEY = {
     'assinatura mensal':     'assinatura_mensal',
     'passe booyah':          'passe_booyah',
     'passe booyah premium':  'passe_booyah',
-    'passe booyah premium plus': 'passe_booyah'
+    'passe booyah premium plus': 'passe_booyah',
+    'calça angelical azul': 'calca_angelical',
+    'calca angelical azul': 'calca_angelical',
+    'conjunto naruto': 'conjunto_naruto',
+    'conjunto sasuke': 'conjunto_sasuke',
+    'conjunto kakashi': 'conjunto_kakashi',
+    'máscara antiga barba do velho': 'mascara_velho',
+    'mascara antiga barba do velho': 'mascara_velho'
 };
 
 // Gera CPF matematicamente válido para uso na Hura Pay

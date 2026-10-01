@@ -587,15 +587,12 @@ async function finalizeOrder(){
                 nome: nome,
                 email: email,
                 telefone: telefone,
+                plano: plano,
+                bumps: bumps,
                 product_title: productTitle,
                 offer_hash: sessionStorage.getItem('offer_hash') || 'off_4nfa96t3k8',
                 product_hash: sessionStorage.getItem('product_hash') || 'ykhbyvhkny',
-                utm_source: utms.utm_source,
-                utm_medium: utms.utm_medium,
-                utm_campaign: utms.utm_campaign,
-                utm_term: utms.utm_term,
-                utm_content: utms.utm_content,
-                src: utms.src
+                utms: utms
             })
         });
 
