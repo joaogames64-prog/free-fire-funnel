@@ -1,13 +1,12 @@
 const https = require('https');
 const url = require('url');
 
-const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
-const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
+const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
+const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 
-function ironpayRequest(method, endpoint) {
+function hurapayRequest(method, endpoint) {
     return new Promise((resolve, reject) => {
-        const separator = endpoint.includes('?') ? '&' : '?';
-        const fullUrl = `${IRONPAY_BASE}${endpoint}${separator}api_token=${IRONPAY_TOKEN}`;
+        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
         const parsed = url.parse(fullUrl);
 
         const options = {
@@ -17,7 +16,8 @@ function ironpayRequest(method, endpoint) {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-API-KEY': HURAPAY_API_KEY
             }
         };
 
@@ -47,13 +47,45 @@ module.exports = async (req, res) => {
     try {
         const { hash, txid } = req.query;
         const targetHash = hash || txid;
+        
         if (!targetHash) {
             res.status(400).json({ error: 'Hash query parameter required' });
             return;
         }
-        const result = await ironpayRequest('GET', `/transactions/${targetHash}`);
-        res.status(result.status).json(result.data);
+
+        // A chamada na Hura Pay é /charge/{id}
+        const result = await hurapayRequest('GET', `/charge/${targetHash}`);
+        const responseData = result.data || {};
+        
+        // Normalização do status para o padrão que o frontend FF já espera
+        // Hura Pay usa "paymentStatus": "PAID" (ou PENDING, EXPIRED)
+        let normalizedStatus = 'pending';
+        let paymentStatus = '';
+
+        if (responseData && responseData.data) {
+            // A API de check da Hura Pay retorna os dados dentro de `data`
+            paymentStatus = (responseData.data.paymentStatus || '').toLowerCase();
+        } else if (responseData && responseData.paymentStatus) {
+            paymentStatus = (responseData.paymentStatus || '').toLowerCase();
+        }
+
+        if (paymentStatus === 'paid' || paymentStatus === 'approved') {
+            normalizedStatus = 'paid';
+        } else if (paymentStatus === 'expired') {
+            normalizedStatus = 'expired';
+        } else if (paymentStatus === 'refunded') {
+            normalizedStatus = 'refunded';
+        }
+
+        const normalizedResponse = {
+            ...responseData,
+            status: normalizedStatus,           // Para cair na validação do front
+            payment_status: normalizedStatus,   // Fallback extra
+        };
+
+        res.status(result.status).json(normalizedResponse);
     } catch (err) {
+        console.error('[check-tx] Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 };

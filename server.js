@@ -6,8 +6,8 @@ const url = require('url');
 
 // ============ CONFIG ============
 const PORT = process.env.PORT || 8080;
-const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
-const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
+const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
+const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 const STATIC_DIR = __dirname;
 // ================================
 
@@ -37,10 +37,26 @@ function serveStatic(req, res) {
     });
 }
 
-function ironpayRequest(method, endpoint, body) {
+function generateCPF() {
+    const digits = [];
+    for (let i = 0; i < 9; i++) digits.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
+    if (digits.every(d => d === digits[0])) digits[8] = (digits[0] + 1) % 10;
+    let sum1 = 0;
+    for (let i = 0; i < 9; i++) sum1 += digits[i] * (10 - i);
+    let d1 = 11 - (sum1 % 11);
+    if (d1 >= 10) d1 = 0;
+    digits.push(d1);
+    let sum2 = 0;
+    for (let i = 0; i < 10; i++) sum2 += digits[i] * (11 - i);
+    let d2 = 11 - (sum2 % 11);
+    if (d2 >= 10) d2 = 0;
+    digits.push(d2);
+    return digits.join('');
+}
+
+function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
-        const separator = endpoint.includes('?') ? '&' : '?';
-        const fullUrl = `${IRONPAY_BASE}${endpoint}${separator}api_token=${IRONPAY_TOKEN}`;
+        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
         const parsed = url.parse(fullUrl);
 
         const options = {
@@ -50,7 +66,8 @@ function ironpayRequest(method, endpoint, body) {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-API-KEY': HURAPAY_API_KEY
             }
         };
 
@@ -99,71 +116,38 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && req.url === '/api/create-pix') {
         try {
             const body = await readBody(req);
-
-            // Amount in centavos (cents)
             const amountCents = Math.round(parseFloat(body.amount || '0') * 100);
 
             const txPayload = {
                 amount: amountCents,
-                payment_method: 'pix',
+                expiresIn: 1800,
                 customer: {
                     name: body.nome || 'Cliente',
                     email: body.email || 'cliente@email.com',
-                    phone_number: (body.telefone || '').replace(/\D/g, '') || '11999999999',
-                    document: body.cpf || '00000000000',
-                    street_name: 'Rua Exemplo',
-                    number: '100',
-                    complement: '',
-                    neighborhood: 'Centro',
-                    city: 'São Paulo',
-                    state: 'SP',
-                    zip_code: '01001000'
-                },
-                cart: [{
-                    title: body.product_title || 'Diamantes Free Fire',
-                    price: amountCents,
-                    quantity: 1,
-                    operation_type: 1,
-                    tangible: false
-                }],
-                expire_in_days: 1,
-                transaction_origin: 'api'
+                    phone: (body.telefone || '').replace(/\D/g, '') || '11999999999',
+                    taxId: generateCPF()
+                }
             };
-
-            // Add offer_hash if provided
-            if (body.offer_hash) {
-                txPayload.offer_hash = body.offer_hash;
-                txPayload.cart[0].product_hash = body.product_hash || '';
-            }
-
-            txPayload.tracking = {
-                src: body.src || '',
-                utm_source: body.utm_source || '',
-                utm_medium: body.utm_medium || '',
-                utm_campaign: body.utm_campaign || '',
-                utm_term: body.utm_term || '',
-                utm_content: body.utm_content || ''
-            };
-            txPayload.src = body.src || '';
-            txPayload.utm_source = body.utm_source || '';
-            txPayload.utm_medium = body.utm_medium || '';
-            txPayload.utm_campaign = body.utm_campaign || '';
-            txPayload.utm_term = body.utm_term || '';
-            txPayload.utm_content = body.utm_content || '';
-
-            // Add postback URL if provided
-            if (body.postback_url) {
-                txPayload.postback_url = body.postback_url;
-            }
 
             console.log(`[PIX] Creating transaction: R$ ${(amountCents/100).toFixed(2)} for ${txPayload.customer.name}`);
 
-            const result = await ironpayRequest('POST', '/transactions', txPayload);
+            const result = await hurapayRequest('POST', '/charge/pix', txPayload);
+            const responseData = result.data || {};
+
+            let normalizedResponse = {
+                ...responseData,
+                hash: responseData.id || '',
+                pix: {
+                    pix_qr_code: responseData.brCode || '',
+                    pix_qr_code_base64: responseData.brCodeBase64 || ''
+                },
+                pix_qrcode: responseData.brCode || ''
+            };
 
             console.log(`[PIX] Response status: ${result.status}`);
 
             res.writeHead(result.status, {'Content-Type':'application/json'});
-            res.end(JSON.stringify(result.data));
+            res.end(JSON.stringify(normalizedResponse));
 
         } catch(err) {
             console.error('[PIX] Error:', err.message);
@@ -180,9 +164,31 @@ const server = http.createServer(async (req, res) => {
             let hash = parsed.query.hash || parsed.query.txid || '';
             if (!hash) { const parts = parsed.pathname.split('/api/check-tx/'); if (parts[1]) hash = parts[1]; }
             if (!hash) { res.writeHead(400, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:'hash required'})); return; }
-            const result = await ironpayRequest('GET', `/transactions/${hash}`);
+            
+            const result = await hurapayRequest('GET', `/charge/${hash}`);
+            const responseData = result.data || {};
+            
+            let normalizedStatus = 'pending';
+            let paymentStatus = '';
+            
+            if (responseData && responseData.data) {
+                paymentStatus = (responseData.data.paymentStatus || '').toLowerCase();
+            } else if (responseData && responseData.paymentStatus) {
+                paymentStatus = (responseData.paymentStatus || '').toLowerCase();
+            }
+
+            if (paymentStatus === 'paid' || paymentStatus === 'approved') normalizedStatus = 'paid';
+            else if (paymentStatus === 'expired') normalizedStatus = 'expired';
+            else if (paymentStatus === 'refunded') normalizedStatus = 'refunded';
+
+            const normalizedResponse = {
+                ...responseData,
+                status: normalizedStatus,
+                payment_status: normalizedStatus
+            };
+
             res.writeHead(result.status, {'Content-Type':'application/json'});
-            res.end(JSON.stringify(result.data));
+            res.end(JSON.stringify(normalizedResponse));
         } catch(err) {
             res.writeHead(500, {'Content-Type':'application/json'});
             res.end(JSON.stringify({ error: err.message }));
@@ -199,14 +205,30 @@ const server = http.createServer(async (req, res) => {
             try {
                 const hash = parsed.query.hash;
                 if (!hash) { res.writeHead(400, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:'hash required'})); return; }
-                const result = await ironpayRequest('GET', `/transactions/${hash}`);
+                const result = await hurapayRequest('GET', `/charge/${hash}`);
+                
                 const tx = result.data || {};
                 const txData = tx.data || tx;
-                const amount = txData.amount || tx.amount || 0;
-                const productTitle = (txData.cart && txData.cart[0] && txData.cart[0].title) || (tx.cart && tx.cart[0] && tx.cart[0].title) || 'Diamantes Free Fire';
+                const amount = txData.total || txData.amount || tx.total || tx.amount || 0;
+                
+                const paymentStatus = (txData.paymentStatus || tx.paymentStatus || 'unknown').toLowerCase();
+                let status = 'pending';
+                if (paymentStatus === 'paid' || paymentStatus === 'approved') status = 'paid';
+                if (paymentStatus === 'expired') status = 'expired';
+                
+                const productTitle = (txData.items && txData.items[0] && txData.items[0].product && txData.items[0].product.name) || 'Diamantes Free Fire';
+                const customerName = (txData.customer && txData.customer.name) || (tx.customer && tx.customer.name) || '';
+                
                 res.writeHead(200, {'Content-Type':'application/json'});
-                res.end(JSON.stringify({ amount, amount_display: (amount/100).toFixed(2), status: txData.status||tx.status||'unknown', product_title: productTitle, customer_name: (txData.customer||tx.customer||{}).name||'', original_hash: hash }));
-            } catch(err) { res.writeHead(500, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:err.message})); }
+                res.end(JSON.stringify({ 
+                    amount, amount_display: (amount/100).toFixed(2), 
+                    status, product_title: productTitle, 
+                    customer_name: customerName, original_hash: hash 
+                }));
+            } catch(err) { 
+                res.writeHead(500, {'Content-Type':'application/json'}); 
+                res.end(JSON.stringify({error:err.message})); 
+            }
             return;
         }
 
@@ -217,34 +239,51 @@ const server = http.createServer(async (req, res) => {
                 const origHash = body.hash;
                 if (!origHash) { res.writeHead(400, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:'hash required'})); return; }
 
-                // Fetch original from IronPay (SOURCE OF TRUTH)
-                const orig = await ironpayRequest('GET', `/transactions/${origHash}`);
+                const orig = await hurapayRequest('GET', `/charge/${origHash}`);
                 const origTx = orig.data || {};
                 const origData = origTx.data || origTx;
-                const origAmount = origData.amount || origTx.amount;
+                const origAmount = origData.total || origData.amount || origTx.total || origTx.amount;
+                
                 if (!origAmount) { res.writeHead(400, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:'Could not recover amount'})); return; }
 
                 const origCustomer = origData.customer || origTx.customer || {};
-                const origCart = origData.cart || origTx.cart || [];
 
                 const txPayload = {
-                    amount: origAmount, payment_method: 'pix',
-                    customer: { name: origCustomer.name||'Cliente', email: origCustomer.email||'cliente@email.com', phone_number: (origCustomer.phone_number||'').replace(/\D/g,'')||'11999999999', document: body.cpf||'00000000000', street_name:'Rua Exemplo', number:'100', complement:'', neighborhood:'Centro', city:'São Paulo', state:'SP', zip_code:'01001000' },
-                    cart: origCart.length > 0 ? origCart.map(function(i){ return { title:i.title||'Diamantes Free Fire', price:i.price||origAmount, quantity:i.quantity||1, operation_type:1, tangible:false, product_hash:i.product_hash||'' }; }) : [{ title:'Diamantes Free Fire', price:origAmount, quantity:1, operation_type:1, tangible:false }],
-                    offer_hash: origData.offer_hash || origTx.offer_hash || 'off_4nfa96t3k8',
-                    expire_in_days: 1, transaction_origin: 'api'
+                    amount: origAmount,
+                    expiresIn: 1800,
+                    customer: { 
+                        name: origCustomer.name || 'Cliente', 
+                        email: origCustomer.email || 'cliente@email.com', 
+                        phone: (origCustomer.phone || '').replace(/\D/g,'') || '11999999999', 
+                        taxId: generateCPF()
+                    }
                 };
-                txPayload.tracking = { src:body.src||'', utm_source:body.utm_source||'', utm_medium:body.utm_medium||'', utm_campaign:body.utm_campaign||'', utm_term:body.utm_term||'', utm_content:body.utm_content||'' };
 
                 console.log(`[RETRY-PIX] Creating retry: R$ ${(origAmount/100).toFixed(2)}`);
-                const result = await ironpayRequest('POST', '/transactions', txPayload);
-                const rd = result.data || {};
-                if (!rd.hash) { rd.hash = rd.id || rd.transaction_hash || rd.tid || ''; if (!rd.hash && rd.data) rd.hash = rd.data.hash || rd.data.id || ''; }
-                rd.original_amount = origAmount;
-                rd.original_amount_display = (origAmount/100).toFixed(2);
+                const result = await hurapayRequest('POST', '/charge/pix', txPayload);
+                const responseData = result.data || {};
+                
+                let normalizedResponse = {
+                    ...responseData,
+                    hash: responseData.id || '',
+                    pix: {
+                        pix_qr_code: responseData.brCode || '',
+                        pix_qr_code_base64: responseData.brCodeBase64 || ''
+                    },
+                    pix_qrcode: responseData.brCode || '',
+                    original_amount: origAmount,
+                    original_amount_display: (origAmount / 100).toFixed(2),
+                    original_product_title: 'Diamantes Free Fire',
+                    retry_of: origHash
+                };
+
                 res.writeHead(result.status, {'Content-Type':'application/json'});
-                res.end(JSON.stringify(rd));
-            } catch(err) { console.error('[RETRY-PIX] Error:', err.message); res.writeHead(500, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:err.message})); }
+                res.end(JSON.stringify(normalizedResponse));
+            } catch(err) { 
+                console.error('[RETRY-PIX] Error:', err.message); 
+                res.writeHead(500, {'Content-Type':'application/json'}); 
+                res.end(JSON.stringify({error:err.message})); 
+            }
             return;
         }
     }
@@ -256,5 +295,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
     console.log(`\n🎮 Free Fire Funnel Server running on http://localhost:${PORT}`);
     console.log(`📦 Serving static files from: ${STATIC_DIR}`);
-    console.log(`💳 IronPay API connected\n`);
+    console.log(`💳 Hura Pay API connected\n`);
 });

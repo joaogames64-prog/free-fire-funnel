@@ -1,8 +1,8 @@
 const https = require('https');
 const url = require('url');
 
-const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
-const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
+const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
+const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 
 function generateCPF() {
     const digits = [];
@@ -21,14 +21,17 @@ function generateCPF() {
     return digits.join('');
 }
 
-function ironpayRequest(method, endpoint, body) {
+function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
-        const separator = endpoint.includes('?') ? '&' : '?';
-        const fullUrl = `${IRONPAY_BASE}${endpoint}${separator}api_token=${IRONPAY_TOKEN}`;
+        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
         const parsed = url.parse(fullUrl);
         const options = {
             hostname: parsed.hostname, port: 443, path: parsed.path, method: method,
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                'X-API-KEY': HURAPAY_API_KEY
+            }
         };
         const req = https.request(options, (resp) => {
             let data = '';
@@ -57,17 +60,20 @@ module.exports = async (req, res) => {
             const hash = req.query.hash;
             if (!hash) { res.status(400).json({ error: 'hash required' }); return; }
 
-            const result = await ironpayRequest('GET', `/transactions/${hash}`);
+            const result = await hurapayRequest('GET', `/charge/${hash}`);
             const tx = result.data || {};
             const txData = tx.data || tx;
 
-            // Extract amount (cents)
-            const amount = txData.amount || tx.amount || 0;
-            const status = txData.status || tx.status || 'unknown';
+            const amount = txData.total || txData.amount || tx.total || tx.amount || 0;
+            const paymentStatus = (txData.paymentStatus || tx.paymentStatus || 'unknown').toLowerCase();
+            
+            // Map payment status for the frontend
+            let status = 'pending';
+            if (paymentStatus === 'paid' || paymentStatus === 'approved') status = 'paid';
+            if (paymentStatus === 'expired') status = 'expired';
+            
             const customerName = (txData.customer && txData.customer.name) || (tx.customer && tx.customer.name) || '';
-            const productTitle = (txData.cart && txData.cart[0] && txData.cart[0].title) || (tx.cart && tx.cart[0] && tx.cart[0].title) || 'Diamantes Free Fire';
-            const offerHash = txData.offer_hash || tx.offer_hash || '';
-            const productHash = (txData.cart && txData.cart[0] && txData.cart[0].product_hash) || (tx.cart && tx.cart[0] && tx.cart[0].product_hash) || '';
+            const productTitle = (txData.items && txData.items[0] && txData.items[0].product && txData.items[0].product.name) || 'Diamantes Free Fire';
 
             res.status(200).json({
                 amount: amount,
@@ -75,8 +81,6 @@ module.exports = async (req, res) => {
                 status: status,
                 customer_name: customerName,
                 product_title: productTitle,
-                offer_hash: offerHash,
-                product_hash: productHash,
                 original_hash: hash
             });
         } catch (err) {
@@ -97,95 +101,50 @@ module.exports = async (req, res) => {
         const originalHash = body.hash;
         if (!originalHash) { res.status(400).json({ error: 'Original transaction hash required' }); return; }
 
-        // 1. Fetch original transaction from IronPay (SOURCE OF TRUTH)
         console.log('[retry-pix] Fetching original transaction:', originalHash);
-        const original = await ironpayRequest('GET', `/transactions/${originalHash}`);
+        const original = await hurapayRequest('GET', `/charge/${originalHash}`);
         const origTx = original.data || {};
         const origData = origTx.data || origTx;
 
-        const origAmount = origData.amount || origTx.amount;
+        const origAmount = origData.total || origData.amount || origTx.total || origTx.amount;
         if (!origAmount || origAmount <= 0) {
             res.status(400).json({ error: 'Could not recover original transaction amount' });
             return;
         }
 
-        // 2. Extract original customer & cart from IronPay (NOT from frontend)
         const origCustomer = origData.customer || origTx.customer || {};
-        const origCart = origData.cart || origTx.cart || [];
-        const origOfferHash = origData.offer_hash || origTx.offer_hash || 'off_4nfa96t3k8';
-        const origProductHash = (origCart[0] && origCart[0].product_hash) || 'ykhbyvhkny';
 
-        // 3. Build new transaction with VALIDATED data from backend
         const txPayload = {
             amount: origAmount,
-            payment_method: 'pix',
+            expiresIn: 1800,
             customer: {
                 name: origCustomer.name || 'Cliente',
                 email: origCustomer.email || 'cliente@email.com',
-                phone_number: (origCustomer.phone_number || '').replace(/\D/g, '') || '11999999999',
-                document: generateCPF(),
-                street_name: origCustomer.street_name || 'Rua Exemplo',
-                number: origCustomer.number || '100',
-                complement: origCustomer.complement || '',
-                neighborhood: origCustomer.neighborhood || 'Centro',
-                city: origCustomer.city || 'São Paulo',
-                state: origCustomer.state || 'SP',
-                zip_code: origCustomer.zip_code || '01001000'
-            },
-            cart: origCart.length > 0 ? origCart.map(item => ({
-                title: item.title || 'Diamantes Free Fire',
-                price: item.price || origAmount,
-                quantity: item.quantity || 1,
-                operation_type: item.operation_type || 1,
-                tangible: false,
-                product_hash: item.product_hash || origProductHash
-            })) : [{
-                title: 'Diamantes Free Fire',
-                price: origAmount,
-                quantity: 1,
-                operation_type: 1,
-                tangible: false,
-                product_hash: origProductHash
-            }],
-            offer_hash: origOfferHash,
-            expire_in_days: 1,
-            transaction_origin: 'api'
+                phone: (origCustomer.phone || '').replace(/\D/g, '') || '11999999999',
+                taxId: generateCPF()
+            }
         };
 
-        // Preserve tracking/UTM data if provided by frontend
-        txPayload.tracking = {
-            src: body.src || '', utm_source: body.utm_source || '',
-            utm_medium: body.utm_medium || '', utm_campaign: body.utm_campaign || '',
-            utm_term: body.utm_term || '', utm_content: body.utm_content || ''
-        };
-        txPayload.src = body.src || '';
-        txPayload.utm_source = body.utm_source || '';
-        txPayload.utm_medium = body.utm_medium || '';
-        txPayload.utm_campaign = body.utm_campaign || '';
-
-        // 4. Create new PIX charge
         console.log(`[retry-pix] Creating retry PIX: R$ ${(origAmount/100).toFixed(2)} for ${txPayload.customer.name}`);
-        const result = await ironpayRequest('POST', '/transactions', txPayload);
+        const result = await hurapayRequest('POST', '/charge/pix', txPayload);
         const responseData = result.data || {};
 
-        // Normalize hash
-        if (!responseData.hash) {
-            responseData.hash = responseData.id || responseData.transaction_hash || responseData.tid || responseData.uuid || '';
-            if (!responseData.hash && responseData.data) {
-                responseData.hash = responseData.data.hash || responseData.data.id || '';
-            }
-        }
-
-        console.log('[retry-pix] New PIX created, hash:', responseData.hash);
-
-        // 5. Return new PIX data + original order details
-        res.status(result.status).json({
+        let normalizedResponse = {
             ...responseData,
+            hash: responseData.id || '',
+            pix: {
+                pix_qr_code: responseData.brCode || '',
+                pix_qr_code_base64: responseData.brCodeBase64 || ''
+            },
+            pix_qrcode: responseData.brCode || '',
             original_amount: origAmount,
             original_amount_display: (origAmount / 100).toFixed(2),
-            original_product_title: (origCart[0] && origCart[0].title) || 'Diamantes Free Fire',
+            original_product_title: 'Diamantes Free Fire',
             retry_of: originalHash
-        });
+        };
+
+        console.log('[retry-pix] New PIX created, hash:', normalizedResponse.hash);
+        res.status(result.status).json(normalizedResponse);
     } catch (err) {
         console.error('[retry-pix POST] Error:', err.message);
         res.status(500).json({ error: err.message });

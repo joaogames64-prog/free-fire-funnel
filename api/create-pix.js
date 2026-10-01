@@ -1,34 +1,33 @@
 const https = require('https');
 const url = require('url');
 
-const IRONPAY_TOKEN = process.env.IRONPAY_TOKEN || 'Z9DAYrt7sWMHnbN8gUvwBjeS8A6HcvJRChZ621XV1v54vegMWzQHmzlVgIfs';
-const IRONPAY_BASE = 'https://api.ironpayapp.com.br/api/public/v1';
+const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
+const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 
 // Generate a valid, unique CPF for each transaction
 function generateCPF() {
     const digits = [];
     for (let i = 0; i < 9; i++) digits.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
-    // Avoid all-same-digit CPFs (e.g. 111.111.111-xx)
     if (digits.every(d => d === digits[0])) digits[8] = (digits[0] + 1) % 10;
-    // First check digit
+    
     let sum1 = 0;
     for (let i = 0; i < 9; i++) sum1 += digits[i] * (10 - i);
     let d1 = 11 - (sum1 % 11);
     if (d1 >= 10) d1 = 0;
     digits.push(d1);
-    // Second check digit
+    
     let sum2 = 0;
     for (let i = 0; i < 10; i++) sum2 += digits[i] * (11 - i);
     let d2 = 11 - (sum2 % 11);
     if (d2 >= 10) d2 = 0;
     digits.push(d2);
+    
     return digits.join('');
 }
 
-function ironpayRequest(method, endpoint, body) {
+function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
-        const separator = endpoint.includes('?') ? '&' : '?';
-        const fullUrl = `${IRONPAY_BASE}${endpoint}${separator}api_token=${IRONPAY_TOKEN}`;
+        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
         const parsed = url.parse(fullUrl);
 
         const options = {
@@ -38,7 +37,8 @@ function ironpayRequest(method, endpoint, body) {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-API-KEY': HURAPAY_API_KEY
             }
         };
 
@@ -80,74 +80,41 @@ module.exports = async (req, res) => {
         body = body || {};
 
         const amountCents = Math.round(parseFloat(body.amount || '0') * 100);
+        const cpf = generateCPF();
+        const phone = (body.telefone || '').replace(/\D/g, '') || '11999999999';
 
         const txPayload = {
             amount: amountCents,
-            payment_method: 'pix',
+            expiresIn: 1800, // 30 minutes
             customer: {
                 name: body.nome || 'Cliente',
                 email: body.email || 'cliente@email.com',
-                phone_number: (body.telefone || '').replace(/\D/g, '') || '11999999999',
-                document: generateCPF(),
-                street_name: 'Rua Exemplo',
-                number: '100',
-                complement: '',
-                neighborhood: 'Centro',
-                city: 'São Paulo',
-                state: 'SP',
-                zip_code: '01001000'
-            },
-            cart: [{
-                title: body.product_title || 'Diamantes Free Fire',
-                price: amountCents,
-                quantity: 1,
-                operation_type: 1,
-                tangible: false
-            }],
-            expire_in_days: 1,
-            transaction_origin: 'api'
+                phone: phone,
+                taxId: cpf
+            }
         };
 
-        // offer_hash is always required by IronPay
-        txPayload.offer_hash = body.offer_hash || 'off_4nfa96t3k8';
-        txPayload.cart[0].product_hash = body.product_hash || 'ykhbyvhkny';
-
-        txPayload.tracking = {
-            src: body.src || '',
-            utm_source: body.utm_source || '',
-            utm_medium: body.utm_medium || '',
-            utm_campaign: body.utm_campaign || '',
-            utm_term: body.utm_term || '',
-            utm_content: body.utm_content || ''
-        };
-        txPayload.src = body.src || '';
-        txPayload.utm_source = body.utm_source || '';
-        txPayload.utm_medium = body.utm_medium || '';
-        txPayload.utm_campaign = body.utm_campaign || '';
-        txPayload.utm_term = body.utm_term || '';
-        txPayload.utm_content = body.utm_content || '';
-
-        const result = await ironpayRequest('POST', '/transactions', txPayload);
+        const result = await hurapayRequest('POST', '/charge/pix', txPayload);
         const responseData = result.data || {};
 
-        // Log full response for debugging
-        console.log('[create-pix] IronPay response keys:', JSON.stringify(Object.keys(responseData)));
+        console.log('[create-pix] HuraPay response keys:', JSON.stringify(Object.keys(responseData)));
         console.log('[create-pix] Full response:', JSON.stringify(responseData).substring(0, 500));
 
-        // Normalize: ensure hash is always at top level
-        // IronPay may return hash under various field names
-        if (!responseData.hash) {
-            responseData.hash = responseData.id
-                || responseData.transaction_hash
-                || responseData.tid
-                || responseData.uuid
-                || responseData.external_id
-                || (responseData.data && (responseData.data.hash || responseData.data.id || responseData.data.transaction_hash))
-                || '';
-        }
+        // Normalização: mapear a resposta da Hura Pay para o formato antigo da Iron Pay
+        // O front-end espera "hash" e "pix.pix_qr_code" ou similar
+        
+        let normalizedResponse = {
+            ...responseData,
+            hash: responseData.id || '',
+            pix: {
+                pix_qr_code: responseData.brCode || '',
+                pix_qr_code_base64: responseData.brCodeBase64 || ''
+            },
+            pix_qrcode: responseData.brCode || ''
+        };
 
-        console.log('[create-pix] Normalized hash:', responseData.hash);
-        res.status(result.status).json(responseData);
+        console.log('[create-pix] Normalized hash:', normalizedResponse.hash);
+        res.status(result.status).json(normalizedResponse);
     } catch (err) {
         console.error('[create-pix] Error:', err.message);
         res.status(500).json({ error: err.message });
