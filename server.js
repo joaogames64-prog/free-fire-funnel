@@ -169,18 +169,22 @@ const server = http.createServer(async (req, res) => {
                 pix_qrcode: rd.brCode || ''
             };
 
-            // Disparar sale.pending no LowTrack (fire-and-forget)
+            // Disparar sale.pending no LowTrack (AGORA COM AWAIT)
             const utms = body.utms || {};
-            sendToLowtrack(
-                { id: normalizedResponse.hash, paymentStatus: 'PROCESSING', total: amountCents,
-                  items: trackItems,
-                  customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
-                },
-                { utms, productName: body.product_title || 'Diamantes Free Fire',
-                  customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
-                  userIp: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
-                  userAgent: req.headers['user-agent'] || '' }
-            ).catch(err => console.error('[LowTrack] Falha sale.pending:', err.message));
+            try {
+                await sendToLowtrack(
+                    { id: normalizedResponse.hash, paymentStatus: 'PROCESSING', total: amountCents,
+                      items: trackItems,
+                      customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
+                    },
+                    { utms, productName: body.product_title || 'Diamantes Free Fire',
+                      customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
+                      userIp: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
+                      userAgent: req.headers['user-agent'] || '' }
+                );
+            } catch (err) {
+                console.error('[LowTrack] Falha sale.pending:', err.message);
+            }
 
             res.writeHead(201, {'Content-Type':'application/json'});
             res.end(JSON.stringify(normalizedResponse));

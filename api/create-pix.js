@@ -143,22 +143,26 @@ module.exports = async (req, res) => {
             pix_qrcode: rd.brCode || ''
         };
 
-        // ─── Disparar sale.pending no LowTrack (fire-and-forget) ────────────
+        // ─── Disparar sale.pending no LowTrack (AGORA COM AWAIT PARA VERCEL) ─────────
         const utms = body.utms || {};
-        sendToLowtrack(
-            {
-                id: normalizedResponse.hash, externalId: txPayload.externalId,
-                paymentStatus: 'PROCESSING', total: amountCents,
-                items: trackItems,
-                customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
-            },
-            {
-                utms, productName: body.product_title || 'Diamantes Free Fire',
-                customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
-                userIp: req.headers['x-forwarded-for'] || '',
-                userAgent: req.headers['user-agent'] || ''
-            }
-        ).catch(err => console.error('[LowTrack] Falha sale.pending:', err.message));
+        try {
+            await sendToLowtrack(
+                {
+                    id: normalizedResponse.hash, externalId: txPayload.externalId,
+                    paymentStatus: 'PROCESSING', total: amountCents,
+                    items: trackItems,
+                    customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
+                },
+                {
+                    utms, productName: body.product_title || 'Diamantes Free Fire',
+                    customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
+                    userIp: req.headers['x-forwarded-for'] || '',
+                    userAgent: req.headers['user-agent'] || ''
+                }
+            );
+        } catch(err) {
+            console.error('[LowTrack] Falha sale.pending:', err.message);
+        }
 
         res.status(201).json(normalizedResponse);
     } catch (err) {
