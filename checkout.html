@@ -469,9 +469,12 @@ document.getElementById('phone-input').addEventListener('input', validateForm);
     }, 3500);
 })();
 
-// Base price from sessionStorage
-
-var basePrice = parseFloat(sessionStorage.getItem('preco') || '12.90');
+// Base price from sessionStorage — parseFloat('NaN') retorna NaN e NaN é truthy,
+// por isso usamos isNaN() em vez de || para o fallback
+(function(){
+    var stored = parseFloat(sessionStorage.getItem('preco'));
+    window.basePrice = (!isNaN(stored) && stored > 0) ? stored : 12.90;
+})();
 
 // Toggle order bump item
 function toggleOB(el){
@@ -482,9 +485,10 @@ function toggleOB(el){
 function updateOBTotal(){
     var extra = 0;
     document.querySelectorAll('.ob-item.checked').forEach(function(item){
-        extra += parseInt(item.getAttribute('data-price'));
+        extra += parseInt(item.getAttribute('data-price')) || 0;
     });
-    var total = basePrice + (extra / 100);
+    var safeBase = (!isNaN(window.basePrice) && window.basePrice > 0) ? window.basePrice : 12.90;
+    var total = safeBase + (extra / 100);
     document.getElementById('ob-total').textContent = 'R$ ' + total.toFixed(2).replace('.',',');
 }
 
@@ -546,9 +550,11 @@ async function finalizeOrder(){
         });
     });
 
-    // Calculate total
-    var extraCents = bumps.reduce(function(s,b){return s+b.priceInCents;},0);
-    var totalPrice = basePrice + (extraCents/100);
+    // Calculate total — garantir que basePrice nunca seja NaN
+    var safeBase = (!isNaN(window.basePrice) && window.basePrice > 0) ? window.basePrice : 12.90;
+    var extraCents = bumps.reduce(function(s,b){return s + (parseInt(b.priceInCents)||0);},0);
+    var totalPrice = safeBase + (extraCents/100);
+    if (isNaN(totalPrice) || totalPrice <= 0) { totalPrice = safeBase; }
 
     // Save customer data
     try{
@@ -562,7 +568,9 @@ async function finalizeOrder(){
     // Build product title
     var plano = sessionStorage.getItem('plano') || '1060';
     var bonus = sessionStorage.getItem('bonus') || '106';
-    var diamondTotal = parseInt(plano) + parseInt(bonus);
+    var planoNum = parseInt(plano) || 1060;
+    var bonusNum = parseInt(bonus) || 106;
+    var diamondTotal = planoNum + bonusNum;
     var productTitle = diamondTotal + ' Diamantes Free Fire';
     if(bumps.length > 0){
         productTitle += ' + ' + bumps.map(function(b){return b.name;}).join(', ');
