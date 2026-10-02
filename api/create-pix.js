@@ -120,18 +120,15 @@ module.exports = async (req, res) => {
             method: "PIX",
             description: body.product_title || "Diamantes Free Fire",
             externalRef: externalIdVal,
+            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
             payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
                 phone: phone,
                 taxId: generateCPF()
             },
-            items: trackItems.length > 0 ? trackItems.map(item => ({
-                quantity: 1,
-                name: item.product.name,
-                price: amountCents, // Masterfy requires price for items, we'll put the full amount since we can't easily split it dynamically here
-                type: "DIGITAL"
-            })) : [{ quantity: 1, name: body.product_title || "Diamantes FF", price: amountCents, type: "DIGITAL" }]
+            // Um unico item com valor total para garantir que items[].price * qty == amount
+            items: [{ quantity: 1, name: body.product_title || "Diamantes Free Fire", price: amountCents, type: "DIGITAL" }]
         };
 
         console.log(`[create-pix] Criando PIX na Masterfy: R$ ${(amountCents / 100).toFixed(2)} para ${txPayload.payer.name}`);
@@ -139,11 +136,12 @@ module.exports = async (req, res) => {
         const result = await masterfyRequest('POST', '/payment', txPayload);
         const rd = result.data || {};
 
-        console.log('[create-pix] Status Masterfy:', result.status);
+        console.log('[create-pix] Status Masterfy:', result.status, '| Resposta:', JSON.stringify(rd).substring(0, 300));
 
         if (result.status !== 201 && result.status !== 200) {
-            throw new Error(JSON.stringify(rd.errors || rd));
+            throw new Error(`Masterfy ${result.status}: ` + JSON.stringify(rd.message || rd.error || rd));
         }
+
 
         // ─── Normalização para manter compatibilidade com o frontend ────────
         // Masterfy returns data.copypaste for PIX string
