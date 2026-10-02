@@ -86,10 +86,7 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
         
         // Fallback: produto inferido via extraMeta (enviado no momento da criação do PIX)
         if (products.length === 0 && extraMeta.productName) {
-            products.push({ id: extraMeta.productId || '1', name: extraMeta.productName });
-        }
-        if (products.length === 0) {
-            products.push({ id: '1', name: 'Diamantes Free Fire' });
+            products.push({ id: extraMeta.productId || 'default_ff', name: extraMeta.productName });
         }
         
         // 7. Dados do cliente (Hura Pay mascara o email/phone nos webhooks)
@@ -108,11 +105,11 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
             currency: 'BRL',
             payment_method: paymentMethod,
             
-            // Produto principal (o que aparece no dashboard de notificações push)
-            product: products[0],
-            
-            // Array completo: [produto principal, ...order bumps]
-            products: products,
+            // Se tivermos os produtos (ex: no create-pix), enviamos.
+            // Se não tivermos (ex: no webhook-hurapay), OMITIMOS para que o LowTrack mescle 
+            // automaticamente usando apenas o transaction_id.
+            ...(products.length > 0 && { product: products[0] }),
+            ...(products.length > 0 && { products: products }),
             
             customer: {
                 name:       fullName,

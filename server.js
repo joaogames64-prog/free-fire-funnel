@@ -284,7 +284,7 @@ const server = http.createServer(async (req, res) => {
             const body = await readBody(req);
             console.log('[Webhook HuraPay] Evento:', body.event || 'N/A', '| ID:', (body.data && body.data.id) || 'N/A');
             const chargeData = body.data || body;
-            await sendToLowtrack(chargeData, { productName: chargeData.product_title || 'Diamantes Free Fire' });
+            await sendToLowtrack(chargeData);
             res.writeHead(200, {'Content-Type':'application/json'});
             res.end(JSON.stringify({ received: true }));
         } catch(err) {

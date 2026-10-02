@@ -37,12 +37,11 @@ module.exports = async (req, res) => {
         const eventType = body.event || body.type || '';
         const chargeData = body.data || body;
 
-        // Enviar para o LowTrack (a função mapeia automaticamente o status)
-        await sendToLowtrack(chargeData, {
-            // Dados extras de tracking que a Hura Pay NÃO envia no webhook
-            // (mas que foram salvos quando o PIX foi criado)
-            productName: chargeData.product_title || 'Diamantes Free Fire',
-        });
+        // Enviar para o LowTrack
+        // NÃO enviamos "productName" fallback aqui. Como a HuraPay não envia os itens no webhook,
+        // omitir os produtos forçará o LowTrack a mesclar com a venda pendente baseada apenas no transaction_id,
+        // herdando os produtos corretos e as UTMs.
+        await sendToLowtrack(chargeData);
 
         // Sempre responder 200 para a Hura Pay não fazer retry
         res.status(200).json({ received: true, event: eventType });
