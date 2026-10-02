@@ -131,46 +131,50 @@ const server = http.createServer(async (req, res) => {
             const amountCents = Math.round(parseFloat(body.amount || '0') * 100);
             const phone = (body.telefone || '').replace(/\D/g, '') || '11999999999';
 
-            // Montar items do pedido
-            const items = [];
+            // Tracking: montar itens para o LowTrack
+            const bumpsList = Array.isArray(body.bumps) ? body.bumps : [];
+            const trackItems = [];
             const diamondKey = DIAMOND_CATALOG_KEY[String(body.plano || '').replace(/\./g, '')];
             if (diamondKey && CATALOG[diamondKey]) {
-                items.push({ productId: CATALOG[diamondKey], quantity: 1 });
+                trackItems.push({ productId: CATALOG[diamondKey], product: { name: body.product_title || 'Diamantes Free Fire' } });
             }
-            const bumps = Array.isArray(body.bumps) ? body.bumps : [];
-            bumps.forEach(bump => {
-                const bumpKey = BUMP_CATALOG_KEY[(bump.name || '').toLowerCase().trim()];
-                if (bumpKey && CATALOG[bumpKey]) items.push({ productId: CATALOG[bumpKey], quantity: 1 });
+            bumpsList.forEach(b => {
+                const bk = BUMP_CATALOG_KEY[(b.name || '').toLowerCase().trim()];
+                if (bk && CATALOG[bk]) trackItems.push({ productId: CATALOG[bk], product: { name: b.name } });
             });
 
+            // ─── Payload para /v1/charge/pix (usa 'amount', não 'total') ───
             const txPayload = {
-                total: amountCents,
+                amount: amountCents,
                 expiresIn: 1800,
                 customer: {
                     name: body.nome || 'Cliente', email: body.email || 'cliente@email.com',
                     phone: phone, taxId: generateCPF()
                 },
-                ...(items.length > 0 && { items }),
                 externalId: `ff_${Date.now()}_${phone.slice(-4)}`
             };
 
             console.log(`[PIX] Criando cobrança: R$ ${(amountCents/100).toFixed(2)} para ${txPayload.customer.name}`);
-            const result = await hurapayRequest('POST', '/charge/payment-link', txPayload);
-            const responseData = result.data || {};
+            const result = await hurapayRequest('POST', '/charge/pix', txPayload);
+            const rd = result.data || {};
+
+            if (result.status !== 201 && result.status !== 200) {
+                throw new Error(JSON.stringify(rd.errors || rd));
+            }
 
             const normalizedResponse = {
-                ...responseData,
-                hash: responseData.id || '',
-                pix: { pix_qr_code: responseData.brCode || '', pix_qr_code_base64: responseData.brCodeBase64 || '' },
-                pix_qrcode: responseData.brCode || ''
+                ...rd,
+                hash: rd.id || '',
+                pix: { pix_qr_code: rd.brCode || '', pix_qr_code_base64: rd.brCodeBase64 || '' },
+                pix_qrcode: rd.brCode || ''
             };
 
             // Disparar sale.pending no LowTrack (fire-and-forget)
             const utms = body.utms || {};
             sendToLowtrack(
                 { id: normalizedResponse.hash, paymentStatus: 'PROCESSING', total: amountCents,
-                  items: items.map((item, i) => ({ productId: item.productId, product: { name: i === 0 ? (body.product_title || 'Diamantes Free Fire') : (bumps[i-1]?.name || 'Order Bump') } })),
-                  customer: { name: body.nome || 'Cliente', email: body.email || '', phone: phone }
+                  items: trackItems,
+                  customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
                 },
                 { utms, productName: body.product_title || 'Diamantes Free Fire',
                   customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
@@ -178,7 +182,7 @@ const server = http.createServer(async (req, res) => {
                   userAgent: req.headers['user-agent'] || '' }
             ).catch(err => console.error('[LowTrack] Falha sale.pending:', err.message));
 
-            res.writeHead(result.status, {'Content-Type':'application/json'});
+            res.writeHead(201, {'Content-Type':'application/json'});
             res.end(JSON.stringify(normalizedResponse));
         } catch(err) {
             console.error('[PIX] Error:', err.message);

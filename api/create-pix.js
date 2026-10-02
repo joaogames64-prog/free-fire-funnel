@@ -1,12 +1,10 @@
 const https = require('https');
-const url = require('url');
 const { sendToLowtrack } = require('./lowtrack');
 
 const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
 const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
 
 // ─── Catálogo de Produtos Hura Pay ───────────────────────────────────────────
-// Gerado por setup-products.js — NÃO alterar manualmente
 const CATALOG = {
     diamonds_1060:         'prod_qm7aes45iq2lenwalhx9ox7h',
     diamonds_2180:         'prod_g533h01qhxo136rinn2lxaas',
@@ -23,20 +21,16 @@ const CATALOG = {
     mascara_velho:         'prod_lrq4fqa6ucqpf9nsk8zdv9q8'
 };
 
-// ─── Mapeamento de diamantes → chave do catálogo ─────────────────────────────
 const DIAMOND_CATALOG_KEY = {
-    '1060':  'diamonds_1060',
-    '2180':  'diamonds_2180',
-    '5600':  'diamonds_5600',
-    '22400': 'diamonds_22400'
+    '1060': 'diamonds_1060', '2180': 'diamonds_2180',
+    '5600': 'diamonds_5600', '22400': 'diamonds_22400'
 };
 
-// ─── Mapeamento de order bumps → chave do catálogo ───────────────────────────
 const BUMP_CATALOG_KEY = {
-    'assinatura semanal':    'assinatura_semanal',
-    'assinatura mensal':     'assinatura_mensal',
-    'passe booyah':          'passe_booyah',
-    'passe booyah premium':  'passe_booyah',
+    'assinatura semanal': 'assinatura_semanal',
+    'assinatura mensal':  'assinatura_mensal',
+    'passe booyah':       'passe_booyah',
+    'passe booyah premium': 'passe_booyah',
     'passe booyah premium plus': 'passe_booyah',
     'calça angelical azul': 'calca_angelical',
     'calca angelical azul': 'calca_angelical',
@@ -47,27 +41,24 @@ const BUMP_CATALOG_KEY = {
     'mascara antiga barba do velho': 'mascara_velho'
 };
 
-// Gera CPF matematicamente válido para uso na Hura Pay
 function generateCPF() {
-    const digits = [];
-    for (let i = 0; i < 9; i++) digits.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
-    if (digits.every(d => d === digits[0])) digits[8] = (digits[0] + 1) % 10;
-    let sum1 = 0;
-    for (let i = 0; i < 9; i++) sum1 += digits[i] * (10 - i);
-    let d1 = 11 - (sum1 % 11); if (d1 >= 10) d1 = 0; digits.push(d1);
-    let sum2 = 0;
-    for (let i = 0; i < 10; i++) sum2 += digits[i] * (11 - i);
-    let d2 = 11 - (sum2 % 11); if (d2 >= 10) d2 = 0; digits.push(d2);
-    return digits.join('');
+    const d = [];
+    for (let i = 0; i < 9; i++) d.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
+    if (d.every(x => x === d[0])) d[8] = (d[0] + 1) % 10;
+    let s1 = 0; for (let i = 0; i < 9; i++) s1 += d[i] * (10 - i);
+    let v1 = 11 - (s1 % 11); if (v1 >= 10) v1 = 0; d.push(v1);
+    let s2 = 0; for (let i = 0; i < 10; i++) s2 += d[i] * (11 - i);
+    let v2 = 11 - (s2 % 11); if (v2 >= 10) v2 = 0; d.push(v2);
+    return d.join('');
 }
 
 function hurapayRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
         const fullUrl = `${HURAPAY_BASE}${endpoint}`;
-        const parsed = url.parse(fullUrl);
+        const parsed = new URL(fullUrl);
         const bodyStr = body ? JSON.stringify(body) : null;
         const options = {
-            hostname: parsed.hostname, port: 443, path: parsed.path, method: method,
+            hostname: parsed.hostname, port: 443, path: parsed.pathname, method,
             headers: {
                 'Content-Type': 'application/json', 'Accept': 'application/json',
                 'X-API-KEY': HURAPAY_API_KEY,
@@ -92,7 +83,6 @@ module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
     if (req.method === 'OPTIONS') { res.status(200).end(); return; }
     if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
 
@@ -101,32 +91,26 @@ module.exports = async (req, res) => {
         if (typeof body === 'string') { try { body = JSON.parse(body); } catch(e){} }
         body = body || {};
 
+        // amount em centavos (campo exigido pelo /v1/charge/pix)
         const amountCents = Math.round(parseFloat(body.amount || '0') * 100);
         const phone = (body.telefone || '').replace(/\D/g, '') || '11999999999';
 
-        // ─── Montar items do pedido (produto principal + order bumps) ─────────
-        const items = [];
-
-        // Produto principal: identificado por diamonds (plano) ou product_title
+        // Montar lista de itens para tracking (não enviamos ao /charge/pix porque ele não suporta items)
+        const bumpsList = Array.isArray(body.bumps) ? body.bumps : [];
+        const trackItems = [];
         const diamondKey = DIAMOND_CATALOG_KEY[String(body.plano || '').replace(/\./g, '')];
-        
         if (diamondKey && CATALOG[diamondKey]) {
-            items.push({ productId: CATALOG[diamondKey], quantity: 1 });
+            trackItems.push({ productId: CATALOG[diamondKey], product: { name: body.product_title || 'Diamantes Free Fire' } });
         }
-
-        // Order bumps (chegam como array ou como campos separados)
-        const bumps = Array.isArray(body.bumps) ? body.bumps : [];
-        bumps.forEach(bump => {
-            const bumpName = (bump.name || '').toLowerCase().trim();
-            const bumpKey = BUMP_CATALOG_KEY[bumpName];
-            if (bumpKey && CATALOG[bumpKey]) {
-                items.push({ productId: CATALOG[bumpKey], quantity: 1 });
-            }
+        bumpsList.forEach(b => {
+            const bk = BUMP_CATALOG_KEY[(b.name || '').toLowerCase().trim()];
+            if (bk && CATALOG[bk]) trackItems.push({ productId: CATALOG[bk], product: { name: b.name } });
         });
 
-        // ─── Payload para a Hura Pay ─────────────────────────────────────────
+        // ─── Payload para /v1/charge/pix ────────────────────────────────────
+        // Usa "amount" (não "total"), sem items (endpoint não suporta)
         const txPayload = {
-            total: amountCents,
+            amount: amountCents,
             expiresIn: 1800,
             customer: {
                 name:  body.nome  || 'Cliente',
@@ -134,59 +118,49 @@ module.exports = async (req, res) => {
                 phone: phone,
                 taxId: generateCPF()
             },
-            ...(items.length > 0 && { items }),
-            // externalId permite rastreio no painel da Hura Pay
             externalId: `ff_${Date.now()}_${phone.slice(-4)}`
         };
 
-        const result = await hurapayRequest('POST', '/charge/payment-link', txPayload);
-        const responseData = result.data || {};
+        console.log(`[create-pix] Criando PIX: R$ ${(amountCents / 100).toFixed(2)} para ${txPayload.customer.name}`);
 
-        console.log('[create-pix] HuraPay response status:', result.status);
-        console.log('[create-pix] Response preview:', JSON.stringify(responseData).substring(0, 400));
+        const result = await hurapayRequest('POST', '/charge/pix', txPayload);
+        const rd = result.data || {};
 
-        // ─── Normalização da resposta para o frontend (mantém compatibilidade) ─
+        console.log('[create-pix] Status HuraPay:', result.status);
+
+        if (result.status !== 201 && result.status !== 200) {
+            throw new Error(JSON.stringify(rd.errors || rd));
+        }
+
+        // ─── Normalização para manter compatibilidade com o frontend ────────
         const normalizedResponse = {
-            ...responseData,
-            hash:      responseData.id || '',
+            ...rd,
+            hash: rd.id || '',
             pix: {
-                pix_qr_code:        responseData.brCode      || '',
-                pix_qr_code_base64: responseData.brCodeBase64 || ''
+                pix_qr_code:        rd.brCode      || '',
+                pix_qr_code_base64: rd.brCodeBase64 || ''
             },
-            pix_qrcode: responseData.brCode || ''
+            pix_qrcode: rd.brCode || ''
         };
 
-        // ─── Disparar sale.pending no LowTrack (PIX gerado, aguardando pagamento) ─
-        // Não aguardar (fire-and-forget) para não atrasar a resposta ao cliente
+        // ─── Disparar sale.pending no LowTrack (fire-and-forget) ────────────
         const utms = body.utms || {};
         sendToLowtrack(
             {
-                id:            normalizedResponse.hash,
-                externalId:    txPayload.externalId,
-                paymentStatus: 'PROCESSING',
-                total:         amountCents,
-                items:         items.map((item, i) => ({
-                    productId: item.productId,
-                    product:   { name: i === 0 ? (body.product_title || 'Diamantes Free Fire') : (bumps[i - 1]?.name || 'Order Bump') }
-                })),
-                customer: {
-                    name:  body.nome  || 'Cliente',
-                    email: body.email || '',
-                    phone: phone
-                }
+                id: normalizedResponse.hash, externalId: txPayload.externalId,
+                paymentStatus: 'PROCESSING', total: amountCents,
+                items: trackItems,
+                customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
             },
             {
-                utms,
-                productName:   body.product_title || 'Diamantes Free Fire',
-                customerName:  body.nome  || '',
-                customerEmail: body.email || '',
-                customerPhone: phone,
-                userIp:    req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
+                utms, productName: body.product_title || 'Diamantes Free Fire',
+                customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
+                userIp: req.headers['x-forwarded-for'] || '',
                 userAgent: req.headers['user-agent'] || ''
             }
-        ).catch(err => console.error('[LowTrack] Falha no sale.pending:', err.message));
+        ).catch(err => console.error('[LowTrack] Falha sale.pending:', err.message));
 
-        res.status(result.status).json(normalizedResponse);
+        res.status(201).json(normalizedResponse);
     } catch (err) {
         console.error('[create-pix] Error:', err.message);
         res.status(500).json({ error: err.message });

@@ -57,30 +57,24 @@ module.exports = async (req, res) => {
         const result = await hurapayRequest('GET', `/charge/${targetHash}`);
         const responseData = result.data || {};
         
-        // Normalização do status para o padrão que o frontend FF já espera
-        // Hura Pay usa "paymentStatus": "PAID" (ou PENDING, EXPIRED)
+        // Hura Pay retorna { status:200, data: { paymentStatus: "PENDING"|"PAID"|"EXPIRED" } }
         let normalizedStatus = 'pending';
-        let paymentStatus = '';
+        const inner = (responseData.data || responseData);
+        const paymentStatus = (inner.paymentStatus || inner.status || '').toUpperCase();
 
-        if (responseData && responseData.data) {
-            // A API de check da Hura Pay retorna os dados dentro de `data`
-            paymentStatus = (responseData.data.paymentStatus || '').toLowerCase();
-        } else if (responseData && responseData.paymentStatus) {
-            paymentStatus = (responseData.paymentStatus || '').toLowerCase();
-        }
-
-        if (paymentStatus === 'paid' || paymentStatus === 'approved') {
+        if (paymentStatus === 'PAID') {
             normalizedStatus = 'paid';
-        } else if (paymentStatus === 'expired') {
+        } else if (paymentStatus === 'EXPIRED' || paymentStatus === 'CANCELLED') {
             normalizedStatus = 'expired';
-        } else if (paymentStatus === 'refunded') {
+        } else if (paymentStatus === 'REFUNDED') {
             normalizedStatus = 'refunded';
         }
+        // PENDING, PROCESSING, OPEN → permanece 'pending'
 
         const normalizedResponse = {
             ...responseData,
-            status: normalizedStatus,           // Para cair na validação do front
-            payment_status: normalizedStatus,   // Fallback extra
+            status: normalizedStatus,
+            payment_status: normalizedStatus,
         };
 
         res.status(result.status).json(normalizedResponse);
