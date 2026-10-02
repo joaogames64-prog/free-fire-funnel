@@ -42,13 +42,24 @@ const BUMP_CATALOG_KEY = {
 };
 
 function generateCPF() {
-    const d = [];
-    for (let i = 0; i < 9; i++) d.push(Math.floor(Math.random() * 9) + (i === 0 ? 1 : 0));
-    if (d.every(x => x === d[0])) d[8] = (d[0] + 1) % 10;
-    let s1 = 0; for (let i = 0; i < 9; i++) s1 += d[i] * (10 - i);
-    let v1 = 11 - (s1 % 11); if (v1 >= 10) v1 = 0; d.push(v1);
-    let s2 = 0; for (let i = 0; i < 10; i++) s2 += d[i] * (11 - i);
-    let v2 = 11 - (s2 % 11); if (v2 >= 10) v2 = 0; d.push(v2);
+    const randomDigit = () => Math.floor(Math.random() * 10);
+    const d = Array.from({length: 9}, randomDigit);
+    
+    // Evita CPFs com todos os digitos iguais
+    if (d.every(x => x === d[0])) {
+        d[8] = (d[8] + 1) % 10;
+    }
+    
+    let d1 = d.reduce((acc, val, i) => acc + (10 - i) * val, 0);
+    d1 = 11 - (d1 % 11);
+    if (d1 >= 10) d1 = 0;
+    d.push(d1);
+    
+    let d2 = d.reduce((acc, val, i) => acc + (11 - i) * val, 0);
+    d2 = 11 - (d2 % 11);
+    if (d2 >= 10) d2 = 0;
+    d.push(d2);
+    
     return d.join('');
 }
 
@@ -114,13 +125,16 @@ module.exports = async (req, res) => {
         const dKey = diamondKey || '1060';
         const externalIdVal = `ff_${Date.now()}_K${dKey}_C${utmC}`;
 
+        const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+        const clientIp = rawIp.split(',')[0].trim();
+
         const txPayload = {
             amount: amountCents,
             currency: "BRL",
             method: "PIX",
             description: body.product_title || "Diamantes Free Fire",
             externalRef: externalIdVal,
-            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
+            ip: clientIp || undefined,
             payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
