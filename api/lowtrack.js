@@ -85,6 +85,7 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
         }
         
         // Fallback: produto inferido via extraMeta (enviado no momento da criação do PIX)
+        // Usamos product_title pois ele já tem o nome completo com bonus (ex: "1166 Diamantes Free Fire")
         if (products.length === 0 && extraMeta.productName) {
             products.push({ id: extraMeta.productId || 'default_ff', name: extraMeta.productName });
         }
@@ -134,6 +135,10 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
             // IP e User-Agent para melhor EMQ no Facebook (se disponíveis no handler)
             ...(extraMeta.userIp    && { user_ip:    extraMeta.userIp }),
             ...(extraMeta.userAgent && { user_agent: extraMeta.userAgent }),
+            
+            // fbc e fbp para CAPI do Facebook (Click ID e Browser ID)
+            ...(utms.fbc && { fbc: utms.fbc }),
+            ...(utms.fbp && { fbp: utms.fbp }),
             
             metadata: { platform: 'hurapay' }
         };

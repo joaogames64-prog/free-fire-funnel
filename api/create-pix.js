@@ -100,6 +100,7 @@ module.exports = async (req, res) => {
         const trackItems = [];
         const diamondKey = DIAMOND_CATALOG_KEY[String(body.plano || '').replace(/\./g, '')];
         if (diamondKey && CATALOG[diamondKey]) {
+            // Usar product_title completo (ex: "1166 Diamantes Free Fire") como nome do produto principal
             trackItems.push({ productId: CATALOG[diamondKey], product: { name: body.product_title || 'Diamantes Free Fire' } });
         }
         bumpsList.forEach(b => {
@@ -154,7 +155,9 @@ module.exports = async (req, res) => {
                     customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
                 },
                 {
-                    utms, productName: body.product_title || 'Diamantes Free Fire',
+                    // product_title já tem o nome completo com bônus (ex: "1166 Diamantes Free Fire")
+                    utms,
+                    productName: body.product_title || 'Diamantes Free Fire',
                     customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
                     userIp: req.headers['x-forwarded-for'] || '',
                     userAgent: req.headers['user-agent'] || ''
