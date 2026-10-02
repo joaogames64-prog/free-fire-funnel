@@ -159,7 +159,22 @@
         <img src="https://i.imgur.com/h4xQxBj.png" alt="Avatar" class="hdr-avatar" style="margin-left:auto;">
     </div>
 </header>
-
+    <script>
+    // ── Load IC Event ────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', function(){
+        setTimeout(function(){
+            try {
+                if(typeof fbq === 'function'){
+                    fbq('track', 'InitiateCheckout');
+                }
+                if(window.LowTrack && typeof window.LowTrack.track === 'function'){
+                    window.LowTrack.track('InitiateCheckout');
+                }
+            } catch(e){}
+        }, 1000);
+    });
+    // ─────────────────────────────────────────────────────────────────────────
+    </script>
 
 
 <!-- Main -->
@@ -584,28 +599,40 @@ async function finalizeOrder(){
         sessionStorage.setItem('order_bumps', JSON.stringify(bumps));
     }catch(e){}
 
-    // Build product title
-    var plano = sessionStorage.getItem('plano') || '1060';
-    var bonus = sessionStorage.getItem('bonus') || '106';
-    var planoNum = parseInt(plano) || 1060;
-    var bonusNum = parseInt(bonus) || 106;
-    var diamondTotal = planoNum + bonusNum;
-    var productTitle = diamondTotal + ' Diamantes Free Fire';
+    // Build product title with strict basePrice mapping to prevent mismatched states
+    var baseTitleMap = {
+        12.90: '1166 Diamantes Free Fire',
+        14.90: 'Assinatura Semanal FF',
+        17.90: '6160 Diamantes Free Fire',
+        23.90: '24640 Diamantes Free Fire',
+        25.90: '24640 Diamantes Free Fire',
+        39.90: 'Passe Booyah Premium FF',
+        49.90: 'Assinatura Mensal FF',
+        54.90: '6160 Diamantes Free Fire',
+        174.90: '24640 Diamantes Free Fire'
+    };
+    
+    // Convert to exact 2 decimal string to avoid float precision issues
+    var baseKey = parseFloat(safeBase).toFixed(2);
+    
+    var baseTitle = baseTitleMap[parseFloat(baseKey)];
+    if (!baseTitle) {
+        // Fallback for unknown prices
+        var planoNum = parseInt(sessionStorage.getItem('plano')) || 1060;
+        var bonusNum = parseInt(sessionStorage.getItem('bonus')) || 106;
+        if (isNaN(planoNum)) {
+            baseTitle = sessionStorage.getItem('plano') || 'Diamantes Free Fire';
+        } else {
+            baseTitle = (planoNum + bonusNum) + ' Diamantes Free Fire';
+        }
+    }
+
+    var productTitle = baseTitle;
     if(bumps.length > 0){
         productTitle += ' + ' + bumps.map(function(b){return b.name;}).join(', ');
     }
 
-    // ── Fire InitiateCheckout (IC) ────────────────────────────────────────────
-    try {
-        if(typeof fbq === 'function'){
-            fbq('track', 'InitiateCheckout', { value: totalPrice, currency: 'BRL' });
-        }
-        // LowTrack: marcar que o lead chegou no checkout (aparece na aba Visitas)
-        if(window.LowTrack && typeof window.LowTrack.track === 'function'){
-            window.LowTrack.track('InitiateCheckout');
-        }
-    } catch(e){}
-    // ─────────────────────────────────────────────────────────────────────────
+
 
     var utms = getUTMs();
 

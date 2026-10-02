@@ -1,8 +1,8 @@
 const https = require('https');
 const { sendToLowtrack } = require('./lowtrack');
 
-const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
-const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
+const MASTERFY_API_KEY = process.env.MASTERFY_API_KEY || 'RCVLPJq4NcyslJZIGiI-b5FXwgHySnLvWiuUF5wPoD8';
+const MASTERFY_BASE = 'https://api.masterfypagamentos.com/v1';
 
 // ─── Catálogo de Produtos Hura Pay ───────────────────────────────────────────
 const CATALOG = {
@@ -52,16 +52,16 @@ function generateCPF() {
     return d.join('');
 }
 
-function hurapayRequest(method, endpoint, body) {
+function masterfyRequest(method, endpoint, body) {
     return new Promise((resolve, reject) => {
-        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
+        const fullUrl = `${MASTERFY_BASE}${endpoint}`;
         const parsed = new URL(fullUrl);
         const bodyStr = body ? JSON.stringify(body) : null;
         const options = {
             hostname: parsed.hostname, port: 443, path: parsed.pathname, method,
             headers: {
                 'Content-Type': 'application/json', 'Accept': 'application/json',
-                'X-API-KEY': HURAPAY_API_KEY,
+                'Authorization': `Bearer ${MASTERFY_API_KEY}`,
                 ...(bodyStr && { 'Content-Length': Buffer.byteLength(bodyStr) })
             }
         };
@@ -108,40 +108,54 @@ module.exports = async (req, res) => {
             if (bk && CATALOG[bk]) trackItems.push({ productId: CATALOG[bk], product: { name: b.name } });
         });
 
-        // ─── Payload para /v1/charge/pix ────────────────────────────────────
-        // Usa "amount" (não "total"), sem items (endpoint não suporta)
+        // ─── Payload para Masterfy ────────────────────────────────────
+        // Encode utm_campaign and product info into externalId to recover them in the webhook
+        const utmC = (body.utms && body.utms.utm_campaign) ? String(body.utms.utm_campaign).replace(/[^a-zA-Z0-9]/g, '').substring(0, 15) : '';
+        const dKey = diamondKey || '1060';
+        const externalIdVal = `ff_${Date.now()}_K${dKey}_C${utmC}`;
+
         const txPayload = {
             amount: amountCents,
-            expiresIn: 1800,
-            customer: {
+            currency: "BRL",
+            method: "PIX",
+            description: body.product_title || "Diamantes Free Fire",
+            externalRef: externalIdVal,
+            payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
                 phone: phone,
                 taxId: generateCPF()
             },
-            externalId: `ff_${Date.now()}_${phone.slice(-4)}`
+            items: trackItems.length > 0 ? trackItems.map(item => ({
+                quantity: 1,
+                name: item.product.name,
+                price: amountCents, // Masterfy requires price for items, we'll put the full amount since we can't easily split it dynamically here
+                type: "DIGITAL"
+            })) : [{ quantity: 1, name: body.product_title || "Diamantes FF", price: amountCents, type: "DIGITAL" }]
         };
 
-        console.log(`[create-pix] Criando PIX: R$ ${(amountCents / 100).toFixed(2)} para ${txPayload.customer.name}`);
+        console.log(`[create-pix] Criando PIX na Masterfy: R$ ${(amountCents / 100).toFixed(2)} para ${txPayload.payer.name}`);
 
-        const result = await hurapayRequest('POST', '/charge/pix', txPayload);
+        const result = await masterfyRequest('POST', '/payment', txPayload);
         const rd = result.data || {};
 
-        console.log('[create-pix] Status HuraPay:', result.status);
+        console.log('[create-pix] Status Masterfy:', result.status);
 
         if (result.status !== 201 && result.status !== 200) {
             throw new Error(JSON.stringify(rd.errors || rd));
         }
 
         // ─── Normalização para manter compatibilidade com o frontend ────────
+        // Masterfy returns data.copypaste for PIX string
+        const copypaste = (rd.data && rd.data.copypaste) ? rd.data.copypaste : '';
         const normalizedResponse = {
             ...rd,
             hash: rd.id || '',
             pix: {
-                pix_qr_code:        rd.brCode      || '',
-                pix_qr_code_base64: rd.brCodeBase64 || ''
+                pix_qr_code:        copypaste,
+                pix_qr_code_base64: '' 
             },
-            pix_qrcode: rd.brCode || ''
+            pix_qrcode: copypaste
         };
 
         // ─── Disparar sale.pending no LowTrack (AGORA COM AWAIT PARA VERCEL) ─────────
@@ -149,7 +163,7 @@ module.exports = async (req, res) => {
         try {
             await sendToLowtrack(
                 {
-                    id: normalizedResponse.hash, externalId: txPayload.externalId,
+                    id: normalizedResponse.hash, externalId: txPayload.externalRef,
                     paymentStatus: 'PROCESSING', total: amountCents,
                     items: trackItems,
                     customer: { name: body.nome || 'Cliente', email: body.email || '', phone }

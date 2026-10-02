@@ -37,11 +37,41 @@ module.exports = async (req, res) => {
         const eventType = body.event || body.type || '';
         const chargeData = body.data || body;
 
-        // Enviar para o LowTrack
-        // NÃO enviamos "productName" fallback aqui. Como a HuraPay não envia os itens no webhook,
-        // omitir os produtos forçará o LowTrack a mesclar com a venda pendente baseada apenas no transaction_id,
-        // herdando os produtos corretos e as UTMs.
-        await sendToLowtrack(chargeData);
+        // ─── RECUPERAR UTM E PRODUTO DO EXTERNAL_ID ───
+        // Em create-pix.js codificamos: externalId = `ff_${Date.now()}_K${dKey}_C${utmC}`
+        const extId = chargeData.externalId || '';
+        const matchK = extId.match(/_K([0-9a-zA-Z]+)/);
+        const matchC = extId.match(/_C([0-9a-zA-Z]*)/);
+        
+        const diamondKey = matchK ? matchK[1] : null;
+        const utmCampaign = matchC ? matchC[1] : '';
+
+        // Tabela de catálogo (mesma do create-pix)
+        const CATALOG = {
+            '1060': 'pd_1t928859032',
+            '2180': 'pd_2k417768143',
+            '5600': 'pd_5m839947254',
+            '22400': 'pd_22n74856365',
+            'semanal': 'pd_sm394857261',
+            'mensal': 'pd_mn827463510',
+            'booyah': 'pd_by102938475'
+        };
+
+        const extraMeta = {};
+        if (diamondKey && CATALOG[diamondKey]) {
+            extraMeta.productId = CATALOG[diamondKey];
+            extraMeta.productName = 'Diamantes Free Fire'; // O nome não importa tanto se o productId bater, LowTrack mescla.
+        } else {
+            extraMeta.productId = 'default_ff';
+            extraMeta.productName = 'Diamantes Free Fire';
+        }
+
+        if (utmCampaign) {
+            extraMeta.utms = { utm_campaign: utmCampaign };
+        }
+
+        // Enviar para o LowTrack passando os metadados recuperados
+        await sendToLowtrack(chargeData, extraMeta);
 
         // Sempre responder 200 para a Hura Pay não fazer retry
         res.status(200).json({ received: true, event: eventType });
