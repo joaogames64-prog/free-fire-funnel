@@ -617,33 +617,19 @@ async function finalizeOrder(){
         sessionStorage.setItem('order_bumps', JSON.stringify(bumps));
     }catch(e){}
 
-    // Build product title with strict basePrice mapping to prevent mismatched states
-    var baseTitleMap = {
-        12.90: '1166 Diamantes Free Fire',
-        14.90: 'Assinatura Semanal FF',
-        17.90: '6160 Diamantes Free Fire',
-        23.90: '24640 Diamantes Free Fire',
-        25.90: '24640 Diamantes Free Fire',
-        39.90: 'Passe Booyah Premium FF',
-        49.90: 'Assinatura Mensal FF',
-        54.90: '6160 Diamantes Free Fire',
-        174.90: '24640 Diamantes Free Fire'
+    // Nomes EXATOS dos produtos cadastrados na XTech (igual ao backend)
+    var PRODUCT_NAMES_FRONTEND = {
+        '1060':   '1060 + 106',
+        '2180':   '2180 + 218',
+        '5600':   '5600 + 560',
+        '22400':  '22400 + 2240',
+        'semanal':'Assinatura Semanal',
+        'mensal': 'Assinatura Mensal',
+        'booyah': 'Passe Booyah Premium Plus'
     };
-    
-    // Convert to exact 2 decimal string to avoid float precision issues
-    var baseKey = parseFloat(safeBase).toFixed(2);
-    
-    var baseTitle = baseTitleMap[parseFloat(baseKey)];
-    if (!baseTitle) {
-        // Fallback for unknown prices
-        var planoNum = parseInt(sessionStorage.getItem('plano')) || 1060;
-        var bonusNum = parseInt(sessionStorage.getItem('bonus')) || 106;
-        if (isNaN(planoNum)) {
-            baseTitle = sessionStorage.getItem('plano') || 'Diamantes Free Fire';
-        } else {
-            baseTitle = (planoNum + bonusNum) + ' Diamantes Free Fire';
-        }
-    }
+
+    var planoKey = sessionStorage.getItem('plano') || '1060';
+    var baseTitle = PRODUCT_NAMES_FRONTEND[planoKey] || planoKey;
 
     var productTitle = baseTitle;
     if(bumps.length > 0){
