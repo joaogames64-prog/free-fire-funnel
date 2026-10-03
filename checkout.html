@@ -457,16 +457,19 @@ if(phoneInput){
     });
 }
 
-// Validation — requires name (3+ chars) and phone (11 digits)
+// Validation — requires name (3+ chars), valid email and phone (11 digits)
 function validateForm(){
     var name  = document.getElementById('name-input').value.trim();
+    var email = document.getElementById('email-input').value.trim();
     var phone = document.getElementById('phone-input').value.replace(/\D/g,'');
     var btn   = document.getElementById('payment-button');
-    var ok    = name.length >= 3 && phone.length === 11;
+    var emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    var ok    = name.length >= 3 && emailValid && phone.length === 11;
     btn.disabled = !ok;
     btn.className = 'ck-btn ' + (ok ? 'enabled' : 'disabled');
 }
 document.getElementById('name-input').addEventListener('input', validateForm);
+document.getElementById('email-input').addEventListener('input', validateForm);
 document.getElementById('phone-input').addEventListener('input', validateForm);
 
 // ── Urgency Countdown (5 min) ──────────────────────────────────────────────
