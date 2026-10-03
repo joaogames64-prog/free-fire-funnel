@@ -30,8 +30,9 @@ module.exports = async (req, res) => {
         const responseData = await resp.json();
         
         let normalizedStatus = 'pending';
-        const inner = (responseData.data || responseData);
-        const paymentStatus = (inner.paymentStatus || inner.status || '').toUpperCase();
+        // Masterfy retorna o status na RAIZ do JSON (responseData.status)
+        // responseData.data contém apenas os dados do PIX (copypaste), NÃO o status
+        const paymentStatus = (responseData.status || '').toUpperCase();
 
         if (paymentStatus === 'APPROVED' || paymentStatus === 'PAID') {
             normalizedStatus = 'paid';
