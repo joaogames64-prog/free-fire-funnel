@@ -654,9 +654,20 @@ async function finalizeOrder(){
             })
         });
 
-        var data = await response.json();
+        var textRes = await response.text();
+        var data;
+        try {
+            data = JSON.parse(textRes);
+        } catch(e) {
+            console.error('Falha no JSON:', textRes);
+            throw new Error('Servidor retornou erro HTML/Texto (Status ' + response.status + '): ' + textRes.substring(0, 50));
+        }
 
-        // IronPay returns pix.pix_qr_code
+        if(!response.ok) {
+            throw new Error(data.error || data.message || JSON.stringify(data));
+        }
+
+        // IronPay/Masterfy returns pix.pix_qr_code or similar
         var pixCode = null;
         if(data && data.pix && data.pix.pix_qr_code) {
             pixCode = data.pix.pix_qr_code;
@@ -674,14 +685,14 @@ async function finalizeOrder(){
             window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid;
         } else {
             var errorMsg = data.message || data.error || JSON.stringify(data);
-            alert('Erro ao gerar PIX: ' + errorMsg);
+            alert('Erro ao gerar PIX (sem código retornado): ' + errorMsg);
             btn.textContent = 'FINALIZAR PEDIDO';
             btn.style.opacity = '1';
             btn.style.pointerEvents = 'auto';
         }
     } catch(err) {
-        console.error('Erro:', err);
-        alert('Erro de conexão. Tente novamente.');
+        console.error('Erro de requisição:', err);
+        alert('Falha na API: ' + err.message);
         btn.textContent = 'FINALIZAR PEDIDO';
         btn.style.opacity = '1';
         btn.style.pointerEvents = 'auto';
