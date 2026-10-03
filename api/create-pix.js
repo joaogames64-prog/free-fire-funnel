@@ -28,6 +28,16 @@ module.exports = async (req, res) => {
         const rawIp = req.headers['x-forwarded-for'] || '';
         const clientIp = rawIp.split(',')[0].trim() || undefined;
 
+        // Montar objeto de UTMs para a Masterfy
+        const utms = body.utms || {};
+        const utmPayload = {};
+        if (utms.utm_source)   utmPayload.utm_source   = String(utms.utm_source);
+        if (utms.utm_medium)   utmPayload.utm_medium   = String(utms.utm_medium);
+        if (utms.utm_campaign) utmPayload.utm_campaign = String(utms.utm_campaign);
+        if (utms.utm_content)  utmPayload.utm_content  = String(utms.utm_content);
+        if (utms.utm_term)     utmPayload.utm_term     = String(utms.utm_term);
+        if (utms.src)          utmPayload.src          = String(utms.src);
+
         const txPayload = {
             amount: amountCents,
             currency: 'BRL',
@@ -35,6 +45,7 @@ module.exports = async (req, res) => {
             description: body.product_title || 'Diamantes Free Fire',
             externalRef: `ff_${Date.now()}`,
             ...(clientIp && { ip: clientIp }),
+            ...(Object.keys(utmPayload).length > 0 && { utms: utmPayload }),
             payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
