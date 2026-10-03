@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Inter',sans-serif;background:#f9f9f9;color:#282830;min-height:100vh;display:flex;flex-direction:column;}
@@ -251,7 +252,7 @@
     <div class="px-pix-section">
         <div class="px-pix-title">Pague com Pix</div>
         <div class="px-qr-wrap">
-            <img id="pix-qr-img" src="" alt="QR Code PIX">
+            <canvas id="pix-qr-canvas" width="200" height="200"></canvas>
         </div>
         <div class="px-provider" id="px-provider">IRONPAY_INTERMEDIACOES</div>
 
@@ -358,11 +359,14 @@ var txHash = params.get('txid') || params.get('hash') || '';
 console.log('[pix.html] txHash:', txHash);
 console.log('[pix.html] Full URL params:', window.location.search);
 
-// Set QR code image
-if(qrCodeUrl){
-    document.getElementById('pix-qr-img').src = decodeURIComponent(qrCodeUrl);
-} else if(pixCode) {
-    document.getElementById('pix-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pixCode);
+// Gerar QR code localmente (sem servidor externo)
+if(pixCode) {
+    var canvas = document.getElementById('pix-qr-canvas');
+    if(canvas && typeof QRCode !== 'undefined') {
+        QRCode.toCanvas(canvas, pixCode, { width: 200, margin: 1, color: { dark: '#000', light: '#fff' } }, function(err){
+            if(err) console.error('QRCode error:', err);
+        });
+    }
 }
 
 // Set PIX code text
