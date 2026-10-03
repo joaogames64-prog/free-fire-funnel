@@ -636,7 +636,7 @@ async function finalizeOrder(){
 
     var utms = getUTMs();
 
-    // Identificar lead no LowTrack para vincular sessão/UTMs à venda do webhook
+    // Identificar lead no LowTrack
     try {
         if(window.LowTrack && typeof window.LowTrack.identify === 'function'){
             window.LowTrack.identify({
@@ -645,14 +645,7 @@ async function finalizeOrder(){
                 phone: telefone
             });
         }
-        if(window.LowTrack && typeof window.LowTrack.track === 'function'){
-            window.LowTrack.track('Purchase', {
-                value: totalPrice,
-                currency: 'BRL',
-                content_name: productTitle
-            });
-        }
-    } catch(e){ console.error('LowTrack identify/track error:', e); }
+    } catch(e){ console.error('LowTrack identify error:', e); }
 
     try {
         var response = await fetch('/api/create-pix', {
@@ -699,7 +692,7 @@ async function finalizeOrder(){
             var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
             var txid = data.hash || data.id || data.transaction_hash || '';
             if(!txid && data.data){ txid = data.data.hash || data.data.id || data.data.transaction_hash || ''; }
-            window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid;
+            window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid + '&amount=' + totalPrice.toFixed(2);
         } else {
             var errorMsg = data.message || data.error || JSON.stringify(data);
             alert('Erro ao gerar PIX: ' + errorMsg);

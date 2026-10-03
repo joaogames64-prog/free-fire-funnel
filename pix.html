@@ -385,6 +385,20 @@ document.getElementById('px-bonus').textContent = bonus;
 document.getElementById('px-price').textContent = 'R$ ' + parseFloat(totalPreco).toFixed(2).replace('.',',');
 document.getElementById('px-uid').textContent = uid;
 
+// Disparar evento de compra pro LowTrack via Pixel (sem latência de backend)
+if(txHash) {
+    try {
+        if(window.LowTrack && typeof window.LowTrack.track === 'function'){
+            window.LowTrack.track('Purchase', {
+                value: parseFloat(totalPreco || '0'),
+                currency: 'BRL',
+                transaction_id: txHash,
+                content_name: 'Diamantes Free Fire'
+            });
+        }
+    } catch(e){}
+}
+
 // Copy button
 function copyPixCode(){
     var code = pixCode;

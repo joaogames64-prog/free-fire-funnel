@@ -72,37 +72,7 @@ module.exports = async (req, res) => {
         const copypaste = (rd.data && rd.data.copypaste) ? rd.data.copypaste : '';
         const transactionId = rd.id || '';
 
-        // ── Enviar sale.pending pro LowTrack ANTES de responder ──────────
-        // Usa timeout de 3s pra não travar demais (Vercel mata o processo após res.json)
-        try {
-            const ltTimeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000));
-            await Promise.race([
-                sendToLowtrack(
-                    {
-                        id: transactionId,
-                        externalId: txPayload.externalRef,
-                        paymentStatus: 'PROCESSING',
-                        total: netAmountCents,
-                        items: [{ product: { name: body.product_title || 'Diamantes Free Fire' } }],
-                        customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
-                    },
-                    {
-                        utms,
-                        productName: body.product_title || 'Diamantes Free Fire',
-                        customerName: body.nome || '',
-                        customerEmail: body.email || '',
-                        customerPhone: phone,
-                        userIp: rawIp,
-                        userAgent: req.headers['user-agent'] || ''
-                    }
-                ),
-                ltTimeout
-            ]);
-        } catch(ltErr) {
-            console.error('[LowTrack] sale.pending:', ltErr.message);
-        }
-
-        // ── Responder o PIX pro frontend ─────────────────────────────────
+        // ── Responder o PIX pro frontend imediatamente ───────────────────
         res.status(201).json({
             ...rd,
             hash: transactionId,
