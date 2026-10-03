@@ -41,13 +41,16 @@ module.exports = async (req, res) => {
         if (utms.fbp)          utmPayload.fbp          = String(utms.fbp);
 
         const qs = new URLSearchParams(utmPayload).toString();
-        const extRef = qs ? `ff_${Date.now()}?${qs}` : `ff_${Date.now()}`;
+        let extRef = qs ? `ff_${Date.now()}?${qs}` : `ff_${Date.now()}`;
+        if (extRef.length > 200) {
+            extRef = extRef.substring(0, 200);
+        }
 
         const txPayload = {
             amount: amountCents,
             currency: 'BRL',
             method: 'PIX',
-            description: body.product_title || 'Diamantes Free Fire',
+            description: String(body.product_title || 'Diamantes Free Fire').substring(0, 200),
             externalRef: extRef,
             ...(clientIp && { ip: clientIp }),
             payer: {
