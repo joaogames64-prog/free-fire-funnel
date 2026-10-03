@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
             external_id:    externalId,
             amount:         amount,
             payment_method: 'pix',
-            description:    xtechProductName.substring(0, 200),
+            description:    trackingTitle.substring(0, 200),
             customer: {
                 name:     body.nome  || 'Cliente',
                 email:    body.email || 'cliente@email.com',
