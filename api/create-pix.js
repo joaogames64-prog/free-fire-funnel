@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
             currency: 'BRL',
             method: 'PIX',
             description: String(body.product_title || 'Diamantes Free Fire').substring(0, 200),
-            externalRef: `ff_${Date.now()}`,
+            externalRef: `ff_${Date.now()}_K${body.plano || '1060'}_C${utms.utm_campaign || ''}`,
             ...(clientIp && { ip: clientIp }),
             payer: {
                 name:  body.nome  || 'Cliente',

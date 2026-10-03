@@ -55,6 +55,15 @@ module.exports = async (req, res) => {
             }
         };
 
+        // ─── RECUPERAR UTM E PRODUTO DO EXTERNAL_REF ───
+        // Em create-pix.js codificamos: externalRef = `ff_${Date.now()}_K${plano}_C${utm_campaign}`
+        const extId = chargeData.externalId || '';
+        const matchK = extId.match(/_K([0-9a-zA-Z]+)/);
+        const matchC = extId.match(/_C([0-9a-zA-Z]*)/);
+
+        const diamondKey = matchK ? matchK[1] : null;
+        const utmCampaign = matchC ? matchC[1] : '';
+
         // Produto vem do description ou items da Masterfy
         const productName = body.description || 
             (body.items && body.items[0] ? body.items[0].name : 'Diamantes Free Fire');
@@ -66,6 +75,10 @@ module.exports = async (req, res) => {
             customerPhone: chargeData.customer.phone,
             customerDoc:   chargeData.customer.taxId
         };
+
+        if (utmCampaign) {
+            extraMeta.utms = { utm_campaign: utmCampaign };
+        }
 
         await sendToLowtrack(chargeData, extraMeta);
 

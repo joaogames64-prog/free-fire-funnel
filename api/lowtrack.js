@@ -6,7 +6,7 @@
  * para encontrar o token do lojista correto.
  *    Ex: const LOWTRACK_TOKEN = await db.getTokenByCompanyId(companyId);
  */
-const LOWTRACK_TOKEN = process.env.LOWTRACK_TOKEN || 'lt_6da7a5f070e0c7ec24d72c205e637059db7304cacdeb50ff';
+const LOWTRACK_TOKEN = process.env.LOWTRACK_TOKEN || 'lt_ebfb1c7fa941a9d0160f44d13e2a1ab359eca055a9e0b592';
 const LOWTRACK_ENDPOINT = 'https://lowtrack.com.br/api/webhook';
 
 /**
