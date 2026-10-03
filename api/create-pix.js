@@ -3,15 +3,15 @@ const XTECH_BASE   = 'https://app.xtechpay.com.br/api/public/v1';
 
 // Mapa de plano → nome do produto cadastrado na XTech
 const PRODUCT_NAMES = {
-    '1060':              '1060 + 106 Diamantes Free Fire',
-    '2180':              '2180 + 218 Diamantes Free Fire',
-    '5600':              '5600 + 560 Diamantes Free Fire',
-    '22400':             '22400 + 2240 Diamantes Free Fire',
-    'semanal':           'Passe Semanal Free Fire',
-    'mensal':            'Passe Mensal Free Fire',
-    'booyah':            'Passe Booyah Free Fire',
-    'verificacao_seguranca': 'Verificacao de Seguranca Free Fire',
-    'vip_entrega':       'Fura-Fila VIP - Entrega Expressa FF',
+    '1060':              '1060 + 106',
+    '2180':              '2180 + 218',
+    '5600':              '5600 + 560',
+    '22400':             '22400 + 2240',
+    'semanal':           'Assinatura Semanal',
+    'mensal':            'Assinatura Mensal',
+    'booyah':            'Passe Booyah Premium Plus',
+    'verificacao_seguranca': 'Verificação de Segurança',
+    'vip_entrega':       'Fura-Fila VIP',
 };
 
 function generateCPF() {
