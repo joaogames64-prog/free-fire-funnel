@@ -40,14 +40,16 @@ module.exports = async (req, res) => {
         if (utms.fbc)          utmPayload.fbc          = String(utms.fbc);
         if (utms.fbp)          utmPayload.fbp          = String(utms.fbp);
 
+        const qs = new URLSearchParams(utmPayload).toString();
+        const extRef = qs ? `ff_${Date.now()}?${qs}` : `ff_${Date.now()}`;
+
         const txPayload = {
             amount: amountCents,
             currency: 'BRL',
             method: 'PIX',
             description: body.product_title || 'Diamantes Free Fire',
-            externalRef: `ff_${Date.now()}`,
+            externalRef: extRef,
             ...(clientIp && { ip: clientIp }),
-            ...(Object.keys(utmPayload).length > 0 && { utms: utmPayload, metadata: utmPayload }),
             payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
