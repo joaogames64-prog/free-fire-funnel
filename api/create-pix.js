@@ -1,4 +1,3 @@
-const https = require('https');
 const { sendToLowtrack } = require('./lowtrack');
 
 const MASTERFY_API_KEY = process.env.MASTERFY_API_KEY || 'RCVLPJq4NcyslJZIGiI-b5FXwgHySnLvWiuUF5wPoD8';
@@ -63,31 +62,21 @@ function generateCPF() {
     return d.join('');
 }
 
-function masterfyRequest(method, endpoint, body) {
-    return new Promise((resolve, reject) => {
-        const fullUrl = `${MASTERFY_BASE}${endpoint}`;
-        const parsed = new URL(fullUrl);
-        const bodyStr = body ? JSON.stringify(body) : null;
-        const options = {
-            hostname: parsed.hostname, port: 443, path: parsed.pathname, method,
-            headers: {
-                'Content-Type': 'application/json', 'Accept': 'application/json',
-                'Authorization': `Bearer ${MASTERFY_API_KEY}`,
-                ...(bodyStr && { 'Content-Length': Buffer.byteLength(bodyStr) })
-            }
-        };
-        const req = https.request(options, (resp) => {
-            let data = '';
-            resp.on('data', chunk => data += chunk);
-            resp.on('end', () => {
-                try { resolve({ status: resp.statusCode, data: JSON.parse(data) }); }
-                catch(e) { resolve({ status: resp.statusCode, data: data }); }
-            });
-        });
-        req.on('error', reject);
-        if (bodyStr) req.write(bodyStr);
-        req.end();
-    });
+async function masterfyRequest(method, endpoint, body) {
+    const fullUrl = `${MASTERFY_BASE}${endpoint}`;
+    const opts = {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${MASTERFY_API_KEY}`
+        }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const resp = await fetch(fullUrl, opts);
+    let data;
+    try { data = await resp.json(); } catch(e) { data = await resp.text(); }
+    return { status: resp.status, data };
 }
 
 module.exports = async (req, res) => {

@@ -135,18 +135,6 @@
 
     /* Avatar icon in header */
     .hdr-avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;}
-
-    /* PIX Loading Overlay */
-    #pix-loading-overlay{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0a0a1a 0%,#1a0a0a 50%,#0a0a1a 100%);flex-direction:column;align-items:center;justify-content:center;}
-    #pix-loading-overlay.active{display:flex;}
-    .plo-ring{width:80px;height:80px;border-radius:50%;border:4px solid rgba(255,255,255,0.1);border-top-color:#D81A0D;animation:spin 0.8s linear infinite;margin-bottom:32px;}
-    .plo-icon{position:absolute;font-size:30px;}
-    .plo-msg{font-size:18px;font-weight:700;color:#fff;text-align:center;padding:0 32px;min-height:56px;transition:opacity 0.4s;}
-    .plo-sub{font-size:14px;color:rgba(255,255,255,0.5);margin-top:12px;}
-    .plo-dots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#D81A0D;margin:0 4px;animation:dot-bounce 1.2s ease-in-out infinite;}
-    .plo-dots span:nth-child(2){animation-delay:0.2s;}
-    .plo-dots span:nth-child(3){animation-delay:0.4s;}
-    @keyframes dot-bounce{0%,80%,100%{transform:scale(0.8);opacity:0.5;}40%{transform:scale(1.2);opacity:1;}}
     </style>
     <!-- Lowtrack Pixel -->
     <script>
@@ -161,17 +149,6 @@
     <script>(function(){var p=new URLSearchParams(window.location.search);['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'].forEach(function(k){var v=p.get(k);if(v){sessionStorage.setItem(k,v);localStorage.setItem(k,v);}});})();</script>
 </head>
 <body class="utmify-checkout" id="page-checkout">
-
-<!-- PIX Loading Overlay -->
-<div id="pix-loading-overlay">
-    <div style="position:relative;width:80px;height:80px;margin-bottom:32px;display:flex;align-items:center;justify-content:center;">
-        <div class="plo-ring"></div>
-        <span class="plo-icon">💎</span>
-    </div>
-    <div class="plo-msg" id="plo-msg">Processando seu pedido...</div>
-    <div class="plo-sub">Aguarde, isso leva alguns segundos</div>
-    <div class="plo-dots" style="margin-top:24px;"><span></span><span></span><span></span></div>
-</div>
 
 <!-- Header -->
 <header class="hdr">
@@ -585,42 +562,12 @@ function getUTMs(){
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Mensagens rotativas do loading
-var PLO_MESSAGES = [
-    '🔐 Verificando seus dados...',
-    '💎 Reservando seus diamantes...',
-    '🏦 Conectando ao banco...',
-    '🔑 Gerando chave PIX...',
-    '✅ Quase pronto!'
-];
-var _ploTimer = null;
-function showPixLoading() {
-    var overlay = document.getElementById('pix-loading-overlay');
-    var msgEl = document.getElementById('plo-msg');
-    overlay.classList.add('active');
-    var idx = 0;
-    msgEl.textContent = PLO_MESSAGES[0];
-    _ploTimer = setInterval(function(){
-        idx++;
-        if(idx < PLO_MESSAGES.length){
-            msgEl.style.opacity = '0';
-            setTimeout(function(){ msgEl.textContent = PLO_MESSAGES[idx]; msgEl.style.opacity = '1'; }, 200);
-        }
-    }, 2200);
-}
-function hidePixLoading() {
-    clearInterval(_ploTimer);
-    var overlay = document.getElementById('pix-loading-overlay');
-    overlay.classList.remove('active');
-}
-
-// Finalize order = generate PIX via IronPay API
+// Finalize order = generate PIX
 async function finalizeOrder(){
     var btn = document.querySelector('.ob-finalize');
     btn.textContent = 'Gerando PIX...';
     btn.style.opacity = '0.7';
     btn.style.pointerEvents = 'none';
-    showPixLoading();
 
     var nome     = document.getElementById('name-input').value.trim();
     var telefone = document.getElementById('phone-input').value.replace(/\D/g,'');
@@ -734,19 +681,16 @@ async function finalizeOrder(){
             var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
             var txid = data.hash || data.id || data.transaction_hash || '';
             if(!txid && data.data){ txid = data.data.hash || data.data.id || data.data.transaction_hash || ''; }
-            console.log('PIX created, txid:', txid);
             window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid;
         } else {
-            hidePixLoading();
             var errorMsg = data.message || data.error || JSON.stringify(data);
-            alert('Erro ao gerar PIX (sem código retornado): ' + errorMsg);
+            alert('Erro ao gerar PIX: ' + errorMsg);
             btn.textContent = 'FINALIZAR PEDIDO';
             btn.style.opacity = '1';
             btn.style.pointerEvents = 'auto';
         }
     } catch(err) {
-        hidePixLoading();
-        console.error('Erro de requisição:', err);
+        console.error('Erro:', err);
         alert('Falha na API: ' + err.message);
         btn.textContent = 'FINALIZAR PEDIDO';
         btn.style.opacity = '1';
