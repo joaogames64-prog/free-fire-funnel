@@ -52,6 +52,27 @@ module.exports = async (req, res) => {
         // Idempotency-Key única por tentativa
         const idempotencyKey = externalId;
 
+        // Construir a lista de itens separando o produto base dos order bumps
+        const bumps = Array.isArray(body.bumps) ? body.bumps : [];
+        const bumpsTotal = bumps.reduce((acc, b) => acc + ((parseInt(b.priceInCents) || 0) / 100), 0);
+        const basePrice = Math.max(0, amount - bumpsTotal); // Preço do plano principal
+        
+        const baseTitle = PRODUCT_NAMES[plano] || 'Diamantes Free Fire';
+
+        const items = [{
+            title:      baseTitle,
+            quantity:   1,
+            unit_price: basePrice
+        }];
+
+        bumps.forEach(b => {
+            items.push({
+                title:      b.name,
+                quantity:   1,
+                unit_price: (parseInt(b.priceInCents) || 0) / 100
+            });
+        });
+
         const txPayload = {
             external_id:    externalId,
             amount:         amount,
@@ -63,11 +84,7 @@ module.exports = async (req, res) => {
                 phone:    phoneFormatted,
                 document: generateCPF()
             },
-            items: [{
-                title:      productTitle,
-                quantity:   1,
-                unit_price: amount
-            }],
+            items: items,
             metadata: {
                 plano,
                 utm_campaign: utms.utm_campaign || '',
