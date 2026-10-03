@@ -55,14 +55,12 @@ module.exports = async (req, res) => {
             }
         };
 
-        // ─── RECUPERAR UTM E PRODUTO DO EXTERNAL_REF ───
-        // Em create-pix.js codificamos: externalRef = `ff_${Date.now()}_K${plano}_C${utm_campaign}`
-        const extId = chargeData.externalId || '';
-        const matchK = extId.match(/_K([0-9a-zA-Z]+)/);
-        const matchC = extId.match(/_C([0-9a-zA-Z]*)/);
-
-        const diamondKey = matchK ? matchK[1] : null;
-        const utmCampaign = matchC ? matchC[1] : '';
+        // Já enviamos o sale.pending com todas as UTMs via /api/track-pending!
+        // Não queremos processar o webhook de pendente da Masterfy para não correr 
+        // o risco de sobrescrever os dados corretos no LowTrack.
+        if (chargeData.paymentStatus === 'PENDING' || chargeData.paymentStatus === 'PROCESSING') {
+            return res.status(200).json({ received: true, ignored: 'pending_status' });
+        }
 
         // Produto vem do description ou items da Masterfy
         const productName = body.description || 
@@ -76,9 +74,9 @@ module.exports = async (req, res) => {
             customerDoc:   chargeData.customer.taxId
         };
 
-        if (utmCampaign) {
-            extraMeta.utms = { utm_campaign: utmCampaign };
-        }
+        // Não enviamos UTMs no sale.approved.
+        // Ao não enviar, o LowTrack vai mesclar o status Pago com o evento sale.pending
+        // anterior que tinha 100% das UTMs e FBC do navegador.
 
         await sendToLowtrack(chargeData, extraMeta);
 
