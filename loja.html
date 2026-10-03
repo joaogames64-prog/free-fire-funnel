@@ -403,7 +403,7 @@ function proceedToCheckout(diamonds, bonus, price){
     sessionStorage.setItem('offer_price', offerSel ? offerSel.price.toFixed(2) : '0');
     sessionStorage.setItem('offer_hash', diamondSel.offerHash);
     sessionStorage.setItem('product_hash', 'ykhbyvhkny');
-    window.location.href = 'checkout.html';
+    window.location.href = 'checkout.html?v=' + Date.now();
 }
 
 // ── Social Proof Notifications ──────────────────────────────────────────────
