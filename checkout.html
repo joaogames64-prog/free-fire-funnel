@@ -419,6 +419,9 @@ window.addEventListener('DOMContentLoaded', function(){
     var uid = sessionStorage.getItem('uid') || '-';
     var tipo = sessionStorage.getItem('tipo') || 'diamonds';
 
+    var parsedPreco = parseFloat(preco);
+    window.basePrice = (!isNaN(parsedPreco) && parsedPreco > 0) ? parsedPreco : 12.90;
+
     var total = parseInt(plano) + parseInt(bonus);
 
     if(tipo === 'offer'){
@@ -497,12 +500,7 @@ document.getElementById('phone-input').addEventListener('input', validateForm);
     }, 3500);
 })();
 
-// Base price from sessionStorage — parseFloat('NaN') retorna NaN e NaN é truthy,
-// por isso usamos isNaN() em vez de || para o fallback
-(function(){
-    var stored = parseFloat(sessionStorage.getItem('preco'));
-    window.basePrice = (!isNaN(stored) && stored > 0) ? stored : 12.90;
-})();
+// window.basePrice agora é definido no DOMContentLoaded
 
 // Toggle order bump item
 function toggleOB(el){
