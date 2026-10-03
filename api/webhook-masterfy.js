@@ -85,6 +85,14 @@ module.exports = async (req, res) => {
         };
         chargeData.paymentStatus = statusMap[chargeData.status] || chargeData.status;
 
+        // Descontar taxas da plataforma (6.99% + R$ 1,99) para enviar o valor líquido
+        if (chargeData.amount) {
+            const taxFixed = 199; // centavos
+            const taxPercent = 0.0699;
+            const fee = (chargeData.amount * taxPercent) + taxFixed;
+            chargeData.amount = Math.max(0, Math.round(chargeData.amount - fee));
+        }
+
         // Enviar para o LowTrack com metadados recuperados do externalRef
         await sendToLowtrack(chargeData, extraMeta);
 
