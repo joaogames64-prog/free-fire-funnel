@@ -254,7 +254,7 @@
         <div class="px-qr-wrap">
             <canvas id="pix-qr-canvas" width="200" height="200"></canvas>
         </div>
-        <div class="px-provider" id="px-provider">IRONPAY_INTERMEDIACOES</div>
+        <div class="px-provider" id="px-provider">XTECHPAY_PAGAMENTOS</div>
 
         <div class="px-code-box" id="pix-code-text">Carregando código PIX...</div>
 
@@ -271,7 +271,7 @@
             <strong>2)</strong> Utilize as informações acima para realizar o pagamento<br>
             <strong>3)</strong> Revise as informações e pronto!
         </p>
-        <p>Seu pedido está sendo processado pelo nosso parceiro <strong>IronPay</strong>.</p>
+        <p>Seu pedido está sendo processado pelo nosso parceiro <strong>XTech Pay</strong>.</p>
         <p>Você receberá seus diamantes após recebermos a confirmação do pagamento. Isso ocorre geralmente em alguns minutos após a realização do pagamento na sua instituição financeira.</p>
     </div>
 
@@ -356,21 +356,50 @@ var pixCode = params.get('pix') || '';
 var qrCodeUrl = params.get('qrcode') || '';
 var txHash = params.get('txid') || params.get('hash') || '';
 
+console.log('[pix.html] pixCode length:', pixCode.length);
 console.log('[pix.html] txHash:', txHash);
 console.log('[pix.html] Full URL params:', window.location.search);
 
-// Gerar QR code localmente (sem servidor externo)
-if(pixCode) {
+// Set PIX code text
+document.getElementById('pix-code-text').textContent = pixCode || 'Código PIX não disponível';
+
+// Gerar QR code após o DOM estar pronto e a lib QRCode carregada
+function renderQR() {
     var canvas = document.getElementById('pix-qr-canvas');
-    if(canvas && typeof QRCode !== 'undefined') {
-        QRCode.toCanvas(canvas, pixCode, { width: 200, margin: 1, color: { dark: '#000', light: '#fff' } }, function(err){
-            if(err) console.error('QRCode error:', err);
+    if (!canvas) { console.error('canvas not found'); return; }
+    if (!pixCode) {
+        canvas.style.display = 'none';
+        console.warn('[pix.html] Sem pixCode para gerar QR');
+        return;
+    }
+    if (typeof QRCode !== 'undefined') {
+        QRCode.toCanvas(canvas, pixCode, { width: 200, margin: 1, color: { dark: '#000000', light: '#ffffff' } }, function(err) {
+            if (err) {
+                console.error('QRCode.toCanvas error:', err);
+                // fallback: usar img externa
+                var wrap = canvas.parentElement;
+                var img = document.createElement('img');
+                img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pixCode);
+                img.width = 200; img.height = 200;
+                wrap.replaceChild(img, canvas);
+            }
         });
+    } else {
+        // lib ainda não carregou — usar img de fallback
+        console.warn('[pix.html] QRCode lib não disponível, usando fallback img');
+        var wrap = canvas.parentElement;
+        var img = document.createElement('img');
+        img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pixCode);
+        img.width = 200; img.height = 200;
+        wrap.replaceChild(img, canvas);
     }
 }
 
-// Set PIX code text
-document.getElementById('pix-code-text').textContent = pixCode || 'Código PIX não disponível';
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderQR);
+} else {
+    renderQR();
+}
 
 // Load order data from sessionStorage
 var plano = sessionStorage.getItem('plano') || '1060';

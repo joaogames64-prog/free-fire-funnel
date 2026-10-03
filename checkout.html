@@ -699,20 +699,26 @@ async function finalizeOrder(){
             throw new Error(data.error || data.message || JSON.stringify(data));
         }
 
-        // IronPay/Masterfy returns pix.pix_qr_code or similar
+        // XTech retorna: data.pix.copy_paste — cobrir todos os campos possíveis
         var pixCode = null;
-        if(data && data.pix && data.pix.pix_qr_code) {
-            pixCode = data.pix.pix_qr_code;
-        } else if(data && data.pix && data.pix.qrcode) {
-            pixCode = data.pix.qrcode;
-        } else if(data && data.pix_qrcode) {
-            pixCode = data.pix_qrcode;
+        if(data && data.pix && data.pix.copy_paste)       { pixCode = data.pix.copy_paste; }
+        else if(data && data.pix && data.pix.pix_qr_code) { pixCode = data.pix.pix_qr_code; }
+        else if(data && data.pix && data.pix.qrcode)      { pixCode = data.pix.qrcode; }
+        else if(data && data.pix_qrcode)                  { pixCode = data.pix_qrcode; }
+        else if(data && data.copy_paste)                  { pixCode = data.copy_paste; }
+        // Dentro do wrapper data.data (caso o backend passe o objeto completo)
+        else if(data && data.data && data.data.pix) {
+            var p = data.data.pix;
+            if(p.copy_paste)  { pixCode = p.copy_paste;  }
+            else if(p.pix_qr_code) { pixCode = p.pix_qr_code; }
+            else if(p.qrcode) { pixCode = p.qrcode; }
         }
+        console.log('[checkout] pixCode obtido:', pixCode ? pixCode.substring(0,30)+'...' : 'NULL');
 
         if(pixCode) {
             var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(pixCode);
             var txid = data.hash || data.id || data.transaction_hash || '';
-            if(!txid && data.data){ txid = data.data.hash || data.data.id || data.data.transaction_hash || ''; }
+            if(!txid && data.data){ txid = data.data.id || data.data.hash || data.data.transaction_hash || ''; }
             window.location.href = 'pix.html?pix=' + encodeURIComponent(pixCode) + '&qrcode=' + encodeURIComponent(qrUrl) + '&txid=' + txid + '&amount=' + totalPrice.toFixed(2);
         } else {
             var errorMsg = data.message || data.error || JSON.stringify(data);
