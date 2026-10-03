@@ -503,10 +503,10 @@ if(txHash){
                     var paidEl = document.getElementById('px-status-paid');
                     paidEl.classList.add('paid');
                     paidEl.style.display = 'block';
-                    // Redirecionar para upsell após confirmação do pagamento
+                    // Redirecionar para obrigado após confirmação do pagamento
                     setTimeout(function(){
                         sessionStorage.removeItem('is_upsell');
-                        window.location.href = 'upsell.html';
+                        window.location.href = 'obrigado.html';
                     }, 3000);
                 }
             })

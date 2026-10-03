@@ -28,8 +28,8 @@ module.exports = async (req, res) => {
 
         console.log('[Webhook XTech] Evento:', eventType, '| Payment ID:', data.id || 'N/A', '| Status:', data.status || 'N/A');
 
-        // Só nos importamos com pagamentos aprovados
-        if (eventType !== 'payment.approved' && data.status !== 'approved') {
+        // Aceitamos pagamentos aprovados e criados (pendentes)
+        if (eventType !== 'payment.approved' && data.status !== 'approved' && eventType !== 'payment.created' && data.status !== 'pending') {
             return res.status(200).json({ received: true, ignored: eventType || data.status });
         }
 
@@ -60,10 +60,15 @@ module.exports = async (req, res) => {
         const amountBRL   = data.amount || 0;
         const amountCents = Math.round(amountBRL * 100);
 
+        let finalStatus = 'PENDING';
+        if (eventType === 'payment.approved' || data.status === 'approved') {
+            finalStatus = 'PAID';
+        }
+
         const chargeData = {
             id:            data.id   || '',
             externalId:    extId,
-            paymentStatus: 'PAID',   // só chegamos aqui se foi approved
+            paymentStatus: finalStatus,
             total:         amountCents,
             customer: {
                 name:  (data.customer && data.customer.name)  || '',
