@@ -98,6 +98,14 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
         // 8. Tracking (UTMs salvas no momento da geração do PIX, passadas via extraMeta)
         const utms = extraMeta.utms || {};
         
+        const trackingPayload = {};
+        if (utms.utm_source)   trackingPayload.utm_source   = utms.utm_source;
+        if (utms.utm_medium)   trackingPayload.utm_medium   = utms.utm_medium;
+        if (utms.utm_campaign) trackingPayload.utm_campaign = utms.utm_campaign;
+        if (utms.utm_content)  trackingPayload.utm_content  = utms.utm_content;
+        if (utms.utm_term)     trackingPayload.utm_term     = utms.utm_term;
+        if (utms.src)          trackingPayload.src          = utms.src;
+
         // 9. Montagem do payload final para o LowTrack
         const ltPayload = {
             event: ltEvent,
@@ -123,14 +131,7 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
                 country:    'br'
             },
             
-            tracking: {
-                utm_source:   utms.utm_source   || '',
-                utm_medium:   utms.utm_medium   || '',
-                utm_campaign: utms.utm_campaign || '',
-                utm_content:  utms.utm_content  || '',
-                utm_term:     utms.utm_term     || '',
-                src:          utms.src          || ''
-            },
+            ...(Object.keys(trackingPayload).length > 0 && { tracking: trackingPayload }),
             
             // IP e User-Agent para melhor EMQ no Facebook (se disponíveis no handler)
             ...(extraMeta.userIp    && { user_ip:    extraMeta.userIp }),
