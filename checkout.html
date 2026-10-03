@@ -239,6 +239,10 @@
             <input class="ck-input" id="name-input" name="name" type="text" placeholder="Seu nome completo" maxlength="50" autocomplete="name">
         </div>
         <div class="ck-field">
+            <label class="ck-field-label" for="email-input">E-mail</label>
+            <input class="ck-input" id="email-input" name="email" type="email" placeholder="Seu e-mail" autocomplete="email">
+        </div>
+        <div class="ck-field">
             <label class="ck-field-label" for="phone-input">Celular (DDD + 9 dígitos)</label>
             <input class="ck-input" id="phone-input" name="phone" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel">
         </div>
@@ -570,10 +574,23 @@ async function finalizeOrder(){
     btn.style.pointerEvents = 'none';
 
     var nome     = document.getElementById('name-input').value.trim();
+    var email    = document.getElementById('email-input').value.trim();
     var telefone = document.getElementById('phone-input').value.replace(/\D/g,'');
-    // Generate email from name + last 4 digits of phone so IronPay receives a valid email
-    var nomeParts = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
-    var email = nomeParts + telefone.slice(-4) + '@gmail.com';
+
+    if(!nome || !email || telefone.length < 10) {
+        alert('Por favor, preencha todos os campos corretamente (Nome, E-mail e Celular).');
+        btn.textContent = 'FINALIZAR PEDIDO';
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        return;
+    }
+    if(email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+        alert('Por favor, digite um e-mail válido.');
+        btn.textContent = 'FINALIZAR PEDIDO';
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        return;
+    }
 
     // Collect selected order bumps
     var bumps = [];
