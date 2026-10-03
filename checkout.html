@@ -632,6 +632,25 @@ async function finalizeOrder(){
     var baseTitle = PRODUCT_NAMES_FRONTEND[planoKey] || planoKey;
 
     var productTitle = baseTitle;
+    
+    // Se escolheu uma "Oferta Especial" na loja.html, precisamos inclui-la como item separado
+    // para a XTech reconhecer o nome e entregar o produto correto.
+    var offerLabel = sessionStorage.getItem('label') || '';
+    var offerPrice = parseFloat(sessionStorage.getItem('offer_price')) || 0;
+    if(offerLabel && offerPrice > 0){
+        // Tratamento especial para alinhar o nome exato da XTech se não bater perfeitamente
+        var exactOfferName = offerLabel;
+        if(offerLabel.toLowerCase().includes('semanal')) exactOfferName = 'Assinatura Semanal';
+        if(offerLabel.toLowerCase().includes('mensal')) exactOfferName = 'Assinatura Mensal';
+        if(offerLabel.toLowerCase().includes('booyah')) exactOfferName = 'Passe Booyah Premium Plus';
+        
+        // Empurra como um bump para ser processado no backend como item adicional
+        bumps.push({
+            name: exactOfferName,
+            priceInCents: offerPrice * 100
+        });
+    }
+
     if(bumps.length > 0){
         productTitle += ' + ' + bumps.map(function(b){return b.name;}).join(', ');
     }
