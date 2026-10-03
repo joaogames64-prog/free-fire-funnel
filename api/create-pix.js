@@ -37,6 +37,8 @@ module.exports = async (req, res) => {
         if (utms.utm_content)  utmPayload.utm_content  = String(utms.utm_content);
         if (utms.utm_term)     utmPayload.utm_term     = String(utms.utm_term);
         if (utms.src)          utmPayload.src          = String(utms.src);
+        if (utms.fbc)          utmPayload.fbc          = String(utms.fbc);
+        if (utms.fbp)          utmPayload.fbp          = String(utms.fbp);
 
         const txPayload = {
             amount: amountCents,
@@ -45,7 +47,7 @@ module.exports = async (req, res) => {
             description: body.product_title || 'Diamantes Free Fire',
             externalRef: `ff_${Date.now()}`,
             ...(clientIp && { ip: clientIp }),
-            ...(Object.keys(utmPayload).length > 0 && { utms: utmPayload }),
+            ...(Object.keys(utmPayload).length > 0 && { utms: utmPayload, metadata: utmPayload }),
             payer: {
                 name:  body.nome  || 'Cliente',
                 email: body.email || 'cliente@email.com',
