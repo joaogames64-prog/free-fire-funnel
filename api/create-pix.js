@@ -170,37 +170,33 @@ module.exports = async (req, res) => {
             pix_qrcode: copypaste
         };
 
+        // ─── Retornar PIX para o frontend IMEDIATAMENTE ─────────────────
+        res.status(201).json(normalizedResponse);
+
         // Descontar taxas (6.99% + R$ 1,99) para enviar valor líquido no sale.pending
         const taxFixed = 199;
         const taxPercent = 0.0699;
         const fee = (amountCents * taxPercent) + taxFixed;
         const netAmountCents = Math.max(0, Math.round(amountCents - fee));
 
-        // ─── Disparar sale.pending no LowTrack ─────────
+        // ─── Disparar sale.pending no LowTrack (background, não bloqueia) ─────
         const utms = body.utms || {};
-        try {
-            await sendToLowtrack(
-                {
-                    id: normalizedResponse.hash, externalId: txPayload.externalRef,
-                    paymentStatus: 'PROCESSING', total: netAmountCents,
-                    items: trackItems,
-                    customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
-                },
-                {
-                    // product_title já tem o nome completo com bônus (ex: "1166 Diamantes Free Fire")
-                    utms,
-                    productName: body.product_title || 'Diamantes Free Fire',
-                    customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
-                    userIp: req.headers['x-forwarded-for'] || '',
-                    userAgent: req.headers['user-agent'] || ''
-                }
-            );
-        } catch(err) {
-            console.error('[LowTrack] Falha sale.pending:', err.message);
-        }
-
-        // Response para o frontend após garantir a entrega pro LowTrack
-        res.status(201).json(normalizedResponse);
+        const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('LowTrack timeout')), 4000));
+        Promise.race([sendToLowtrack(
+            {
+                id: normalizedResponse.hash, externalId: txPayload.externalRef,
+                paymentStatus: 'PROCESSING', total: netAmountCents,
+                items: trackItems,
+                customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
+            },
+            {
+                utms,
+                productName: body.product_title || 'Diamantes Free Fire',
+                customerName: body.nome || '', customerEmail: body.email || '', customerPhone: phone,
+                userIp: req.headers['x-forwarded-for'] || '',
+                userAgent: req.headers['user-agent'] || ''
+            }
+        ), timeout]).catch(err => console.error('[LowTrack] sale.pending:', err.message));
 
     } catch (err) {
         console.error('[create-pix] Error:', err.message);
