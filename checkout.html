@@ -636,6 +636,12 @@ async function finalizeOrder(){
 
     var utms = getUTMs();
 
+    // Salva dados no sessionStorage para a pix.html poder disparar o tracking de venda pendente
+    sessionStorage.setItem('chk_nome', nome);
+    sessionStorage.setItem('chk_email', email);
+    sessionStorage.setItem('chk_telefone', telefone);
+    sessionStorage.setItem('chk_product', productTitle);
+    
     // Identificar lead no LowTrack
     try {
         if(window.LowTrack && typeof window.LowTrack.identify === 'function'){

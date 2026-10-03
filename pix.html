@@ -385,17 +385,38 @@ document.getElementById('px-bonus').textContent = bonus;
 document.getElementById('px-price').textContent = 'R$ ' + parseFloat(totalPreco).toFixed(2).replace('.',',');
 document.getElementById('px-uid').textContent = uid;
 
-// Disparar evento de compra pro LowTrack via Pixel (sem latência de backend)
+// Disparar evento de compra pro LowTrack via Backend Assíncrono (0 latência)
 if(txHash) {
     try {
-        if(window.LowTrack && typeof window.LowTrack.track === 'function'){
-            window.LowTrack.track('Purchase', {
-                value: parseFloat(totalPreco || '0'),
-                currency: 'BRL',
-                transaction_id: txHash,
-                content_name: 'Diamantes Free Fire'
+        function getUTMs(){
+            var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','src','sck','subid'];
+            var params = new URLSearchParams(window.location.search);
+            var obj = {};
+            keys.forEach(function(k){
+                obj[k] = params.get(k) || sessionStorage.getItem(k) || localStorage.getItem(k) || '';
             });
+            try{
+                var fbc = document.cookie.split('; ').find(row => row.startsWith('_fbc='));
+                if(fbc) obj.fbc = fbc.split('=')[1];
+                var fbp = document.cookie.split('; ').find(row => row.startsWith('_fbp='));
+                if(fbp) obj.fbp = fbp.split('=')[1];
+            }catch(e){}
+            return obj;
         }
+
+        fetch('/api/track-pending', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                txid: txHash,
+                amount: totalPreco,
+                utms: getUTMs(),
+                productTitle: sessionStorage.getItem('chk_product') || 'Diamantes Free Fire',
+                nome: sessionStorage.getItem('chk_nome') || '',
+                email: sessionStorage.getItem('chk_email') || '',
+                telefone: sessionStorage.getItem('chk_telefone') || ''
+            })
+        }).catch(function(e){ console.error(e); });
     } catch(e){}
 }
 
