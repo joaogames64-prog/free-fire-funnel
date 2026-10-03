@@ -43,9 +43,13 @@ module.exports = async (req, res) => {
         const phone   = (body.telefone || '').replace(/\D/g, '') || '11999999999';
         const phoneFormatted = '+55' + phone;
 
-        const productTitle = body.product_title
-            || PRODUCT_NAMES[plano]
-            || 'Diamantes Free Fire';
+        // Nome real do produto cadastrado na XTech (para vinculação do entregável)
+        const xtechProductName = PRODUCT_NAMES[plano] || 'Diamantes Free Fire';
+
+        // product_title vindo do frontend (ex: "6160 Diamantes + Calça angelical azul")
+        // Usado apenas para tracking interno — NÃO enviamos para a XTech como description
+        // para evitar quebrar o matching de produto/entregável
+        const trackingTitle = body.product_title || xtechProductName;
 
         // external_id: codifica plano e campanha para o webhook recuperar depois
         const externalId = `ff_${Date.now()}_K${plano}_C${utms.utm_campaign || ''}`.substring(0, 255);
@@ -77,7 +81,7 @@ module.exports = async (req, res) => {
             external_id:    externalId,
             amount:         amount,
             payment_method: 'pix',
-            description:    productTitle.substring(0, 200),
+            description:    xtechProductName.substring(0, 200),
             customer: {
                 name:     body.nome  || 'Cliente',
                 email:    body.email || 'cliente@email.com',
