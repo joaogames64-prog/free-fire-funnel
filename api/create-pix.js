@@ -1,3 +1,5 @@
+const { sendToLowtrack } = require('./lowtrack');
+
 const MASTERFY_API_KEY = process.env.MASTERFY_API_KEY || 'RCVLPJq4NcyslJZIGiI-b5FXwgHySnLvWiuUF5wPoD8';
 const MASTERFY_BASE = 'https://api.masterfypagamentos.com/v1';
 
@@ -27,31 +29,18 @@ module.exports = async (req, res) => {
         const phone = (body.telefone || '').replace(/\D/g, '') || '11999999999';
         const rawIp = req.headers['x-forwarded-for'] || '';
         const clientIp = rawIp.split(',')[0].trim() || undefined;
-
-        // Montar objeto de UTMs para a Masterfy
         const utms = body.utms || {};
-        const utmPayload = {};
-        if (utms.utm_source)   utmPayload.utm_source   = String(utms.utm_source);
-        if (utms.utm_medium)   utmPayload.utm_medium   = String(utms.utm_medium);
-        if (utms.utm_campaign) utmPayload.utm_campaign = String(utms.utm_campaign);
-        if (utms.utm_content)  utmPayload.utm_content  = String(utms.utm_content);
-        if (utms.utm_term)     utmPayload.utm_term     = String(utms.utm_term);
-        if (utms.src)          utmPayload.src          = String(utms.src);
-        if (utms.fbc)          utmPayload.fbc          = String(utms.fbc);
-        if (utms.fbp)          utmPayload.fbp          = String(utms.fbp);
 
-        const qs = new URLSearchParams(utmPayload).toString();
-        let extRef = qs ? `ff_${Date.now()}?${qs}` : `ff_${Date.now()}`;
-        if (extRef.length > 200) {
-            extRef = extRef.substring(0, 200);
-        }
+        // Taxas da plataforma (6.99% + R$ 1,99)
+        const fee = (amountCents * 0.0699) + 199;
+        const netAmountCents = Math.max(0, Math.round(amountCents - fee));
 
         const txPayload = {
             amount: amountCents,
             currency: 'BRL',
             method: 'PIX',
             description: String(body.product_title || 'Diamantes Free Fire').substring(0, 200),
-            externalRef: extRef,
+            externalRef: `ff_${Date.now()}`,
             ...(clientIp && { ip: clientIp }),
             payer: {
                 name:  body.nome  || 'Cliente',
@@ -62,6 +51,7 @@ module.exports = async (req, res) => {
             items: [{ quantity: 1, name: body.product_title || 'Diamantes Free Fire', price: amountCents, type: 'DIGITAL' }]
         };
 
+        // ── Chamar Masterfy ──────────────────────────────────────────────
         const resp = await fetch(`${MASTERFY_BASE}/payment`, {
             method: 'POST',
             headers: {
@@ -80,9 +70,42 @@ module.exports = async (req, res) => {
         }
 
         const copypaste = (rd.data && rd.data.copypaste) ? rd.data.copypaste : '';
+        const transactionId = rd.id || '';
+
+        // ── Enviar sale.pending pro LowTrack ANTES de responder ──────────
+        // Usa timeout de 3s pra não travar demais (Vercel mata o processo após res.json)
+        try {
+            const ltTimeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000));
+            await Promise.race([
+                sendToLowtrack(
+                    {
+                        id: transactionId,
+                        externalId: txPayload.externalRef,
+                        paymentStatus: 'PROCESSING',
+                        total: netAmountCents,
+                        items: [{ product: { name: body.product_title || 'Diamantes Free Fire' } }],
+                        customer: { name: body.nome || 'Cliente', email: body.email || '', phone }
+                    },
+                    {
+                        utms,
+                        productName: body.product_title || 'Diamantes Free Fire',
+                        customerName: body.nome || '',
+                        customerEmail: body.email || '',
+                        customerPhone: phone,
+                        userIp: rawIp,
+                        userAgent: req.headers['user-agent'] || ''
+                    }
+                ),
+                ltTimeout
+            ]);
+        } catch(ltErr) {
+            console.error('[LowTrack] sale.pending:', ltErr.message);
+        }
+
+        // ── Responder o PIX pro frontend ─────────────────────────────────
         res.status(201).json({
             ...rd,
-            hash: rd.id || '',
+            hash: transactionId,
             pix: { pix_qr_code: copypaste },
             pix_qrcode: copypaste
         });

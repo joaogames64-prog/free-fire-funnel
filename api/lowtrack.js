@@ -140,7 +140,7 @@ async function sendToLowtrack(chargeData, extraMeta = {}) {
             ...(utms.fbc && { fbc: utms.fbc }),
             ...(utms.fbp && { fbp: utms.fbp }),
             
-            metadata: { platform: 'hurapay' }
+            metadata: { platform: 'masterfy' }
         };
         
         // 10. Disparo para o LowTrack
