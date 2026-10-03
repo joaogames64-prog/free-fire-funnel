@@ -645,7 +645,7 @@ async function finalizeOrder(){
                 nome: nome,
                 email: email,
                 telefone: telefone,
-                plano: plano,
+                plano: sessionStorage.getItem('plano') || '1060',
                 bumps: bumps,
                 product_title: productTitle,
                 offer_hash: sessionStorage.getItem('offer_hash') || 'off_4nfa96t3k8',
