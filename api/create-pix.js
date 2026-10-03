@@ -1,7 +1,18 @@
-const { sendToLowtrack } = require('./lowtrack');
+const XTECH_API_KEY = process.env.XTECH_API_KEY || 'gh_test_GW7OV-1e6K-flWuWfRa66vKND6CKQaaX';
+const XTECH_BASE   = 'https://app.xtechpay.com.br/api/public/v1';
 
-const MASTERFY_API_KEY = process.env.MASTERFY_API_KEY || 'RCVLPJq4NcyslJZIGiI-b5FXwgHySnLvWiuUF5wPoD8';
-const MASTERFY_BASE = 'https://api.masterfypagamentos.com/v1';
+// Mapa de plano → nome do produto cadastrado na XTech
+const PRODUCT_NAMES = {
+    '1060':              '1060 + 106 Diamantes Free Fire',
+    '2180':              '2180 + 218 Diamantes Free Fire',
+    '5600':              '5600 + 560 Diamantes Free Fire',
+    '22400':             '22400 + 2240 Diamantes Free Fire',
+    'semanal':           'Passe Semanal Free Fire',
+    'mensal':            'Passe Mensal Free Fire',
+    'booyah':            'Passe Booyah Free Fire',
+    'verificacao_seguranca': 'Verificacao de Seguranca Free Fire',
+    'vip_entrega':       'Fura-Fila VIP - Entrega Expressa FF',
+};
 
 function generateCPF() {
     const d = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
@@ -25,39 +36,54 @@ module.exports = async (req, res) => {
         if (typeof body === 'string') { try { body = JSON.parse(body); } catch(e){} }
         body = body || {};
 
-        const amountCents = Math.round(parseFloat(body.amount || '0') * 100);
-        const phone = (body.telefone || '').replace(/\D/g, '') || '11999999999';
-        const rawIp = req.headers['x-forwarded-for'] || '';
-        const clientIp = rawIp.split(',')[0].trim() || undefined;
-        const utms = body.utms || {};
+        // XTech aceita valor em BRL (float), não centavos
+        const amount  = parseFloat(body.amount || '0');
+        const plano   = body.plano || '1060';
+        const utms    = body.utms  || {};
+        const phone   = (body.telefone || '').replace(/\D/g, '') || '11999999999';
+        const phoneFormatted = '+55' + phone;
 
-        // Taxas da plataforma (6.99% + R$ 1,99)
-        const fee = (amountCents * 0.0699) + 199;
-        const netAmountCents = Math.max(0, Math.round(amountCents - fee));
+        const productTitle = body.product_title
+            || PRODUCT_NAMES[plano]
+            || 'Diamantes Free Fire';
+
+        // external_id: codifica plano e campanha para o webhook recuperar depois
+        const externalId = `ff_${Date.now()}_K${plano}_C${utms.utm_campaign || ''}`.substring(0, 255);
+        // Idempotency-Key única por tentativa
+        const idempotencyKey = externalId;
 
         const txPayload = {
-            amount: amountCents,
-            currency: 'BRL',
-            method: 'PIX',
-            description: String(body.product_title || 'Diamantes Free Fire').substring(0, 200),
-            externalRef: `ff_${Date.now()}_K${body.plano || '1060'}_C${utms.utm_campaign || ''}`,
-            ...(clientIp && { ip: clientIp }),
-            payer: {
-                name:  body.nome  || 'Cliente',
-                email: body.email || 'cliente@email.com',
-                phone,
-                taxId: generateCPF()
+            external_id:    externalId,
+            amount:         amount,
+            payment_method: 'pix',
+            description:    productTitle.substring(0, 200),
+            customer: {
+                name:     body.nome  || 'Cliente',
+                email:    body.email || 'cliente@email.com',
+                phone:    phoneFormatted,
+                document: generateCPF()
             },
-            items: [{ quantity: 1, name: body.product_title || 'Diamantes Free Fire', price: amountCents, type: 'DIGITAL' }]
+            items: [{
+                title:      productTitle,
+                quantity:   1,
+                unit_price: amount
+            }],
+            metadata: {
+                plano,
+                utm_campaign: utms.utm_campaign || '',
+                utm_source:   utms.utm_source   || '',
+                utm_medium:   utms.utm_medium   || ''
+            }
         };
 
-        // ── Chamar Masterfy ──────────────────────────────────────────────
-        const resp = await fetch(`${MASTERFY_BASE}/payment`, {
+        // ── Chamar XTech Pay ────────────────────────────────────────────
+        const resp = await fetch(`${XTECH_BASE}/payments`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${MASTERFY_API_KEY}`
+                'Content-Type':    'application/json',
+                'Accept':          'application/json',
+                'Authorization':   `Bearer ${XTECH_API_KEY}`,
+                'Idempotency-Key': idempotencyKey
             },
             body: JSON.stringify(txPayload)
         });
@@ -66,18 +92,20 @@ module.exports = async (req, res) => {
         try { rd = await resp.json(); } catch(e) { rd = {}; }
 
         if (resp.status !== 201 && resp.status !== 200) {
-            throw new Error(`Masterfy ${resp.status}: ${JSON.stringify(rd.message || rd.error || rd)}`);
+            throw new Error(`XTech ${resp.status}: ${JSON.stringify(rd.error || rd)}`);
         }
 
-        const copypaste = (rd.data && rd.data.copypaste) ? rd.data.copypaste : '';
-        const transactionId = rd.id || '';
+        // XTech retorna: { data: { id, pix: { copy_paste }, status } }
+        const payment      = rd.data || rd;
+        const copypaste    = payment.pix ? payment.pix.copy_paste : '';
+        const transactionId = payment.id || rd.id || '';
 
         // ── Responder o PIX pro frontend imediatamente ───────────────────
         res.status(201).json({
             ...rd,
-            hash: transactionId,
-            pix: { pix_qr_code: copypaste },
-            pix_qrcode: copypaste
+            hash:        transactionId,
+            pix:         { pix_qr_code: copypaste },
+            pix_qrcode:  copypaste
         });
 
     } catch (err) {
